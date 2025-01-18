@@ -1,8 +1,11 @@
 {
     "cSpell.words": [
         "ASGI",
+        "asgiref",
         "gamification",
         "lumino",
-        "nnbjm"
+        "nnbjm",
+        "sqlparse",
+        "tzdata"
     ]
 }
