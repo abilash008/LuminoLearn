@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'dashboard',
     'gamification',
     'editor',
+    'ai_engine',
 ]
 
 MIDDLEWARE = [
