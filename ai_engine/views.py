@@ -1,3 +1,5 @@
+'''
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -23,3 +25,6 @@ class AdaptiveFeedbackView(APIView):
         correct_answers = request.data.get('correct_answers')
         feedback = generate_feedback(quiz_responses, correct_answers)
         return Response({"feedback": feedback})
+
+
+'''

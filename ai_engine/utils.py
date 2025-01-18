@@ -1,3 +1,5 @@
+'''
+
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
@@ -15,3 +17,6 @@ def generate_feedback(quiz_responses, correct_answers):
         if response != correct:
             feedback.append(f"Question {i+1}: Review topic '{correct.topic}'.")
     return feedback
+
+
+'''
