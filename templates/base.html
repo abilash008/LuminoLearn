@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LuminoLearn{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            {% if user.is_authenticated %}
+                <ul>
+                    {% if user.role == "student" %}
+                        <li><a href="{% url 'student_dashboard' %}">Student Dashboard</a></li>
+                    {% elif user.role == "educator" %}
+                        <li><a href="{% url 'educator_dashboard' %}">Educator Dashboard</a></li>
+                    {% elif user.role == "admin" %}
+                        <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            {% else %}
+                <ul>
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                </ul>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Content specific to each page -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 LuminoLearn. All rights reserved.</p>
+    </footer>
+</body>
+</html>

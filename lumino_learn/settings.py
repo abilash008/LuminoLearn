@@ -81,12 +81,18 @@ WSGI_APPLICATION = 'lumino_learn.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'lumino_learn',  # Your database name
+        'USER': 'root',  # Replace with your MySQL username
+        'PASSWORD': 'Itsme@bhi143',  # Replace with your MySQL password
+        'HOST': '127.0.0.1',  # Use '127.0.0.1' if localhost doesn't work
+        'PORT': '3306',  # Default MySQL port
     }
 }
+
 
 
 # Password validation
@@ -129,3 +135,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+
+AUTH_USER_MODEL = 'users.CustomUser'
+LOGIN_REDIRECT_URL = '/users/dashboard/'
+LOGOUT_REDIRECT_URL = '/users/login/'  # Optional logout redirect

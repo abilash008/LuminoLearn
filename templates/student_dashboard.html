@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<h1>Student Dashboard</h1>
+<p>Welcome, {{ user.username }}! Here are your options:</p>
+
+<div class="dashboard-actions">
+    <a href="#">View Courses</a>
+    <a href="#">Track Progress</a>
+    <a href="#">Take Quizzes</a>
+</div>
+
+<div class="dashboard-cards">
+    <div class="dashboard-card">
+        <h3>Your Courses</h3>
+        <p>Access your enrolled courses and materials.</p>
+        <a href="#">Go to Courses</a>
+    </div>
+    <div class="dashboard-card">
+        <h3>Progress Tracker</h3>
+        <p>Check your learning milestones and performance.</p>
+        <a href="#">View Progress</a>
+    </div>
+</div>
+{% endblock %}
