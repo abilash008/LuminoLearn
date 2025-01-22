@@ -34,7 +34,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
     try {
-        const response = await fetch("/api/users/login/", {
+        const response = await fetch("users/login/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

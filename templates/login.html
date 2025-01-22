@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - LuminoLearn</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body>
     <div class="login-container">
         <h1>Welcome Back!</h1>
-        <form id="loginForm">
+        <form action="{% url 'login' %}" method="POST" id="loginForm">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" placeholder="Enter your email" required>
@@ -23,6 +25,6 @@
         </form>
         <p>Don't have an account? <a href="/register/">Register here</a>.</p>
     </div>
-    <script src="{% static 'js/login.js' %}"></script>
+    <!--  <script src="{% static 'js/login.js' %}"></script> -->
 </body>
 </html>

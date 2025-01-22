@@ -6,13 +6,14 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class CustomUser(AbstractUser):
+    
     ROLE_CHOICES = (
         ('student', 'Student'),
         ('educator', 'Educator'),
         ('admin', 'Admin'),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
-    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    #profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
 
     def __str__(self):
         return self.username
@@ -26,9 +27,11 @@ class UserProfile(models.Model):
         related_name='profile'
     )
     bio = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    #profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Profile of {self.user.username}"

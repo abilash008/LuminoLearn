@@ -15,17 +15,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
+from users.urls import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("users/", include("users.urls")),
     path('', TemplateView.as_view(template_name="index.html"), name='home'),
-    path('register/', TemplateView.as_view(template_name="register.html"), name='register'),
-    path('login/', TemplateView.as_view(template_name="login.html"), name='login'),
-    path('dashboard/', TemplateView.as_view(template_name="base.html"), name='dashboard'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path("login/", views.login_view, name="login"),
+    path("register/", views.register_view, name="register"),
+    path("student_dashboard/", views.student_dashboard_view, name="student_dashboard"),
+    path("educator_dashboard/", views.educator_dashboard_view, name="educator_dashboard"),
+    path("admin_dashboard/", views.admin_dashboard_view, name="student_dashboard"),
+    path("dashboard/", views.logout_view, name="logout"),
 ]
 
 # For serving static files during development

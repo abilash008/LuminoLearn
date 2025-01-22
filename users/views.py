@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
-import json
+from django.shortcuts import render, redirect
 from .models import CustomUser
+from django.contrib.auth.decorators import login_required
 
 @csrf_exempt
 def login_view(request):
@@ -12,21 +12,22 @@ def login_view(request):
     Handles user login requests.
     """
     if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            email = data.get("email")
-            password = data.get("password")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
             
-            # Authenticate user
-            user = authenticate(request, username=email, password=password)
-            if user:
-                login(request, user)  # Log the user in using Django sessions
-                return JsonResponse({"message": "Login successful", "status": "success"}, status=200)
-            else:
-                return JsonResponse({"message": "Invalid email or password", "status": "error"}, status=401)
-        except json.JSONDecodeError:
-            return JsonResponse({"message": "Invalid JSON data", "status": "error"}, status=400)
-    return JsonResponse({"message": "Invalid request method", "status": "error"}, status=405)
+        # Authenticate user
+        user = authenticate(request, username=email, password=password)
+        if user:
+            login(request, user)  # Log the user in using Django sessions
+            return redirect("dashboard")  # Redirect to the dashboard
+        else:
+            messages.info(request, "Invalid email or password.")
+            return redirect("login")  # Redirect back to login page
+
+    # Handle GET requests to render the login page
+    return render(request, "login.html")  # Render the login template
+
 
 @csrf_exempt
 def register_view(request):
@@ -34,60 +35,45 @@ def register_view(request):
     Handles user registration requests (API-based).
     """
     if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            username = data.get("username")
-            email = data.get("email")
-            role = data.get("role")
-            password = data.get("password")
-            confirm_password = data.get("confirm_password")
-
-            # Validation
-            if not username or not email or not password or not confirm_password:
-                return JsonResponse({"message": "All fields are required", "status": "error"}, status=400)
-            if password != confirm_password:
-                return JsonResponse({"message": "Passwords do not match", "status": "error"}, status=400)
-            if User.objects.filter(username=username).exists():
-                return JsonResponse({"message": "Username already exists", "status": "error"}, status=400)
-            if User.objects.filter(email=email).exists():
-                return JsonResponse({"message": "Email already exists", "status": "error"}, status=400)
-            if not role:
-                return JsonResponse({"message": "Role is required", "status": "error"}, status=400)
-            if role not in ["student", "educator", "admin"]:
-                return JsonResponse({"message": "Invalid role", "status": "error"}, status=400)
-            if CustomUser.objects.filter(username=username).exists():
-                return JsonResponse({"message": "Username already exists", "status": "error"}, status=400)
-            if CustomUser.objects.filter(email=email).exists():
-                return JsonResponse({"message": "Email already exists", "status": "error"}, status=400)
-
-
-            # Create the user
-            user = User.objects.create_user(username=username, email=email, password=password, role=role)
-            user.save()
-            
-            user.profile.role = role  # Assuming a related Profile model
-            user.profile.save()
-            
-            return JsonResponse({"message": "User registered successfully", "status": "success"}, status=201)
-        except json.JSONDecodeError:
-            return JsonResponse({"message": "Invalid JSON data", "status": "error"}, status=400)
-        except Exception as e:
-            return JsonResponse({"message": f"An error occurred: {str(e)}", "status": "error"}, status=500)
-    return JsonResponse({"message": "Invalid request method", "status": "error"}, status=405)
-
-def register_form_view(request):
-    """
-    Handles rendering of the registration form (for web-based frontend).
-    """
-    if request.method == "GET":
-        return render(request, "register.html")  # Ensure "register.html" exists in your templates folder
-    elif request.method == "POST":
-        # If handling form submission (non-API), logic can be added here
-        return JsonResponse({"message": "Form submission not yet implemented"}, status=501)
+        username = request.POST["username"]
+        email = request.POST["email"]
+        role = request.POST["role"]
+        password = request.POST["password"]
+        confirm_password = request.POST["confirm_password"]
+        # Validation
+        if not username or not email or not password or not confirm_password:
+            messages.info(request, "Please fill in all fields.")
+            return redirect("register")
+        if password != confirm_password:
+            messages.info(request, "Passwords do not match.")
+            return redirect("register")
+        if CustomUser.objects.filter(username=username).exists():
+            messages.info(request, "Username already exists.")
+            return redirect("register")
+        if CustomUser.objects.filter(email=email).exists():
+            messages.info(request, "Email already exists.")
+            return redirect("register")
+        if not role:
+            messages.info(request, "Please select a role.")
+            return redirect("register")
+        if role not in ["student", "educator", "admin"]:
+            messages.info(request, "Invalid role")
+            return redirect("register")
 
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+        # Create the user
+        user = User.objects.create_user(username=username, email=email, password=password, role=role)
+        user.save()
+        
+        user.profile.role = role  # Assuming a related Profile model
+        user.profile.save()
+        
+        messages.info(request, "User created successfully")
+        return redirect("login")
+    # Render the registration page for GET requests
+    return render(request, "register.html")
+
+
 
 @login_required
 def dashboard_view(request):
@@ -97,13 +83,13 @@ def dashboard_view(request):
     context = {"user": user, "role": role}
 
     if role == "student":
-        context["message"] = "Welcome to the Student Dashboard!"
+        return render(request,"student_dashboard.html")
     elif role == "educator":
-        context["message"] = "Welcome to the Educator Dashboard!"
+        return render(request,"educator_dashboard.html")
     elif role == "admin":
-        context["message"] = "Welcome to the Admin Dashboard!"
+        return render(request,"admin_dashboard.html")
 
-    return render(request, "dashboard.html", context)
+    #return render(request, "dashboard.html", context)
 
 
 
@@ -123,3 +109,14 @@ def educator_dashboard_view(request):
 @role_required(["admin"])
 def admin_dashboard_view(request):
     return render(request, "admin_dashboard.html")
+
+
+
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+
+@csrf_exempt
+def logout_view(request):
+    if request.method == "POST":
+        logout(request)  # Log the user out
+        return redirect(request,"login.html")

@@ -8,6 +8,7 @@
         "lumino",
         "nnbjm",
         "sqlparse",
+        "startproject",
         "stylesheet",
         "tzdata"
     ]

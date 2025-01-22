@@ -84,12 +84,12 @@ WSGI_APPLICATION = 'lumino_learn.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'lumino_learn',  # Your database name
-        'USER': 'root',  # Replace with your MySQL username
+        'USER': 'postgres',  # Replace with your MySQL username
         'PASSWORD': 'Itsme@bhi143',  # Replace with your MySQL password
-        'HOST': '127.0.0.1',  # Use '127.0.0.1' if localhost doesn't work
-        'PORT': '3306',  # Default MySQL port
+        'HOST': 'localhost',  # Use '127.0.0.1' if localhost doesn't work
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 
