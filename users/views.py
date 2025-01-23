@@ -84,24 +84,6 @@ def register_view(request):
 
 
 
-@login_required
-def dashboard_view(request):
-    user = request.user  # Get the logged-in user
-    role = user.role  # Get the role of the user from CustomUser
-
-    context = {"user": user, "role": role}
-
-    if role == "student":
-        return render(request,"student_dashboard.html")
-    elif role == "educator":
-        return render(request,"educator_dashboard.html")
-    elif role == "admin":
-        return render(request,"admin_dashboard.html")
-
-    #return render(request, "dashboard.html", context)
-
-
-
 from .decorators import role_required
 
 @login_required
