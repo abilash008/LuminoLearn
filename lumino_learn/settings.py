@@ -57,6 +57,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'users.auth_backends.EmailAuthBackend',  # Custom email backend
+    'django.contrib.auth.backends.ModelBackend',  # Default username backend
+]
+
+
+
 ROOT_URLCONF = 'lumino_learn.urls'
 
 TEMPLATES = [
@@ -86,8 +93,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'lumino_learn',  # Your database name
-        'USER': 'postgres',  # Replace with your MySQL username
-        'PASSWORD': 'Itsme@bhi143',  # Replace with your MySQL password
+        'USER': 'postgres',  # Replace with your PostgreSQL username
+        'PASSWORD': 'Itsme@bhi143',  # Replace with your PostgreSQL password
         'HOST': 'localhost',  # Use '127.0.0.1' if localhost doesn't work
         'PORT': '5432',  # Default PostgreSQL port
     }

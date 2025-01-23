@@ -29,8 +29,8 @@ urlpatterns = [
     path("register/", views.register_view, name="register"),
     path("student_dashboard/", views.student_dashboard_view, name="student_dashboard"),
     path("educator_dashboard/", views.educator_dashboard_view, name="educator_dashboard"),
-    path("admin_dashboard/", views.admin_dashboard_view, name="student_dashboard"),
-    path("dashboard/", views.logout_view, name="logout"),
+    path("admin_dashboard/", views.admin_dashboard_view, name="admin_dashboard"),
+    path("login/", views.logout_view, name="logout"),
 ]
 
 # For serving static files during development

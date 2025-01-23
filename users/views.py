@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -12,18 +12,28 @@ def login_view(request):
     Handles user login requests.
     """
     if request.method == "POST":
-        email = request.POST.get("email")
+        username = request.POST.get("username")
         password = request.POST.get("password")
 
-            
+        if not username or not password:
+            messages.error(request, "Please enter both email and password.")
+            return redirect("login")  # Redirect back to the login page
+
         # Authenticate user
-        user = authenticate(request, username=email, password=password)
+        user = authenticate(request, username=username, password=password)  # Using `username` as email by default
         if user:
             login(request, user)  # Log the user in using Django sessions
-            return redirect("dashboard")  # Redirect to the dashboard
+
+            # Redirect based on role
+            if user.role == "student":
+                return redirect("student_dashboard")
+            elif user.role == "educator":
+                return redirect("educator_dashboard")
+            elif user.role == "admin":
+                return redirect("admin_dashboard")
         else:
-            messages.info(request, "Invalid email or password.")
-            return redirect("login")  # Redirect back to login page
+            messages.error(request, "Invalid email or password.")
+            return redirect("login")  # Redirect back to the login page
 
     # Handle GET requests to render the login page
     return render(request, "login.html")  # Render the login template
@@ -31,9 +41,7 @@ def login_view(request):
 
 @csrf_exempt
 def register_view(request):
-    """
-    Handles user registration requests (API-based).
-    """
+    User = get_user_model()
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
@@ -47,10 +55,10 @@ def register_view(request):
         if password != confirm_password:
             messages.info(request, "Passwords do not match.")
             return redirect("register")
-        if CustomUser.objects.filter(username=username).exists():
+        if User.objects.filter(username=username).exists():
             messages.info(request, "Username already exists.")
             return redirect("register")
-        if CustomUser.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists():
             messages.info(request, "Email already exists.")
             return redirect("register")
         if not role:
@@ -65,11 +73,12 @@ def register_view(request):
         user = User.objects.create_user(username=username, email=email, password=password, role=role)
         user.save()
         
-        user.profile.role = role  # Assuming a related Profile model
-        user.profile.save()
+        user.role = role  # Assuming a related Profile model
+        user.save()
         
         messages.info(request, "User created successfully")
         return redirect("login")
+    
     # Render the registration page for GET requests
     return render(request, "register.html")
 

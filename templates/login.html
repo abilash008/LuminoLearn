@@ -14,12 +14,17 @@
         <form action="{% url 'login' %}" method="POST" id="loginForm">
             {% csrf_token %}
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <label for="username">Username</label>
+                <input type="text" id="email" name="username" placeholder="Enter your username" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <div>
+                {% for message in messages %}
+            <h4>  {{ message }}  </h4>
+                {% endfor %}
             </div>
             <button type="submit" class="btn">Login</button>
         </form>
