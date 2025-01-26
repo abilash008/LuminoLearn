@@ -1,0 +1,19 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Manage Courses{% endblock %}
+
+{% block content %}
+<h1>Manage Courses</h1>
+<ul>
+    {% for course in courses %}
+    <div>
+        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
+        <strong>{{ course.title }}</strong> <br>
+        {{ course.description }}  <br>
+        <a href="#">Edit</a>
+        <a href="#">Delete</a>
+    </div>
+    {% endfor %}
+</ul>
+{% endblock %}

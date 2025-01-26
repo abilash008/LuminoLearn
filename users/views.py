@@ -16,7 +16,7 @@ def login_view(request):
         password = request.POST.get("password")
 
         if not username or not password:
-            messages.error(request, "Please enter both email and password.")
+            messages.error(request, "Please enter both username and password.")
             return redirect("login")  # Redirect back to the login page
 
         # Authenticate user
@@ -32,7 +32,7 @@ def login_view(request):
             elif user.role == "admin":
                 return redirect("admin_dashboard")
         else:
-            messages.error(request, "Invalid email or password.")
+            messages.error(request, "Invalid username or password.")
             return redirect("login")  # Redirect back to the login page
 
     # Handle GET requests to render the login page
@@ -86,15 +86,13 @@ def register_view(request):
 
 from .decorators import role_required
 
+
+
 @login_required
 @role_required(["student"])
 def student_dashboard_view(request):
     return render(request, "student_dashboard.html")
 
-@login_required
-@role_required(["educator"])
-def educator_dashboard_view(request):
-    return render(request, "educator_dashboard.html")
 
 @login_required
 @role_required(["admin"])
@@ -111,3 +109,8 @@ def logout_view(request):
     if request.method == "POST":
         logout(request)  # Log the user out
         return redirect(request,"login.html")
+    
+@csrf_exempt
+def explore_view(request):
+    # Logic to redirect to the registration page
+    return redirect('register') 

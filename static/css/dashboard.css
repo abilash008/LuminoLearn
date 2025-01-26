@@ -3,16 +3,18 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f7f8fa;
-    color: #333;
+    box-sizing: border-box;
+    background-color: #000; /* Black background */
+    color: #fff; /* White text */
 }
 
 /* Header */
 header {
-    background-color: #2d89ef; /* Blue shade for consistency */
+    background: linear-gradient(135deg, #0f0f0f, #222); /* Subtle gradient */
     color: white;
-    padding: 10px 20px;
+    padding: 15px 20px;
     text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 255, 255, 0.2);
 }
 
 header nav ul {
@@ -21,74 +23,77 @@ header nav ul {
     padding: 0;
     display: flex;
     justify-content: center;
+    gap: 20px;
 }
 
 header nav ul li {
-    margin: 0 15px;
+    margin: 0;
 }
 
 header nav ul li a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
 }
 
 header nav ul li a:hover {
-    text-decoration: underline;
+    color: #00ffff; /* Cyan hover effect */
+    text-shadow: 0 0 10px #00ffff;
 }
 
 /* Dashboard Main Section */
 main {
     max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 30px auto;
+    padding: 30px;
+    background: #111; /* Slightly lighter black */
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 255, 255, 0.2), 0 4px 10px rgba(255, 255, 255, 0.1);
+    text-align: center;
 }
 
 main h1 {
-    font-size: 2.5em;
-    color: #333;
-    text-align: center;
+    font-size: 3rem;
+    color: #00ffff; /* Cyan heading */
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
     margin-bottom: 20px;
 }
 
 main p {
-    font-size: 1.2em;
-    margin: 10px 0;
-    text-align: center;
-    color: #555;
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 20px;
 }
 
 /* Dashboard Actions */
 .dashboard-actions {
     display: flex;
     justify-content: space-evenly;
+    flex-wrap: wrap;
     margin-top: 20px;
+    gap: 20px;
 }
 
 .dashboard-actions a {
     display: inline-block;
-    padding: 15px 20px;
-    margin: 10px;
-    background-color: #2d89ef;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #00adb5, #007b7f); /* Gradient for buttons */
     color: white;
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 8px;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 1.2rem;
     text-align: center;
-    width: 200px;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
 }
 
 .dashboard-actions a:hover {
-    background-color: #2062c5;
-    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
+    background: #00b3b3; /* Vibrant cyan */
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 255, 255, 0.5);
 }
 
 /* Cards for Dashboard */
@@ -96,56 +101,62 @@ main p {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    margin-top: 20px;
+    gap: 20px;
+    margin-top: 30px;
 }
 
 .dashboard-card {
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin: 15px;
+    background: #0f0f0f; /* Dark card background */
+    border-radius: 12px;
     padding: 20px;
-    width: 300px;
+    width: 280px;
     text-align: center;
-    transition: transform 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0, 255, 255, 0.2), 0 4px 10px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4), 0 6px 15px rgba(255, 255, 255, 0.2);
 }
 
 .dashboard-card h3 {
-    font-size: 1.5em;
-    color: #333;
+    font-size: 1.8rem;
+    color: #fff;
     margin-bottom: 10px;
+    text-shadow: 0 0 10px #00ffff;
 }
 
 .dashboard-card p {
-    font-size: 1em;
-    color: #555;
+    font-size: 1rem;
+    color: #bbb;
+    margin-bottom: 15px;
 }
 
 .dashboard-card a {
     display: inline-block;
-    margin-top: 10px;
-    padding: 10px 15px;
-    background-color: #4CAF50;
-    color: white;
+    padding: 10px 20px;
+    background-color: #ff5722; /* Bright orange button */
+    color: #fff;
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 8px;
     font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 10px rgba(255, 87, 34, 0.4);
 }
 
 .dashboard-card a:hover {
-    background-color: #3e8e41;
+    background-color: #e64a19;
+    box-shadow: 0 8px 15px rgba(255, 87, 34, 0.6);
 }
 
 /* Footer */
 footer {
-    background-color: #333;
+    background: linear-gradient(135deg, #111, #222); /* Subtle gradient */
     color: white;
     text-align: center;
-    padding: 10px 0;
+    padding: 15px 0;
     margin-top: 40px;
+    box-shadow: 0 -4px 15px rgba(0, 255, 255, 0.2);
+    font-size: 1rem;
 }

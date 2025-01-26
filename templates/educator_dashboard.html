@@ -7,21 +7,45 @@
 <p>Welcome, {{ user.username }}! Manage your courses and assignments here:</p>
 
 <div class="dashboard-actions">
-    <a href="#">Manage Courses</a>
-    <a href="#">Create Assignments</a>
-    <a href="#">Review Submissions</a>
+    <a href="{% url 'create_course' %}">Create Course</a>
+    <a href="{% url 'manage_courses' %}">Manage Courses</a>
+    {% if submissions.exists %}
+        <h2>Submissions to Grade</h2>
+        <ul>
+            {% for submission in submissions %}
+                <li>
+                    Submission by {{ submission.student.username }} for 
+                    {{ submission.assignment.title }}
+                    - <a href="{% url 'grade_submission' submission.id %}">Grade Now</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <a>No submissions</a>
+    {% endif %}
 </div>
 
 <div class="dashboard-cards">
     <div class="dashboard-card">
         <h3>Create Assignments</h3>
         <p>Design quizzes and assignments for your students.</p>
-        <a href="#">Create Now</a>
+        {% if courses %}
+            <ul>
+                {% for course in courses %}
+                    <li><br>
+                        {{ course.title }} - <br><br>
+                        <a href="{% url 'create_assignment' course.id %}">Create Now</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You haven't created any courses yet. <a href="{% url 'create_course' %}">Create one now!</a></p>
+        {% endif %}
     </div>
     <div class="dashboard-card">
         <h3>Student Submissions</h3>
         <p>Review and grade student assignments.</p>
-        <a href="#">Review Submissions</a>
+        <a href="{% url 'educator_dashboard' %}">Back to Dashboard</a>
     </div>
 </div>
 {% endblock %}

@@ -144,7 +144,13 @@ TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
+MEDIA_URL = '/courses/'  # URL prefix for media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'courses/course_thumbnails')  # Directory to store uploaded media
+
+
+
 AUTH_USER_MODEL = 'users.CustomUser'
+'''
 LOGIN_REDIRECT_URL = '/users/dashboard/'
 LOGOUT_REDIRECT_URL = '/users/login/'  # Optional logout redirect
-
+'''

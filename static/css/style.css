@@ -4,73 +4,98 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background-color: #000; /* Black background */
+    color: #fff; /* White text */
 }
 
-  /* Hero Section */
+/* Hero Section */
 .hero {
-    /*background: url('../assets/hero-bg.jpg') no-repeat center center/cover; */
-    color: white;
     text-align: center;
     padding: 100px 20px;
+    background: linear-gradient(135deg, #0f0f0f, #222); /* Subtle gradient background */
 }
 
 .hero h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
-}  
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    color: #0ff; /* Cyan text */
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; /* Neon glow effect */
+}
+
 .hero p {
     font-size: 1.5rem;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    color: #ccc;
 }
 
-.hero button {
-    background-color: #28a745;
-    color: white;
-    padding: 10px 20px;
+.hero a {
+    background-color: #00cccc; /* Vibrant cyan button */
+    color: #000; /* Black text for contrast */
+    padding: 15px 30px;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 1.2rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 255, 255, 0.5);
 }
 
-.hero button:hover {
-    background-color: #218838;
+.hero a:hover {
+    background-color: #00b3b3;
+    box-shadow: 0 6px 15px rgba(0, 255, 255, 0.8);
+    transform: translateY(-2px);
 }
 
-  /* Features Section */
+/* Features Section */
 .features {
     text-align: center;
     padding: 50px 20px;
+    background-color: #111; /* Slightly lighter black for contrast */
 }
 
 .features h2 {
-    font-size: 2rem;
-    margin-bottom: 30px;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #0ff; /* Cyan text */
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
 }
 
 .feature-list {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap; /* Ensure responsiveness */
     gap: 20px;
 }
 
 .feature {
     width: 250px;
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #f9f9f9;
+    border-radius: 12px;
+    background: #0f0f0f; /* Dark card background */
+    box-shadow: 0 4px 10px rgba(0, 255, 255, 0.2), 0 2px 5px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 255, 255, 0.5), 0 4px 10px rgba(255, 255, 255, 0.3);
 }
 
 .feature .icon {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: #0ff;
 }
 
 .feature h3 {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     margin-bottom: 10px;
+    color: #fff;
 }
 
 .feature p {
-    color: #555;
+    color: #bbb; /* Lighter text for better readability */
+    font-size: 1rem;
 }

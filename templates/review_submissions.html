@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Review Submissions{% endblock %}
+
+{% block content %}
+<h1>Review Submissions</h1>
+<table>
+    <tr>
+        <th>Student</th>
+        <th>Assignment</th>
+        <th>Submitted At</th>
+        <th>Grade</th>
+    </tr>
+    {% for submission in submissions %}
+    <tr>
+        <td>{{ submission.user.username }}</td>
+        <td>{{ submission.assignment.title }}</td>
+        <td>{{ submission.submitted_at }}</td>
+        <td>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="text" name="grade" value="{{ submission.grade }}">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

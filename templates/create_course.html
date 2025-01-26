@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Course{% endblock %}
+
+{% block content %}
+<h1>Create Course</h1>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="title">Course Title:</label>
+    <input type="text" id="title" name="title" required>
+
+    <label for="description">Course Description:</label>
+    <textarea id="description" name="description" required></textarea>
+
+    <label for="thumbnail">Thumbnail:</label>
+    <input type="file" id="thumbnail" name="thumbnail" required>
+
+    <button type="submit">Create Course</button>
+</form>
+{% endblock %}

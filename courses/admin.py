@@ -6,7 +6,7 @@ from .models import Course, Assignment, Submission
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'educator', 'created_at')
+    list_display = ('title', 'educator', 'created_at', 'updated_at')
     search_fields = ('title', 'educator__username')
     list_filter = ('created_at',)
 
@@ -17,6 +17,6 @@ class AssignmentAdmin(admin.ModelAdmin):
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ('assignment', 'student', 'status', 'submitted_at')
-    list_filter = ('status', 'submitted_at')
+    list_display = ('assignment', 'student', 'status', 'submitted_at', 'grade')
+    list_filter = ('status', 'submitted_at', 'grade')
     search_fields = ('assignment__title', 'student__username')
