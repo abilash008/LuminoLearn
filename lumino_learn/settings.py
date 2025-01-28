@@ -26,7 +26,7 @@ SECRET_KEY = 'a1f20@-1!nnbjm%ywa!g(!zf(70fh0a5d7g1ywn-k&f6+3dg1+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['luminolearn.onrender.com']
+ALLOWED_HOSTS = ['luminolearn.onrender.com','127.0.0.1']
 
 
 # Application definition
@@ -54,8 +54,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', 
 ]
 
 AUTHENTICATION_BACKENDS = [
