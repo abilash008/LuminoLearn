@@ -8,16 +8,20 @@
         "endfor",
         "gamification",
         "gunicorn",
+        "Hozx",
         "Itsme",
         "lumino",
         "luminolearn",
         "nnbjm",
         "onrender",
+        "postgre",
         "psycopg",
+        "RXBS",
         "sqlparse",
         "startproject",
         "stylesheet",
         "tzdata",
+        "utmub",
         "wsgi"
     ]
 }
