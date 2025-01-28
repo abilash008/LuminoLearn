@@ -100,6 +100,7 @@ WSGI_APPLICATION = 'lumino_learn.wsgi.application'
 #     }
 # }
 
+import dj_database_url
 
 DATABASES = {
     'default': {
@@ -109,14 +110,10 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD', 'Itsme@bhi143'),  # Render DB Password
         'HOST': os.getenv('DB_HOST', 'localhost'),  # Render DB Host
         'PORT': os.getenv('DB_PORT', '5432'),  # Render DB Port
+        'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
     }
 }
 
-import dj_database_url
-
-DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
