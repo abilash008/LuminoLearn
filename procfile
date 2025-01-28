@@ -1,1 +1,1 @@
-web: gunicorn lumino_learn.wsgi:application
+web: waitress lumino_learn.wsgi:application
