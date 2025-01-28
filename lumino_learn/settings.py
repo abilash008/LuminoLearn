@@ -26,7 +26,7 @@ SECRET_KEY = 'a1f20@-1!nnbjm%ywa!g(!zf(70fh0a5d7g1ywn-k&f6+3dg1+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['luminolearn.onrender.com']
 
 
 # Application definition
