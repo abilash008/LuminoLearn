@@ -2,16 +2,19 @@
     "cSpell.words": [
         "ASGI",
         "asgiref",
+        "djangorestframework",
         "elif",
         "enctype",
         "endfor",
         "gamification",
+        "gunicorn",
         "Itsme",
         "lumino",
         "nnbjm",
         "sqlparse",
         "startproject",
         "stylesheet",
-        "tzdata"
+        "tzdata",
+        "wsgi"
     ]
 }
