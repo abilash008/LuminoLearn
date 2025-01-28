@@ -112,14 +112,6 @@ DATABASES = {
     }
 }
 
-import dj_database_url
-
-DATABASE_URL = "postgresql://postgre:utmubZvBHozxGUU3RXBS6426iUVB9v95@dpg-cuc7t3ij1k6c73b679i0-a/lumino_learn"
-
-DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
-}
-
 
 
 # Password validation
