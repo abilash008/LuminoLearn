@@ -89,14 +89,26 @@ WSGI_APPLICATION = 'lumino_learn.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'lumino_learn',  # Your database name
+#         'USER': 'postgres',  # Replace with your PostgreSQL username
+#         'PASSWORD': 'Itsme@bhi143',  # Replace with your PostgreSQL password
+#         'HOST': 'localhost',  # Use '127.0.0.1' if localhost doesn't work
+#         'PORT': '5432',  # Default PostgreSQL port
+#     }
+# }
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'lumino_learn',  # Your database name
-        'USER': 'postgres',  # Replace with your PostgreSQL username
-        'PASSWORD': 'Itsme@bhi143',  # Replace with your PostgreSQL password
-        'HOST': 'localhost',  # Use '127.0.0.1' if localhost doesn't work
-        'PORT': '5432',  # Default PostgreSQL port
+        'NAME': os.getenv('DB_NAME', 'lumino_learn'),  # Render DB Name
+        'USER': os.getenv('DB_USER', 'postgres'),  # Render DB User
+        'PASSWORD': os.getenv('DB_PASSWORD', 'Itsme@bhi143'),  # Render DB Password
+        'HOST': os.getenv('DB_HOST', 'localhost'),  # Render DB Host
+        'PORT': os.getenv('DB_PORT', '5432'),  # Render DB Port
     }
 }
 
