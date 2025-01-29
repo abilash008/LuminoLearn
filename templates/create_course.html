@@ -1,20 +1,58 @@
 {% extends 'base.html' %}
-
-{% block title %}Create Course{% endblock %}
+{% load static %}
 
 {% block content %}
-<h1>Create Course</h1>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <label for="title">Course Title:</label>
-    <input type="text" id="title" name="title" required>
+<main class="cyber-container">
+    <h1 class="neon-heading">Create New Course</h1>
+    
+    <form class="cyber-form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="neon-label">Course Title</label>
+            <input type="text" 
+                class="cyber-input" 
+                id="title" 
+                name="title" 
+                required
+                placeholder="Enter course title..."
+                autofocus>
+        </div>
 
-    <label for="description">Course Description:</label>
-    <textarea id="description" name="description" required></textarea>
+        <div class="form-group">
+            <label class="neon-label">Course Description</label>
+            <textarea class="cyber-textarea" 
+                    id="description" 
+                    name="description" 
+                    rows="5"
+                    required
+                    placeholder="Describe your course..."></textarea>
+        </div>
 
-    <label for="thumbnail">Thumbnail:</label>
-    <input type="file" id="thumbnail" name="thumbnail" required>
+        <div class="form-group">
+            <label class="neon-label">Course Thumbnail</label>
+            <div class="file-upload-wrapper">
+                <input type="file" 
+                    class="cyber-file-input" 
+                    id="thumbnail" 
+                    name="thumbnail"
+                    required>
+                <label for="thumbnail" class="file-upload-label">
+                    <i class="fas fa-cloud-upload-alt"></i> Choose Thumbnail
+                </label>
+                <span class="file-name" id="file-name">No file selected</span>
+            </div>
+            <div class="thumbnail-preview" id="thumbnail-preview"></div>
+        </div>
 
-    <button type="submit">Create Course</button>
-</form>
+        <div class="form-actions">
+            <button type="submit" class="gradient-btn-cyan">
+                <i class="fas fa-rocket"></i> Launch Course
+            </button>
+            <a href="{% url 'manage_courses' %}" class="gradient-btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</main>
 {% endblock %}

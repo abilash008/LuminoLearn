@@ -157,8 +157,8 @@ TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
-MEDIA_URL = '/courses/'  # URL prefix for media files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'courses/course_thumbnails')  # Directory to store uploaded media
+MEDIA_URL = '/media/'  # URL prefix for media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory to store uploaded media
 
 
 

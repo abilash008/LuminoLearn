@@ -2,6 +2,11 @@
     "cSpell.words": [
         "ASGI",
         "asgiref",
+        "autofocus",
+        "checkmark",
+        "classgradient",
+        "cpath",
+        "csvg",
         "djangorestframework",
         "elif",
         "enctype",
@@ -20,6 +25,7 @@
         "sqlparse",
         "startproject",
         "stylesheet",
+        "truncatechars",
         "tzdata",
         "utmub",
         "wsgi"

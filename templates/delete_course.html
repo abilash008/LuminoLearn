@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="delete-confirmation-container">
+    <h1 class="neon-heading-danger">Delete Course</h1>
+    
+    <div class="cyber-alert">
+        <div class="alert-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Confirm Deletion</h3>
+            <p>You're about to permanently delete:<br>
+            <span class="glowing-text">{{ course.title }}</span></p>
+        </div>
+
+        <form method="post" class="confirmation-form">
+            {% csrf_token %}
+            <div class="confirmation-actions">
+                <button type="submit" class="gradient-btn-red">
+                    <i class="fas fa-skull-crossbones"></i> Confirm Delete
+                </button>
+                <a href="{% url 'manage_courses' %}" class="gradient-btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+
+    {% if course.thumbnail %}
+    <div class="final-preview">
+        <img src="{{ course.thumbnail.url }}" 
+            alt="Course thumbnail"
+            class="thumbnail-preview-final">
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

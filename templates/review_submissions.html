@@ -1,29 +1,55 @@
 {% extends 'base.html' %}
-
-{% block title %}Review Submissions{% endblock %}
+{% load static %}
 
 {% block content %}
-<h1>Review Submissions</h1>
-<table>
-    <tr>
-        <th>Student</th>
-        <th>Assignment</th>
-        <th>Submitted At</th>
-        <th>Grade</th>
-    </tr>
-    {% for submission in submissions %}
-    <tr>
-        <td>{{ submission.user.username }}</td>
-        <td>{{ submission.assignment.title }}</td>
-        <td>{{ submission.submitted_at }}</td>
-        <td>
-            <form method="POST">
-                {% csrf_token %}
-                <input type="text" name="grade" value="{{ submission.grade }}">
-                <button type="submit">Update</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+<main class="cyber-container">
+    <h1 class="neon-heading">Review Submissions</h1>
+    
+    <div class="cyber-table">
+        <div class="table-header">
+            <div class="th">Student</div>
+            <div class="th">Assignment</div>
+            <div class="th">Submitted At</div>
+            <div class="th">Grade</div>
+            <div class="th">Actions</div>
+        </div>
+
+        {% for submission in submissions %}
+        <div class="table-row">
+            <div class="td">
+                <i class="fas fa-user"></i>
+                {{ submission.user.username }}
+            </div>
+            <div class="td">
+                {{ submission.assignment.title }}
+            </div>
+            <div class="td">
+                <i class="fas fa-clock"></i>
+                {{ submission.submitted_at|date:"M d, Y H:i" }}
+            </div>
+            <div class="td">
+                <form class="grade-form" method="POST">
+                    {% csrf_token %}
+                    <input type="number"
+                        class="cyber-input grade-input"
+                        name="grade"
+                        value="{{ submission.grade|default:0 }}"
+                        min="0"
+                        max="100">
+            </div>
+            <div class="td">
+                    <button type="submit" class="gradient-btn-green">
+                        <i class="fas fa-sync-alt"></i> Update
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>No submissions found</p>
+        </div>
+        {% endfor %}
+    </div>
+</main>
 {% endblock %}

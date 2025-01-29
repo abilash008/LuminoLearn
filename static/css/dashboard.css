@@ -153,10 +153,645 @@ main p {
 /* Footer */
 footer {
     background: linear-gradient(135deg, #111, #222); /* Subtle gradient */
-    color: white;
+    color: #00ffff;
     text-align: center;
     padding: 15px 0;
     margin-top: 40px;
     box-shadow: 0 -4px 15px rgba(0, 255, 255, 0.2);
     font-size: 1rem;
+}
+
+/* Manage Courses Stylings */
+/* ===== Manage Courses Styles ===== */
+.manage-courses-container {
+    padding: 2rem;
+    background: #0a0a0a;
+    border: 1px solid #00ffff33;
+    border-radius: 12px;
+}
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.course-card {
+    background: #111;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #00ffff33;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px #00ffff33;
+}
+
+.course-thumbnail {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 2px solid #00ffff;
+}
+
+.thumbnail-placeholder {
+    height: 200px;
+    background: #0f0f0f;
+    display: grid;
+    place-items: center;
+    color: #00ffff;
+    font-size: 3rem;
+}
+
+.course-info {
+    padding: 1.5rem;
+}
+
+.course-title {
+    color: #00ffff;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.course-description {
+    color: #aaa;
+    line-height: 1.6;
+    min-height: 60px;
+}
+
+.course-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 0.8rem;
+    text-align: center;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.edit-btn {
+    background: linear-gradient(135deg, #00adb5, #007b7f);
+    color: white;
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: white;
+}
+
+.action-btn:hover {
+    filter: brightness(1.2);
+    transform: translateY(-2px);
+}
+
+/* ===== Edit Course Styles ===== */
+.cyber-form {
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.neon-label {
+    display: block;
+    color: #00ffff;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.cyber-input, .cyber-textarea {
+    width: 100%;
+    padding: 0.8rem;
+    background: #0f0f0f;
+    border: 1px solid #00ffff33;
+    color: white;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.cyber-input:focus, .cyber-textarea:focus {
+    border-color: #00ffff;
+    box-shadow: 0 0 15px #00ffff33;
+}
+
+.file-upload-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.cyber-file-input {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+.file-upload-label {
+    display: block;
+    padding: 1rem;
+    background: #0f0f0f;
+    border: 2px dashed #00ffff33;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-upload-label:hover {
+    border-color: #00ffff;
+    background: #00ffff11;
+}
+
+.current-thumbnail {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.thumbnail-preview {
+    max-width: 200px;
+    border: 2px solid #00ffff;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+/* ===== Delete Confirmation Styles ===== */
+.delete-confirmation-container {
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.cyber-alert {
+    background: #1a0000;
+    border: 1px solid #ff000033;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.neon-heading-danger {
+    color: #ff0000;
+    text-shadow: 0 0 10px #ff0000;
+}
+
+.gradient-btn-red {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.gradient-btn-red:hover {
+    filter: brightness(1.2);
+    box-shadow: 0 0 20px #ff000033;
+}
+
+.thumbnail-preview-final {
+    max-width: 300px;
+    margin: 2rem auto;
+    border: 2px solid #ff0000;
+    border-radius: 8px;
+}
+
+/* ===== Common Components ===== */
+.gradient-btn-cyan {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #00adb5, #007b7f);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.gradient-btn-cyan:hover {
+    filter: brightness(1.2);
+    box-shadow: 0 0 20px #00ffff33;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem;
+    color: #666;
+}
+
+.glowing-text {
+    text-shadow: 0 0 10px #00ffff;
+}
+
+/* ===== Cyber Form Elements ===== */
+.cyber-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #0a0a0a;
+    border-radius: 12px;
+    border: 1px solid #00ffff33;
+}
+
+.cyber-form {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.cyber-select {
+    width: 100%;
+    padding: 0.8rem;
+    background: #0f0f0f;
+    border: 1px solid #00ffff33;
+    color: white;
+    border-radius: 6px;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300ffff'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1rem;
+}
+
+/* ===== Cyber Table ===== */
+.cyber-table {
+    background: #0f0f0f;
+    border-radius: 8px;
+    border: 1px solid #00ffff33;
+    overflow: hidden;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    background: #00ffff11;
+    padding: 1rem;
+    border-bottom: 2px solid #00ffff;
+}
+
+.th {
+    color: #00ffff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 1rem;
+    border-bottom: 1px solid #00ffff33;
+    transition: all 0.3s ease;
+}
+
+.table-row:hover {
+    background: #00ffff09;
+}
+
+.td {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    color: #ccc;
+}
+
+.grade-form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.grade-input {
+    width: 80px;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+/* ===== New Gradients ===== */
+.gradient-btn-purple {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+}
+
+.gradient-btn-green {
+    background: linear-gradient(135deg, #00b09b, #96c93d);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+/* ===== Checkbox Styling ===== */
+.cyber-checkbox {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    color: #00ffff;
+}
+
+.cyber-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #0f0f0f;
+    border: 2px solid #00ffff;
+    border-radius: 4px;
+}
+
+.cyber-checkbox:hover input ~ .checkmark {
+    background-color: #00ffff11;
+}
+
+.cyber-checkbox input:checked ~ .checkmark {
+    background-color: #00ffff;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid #0f0f0f;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+.cyber-checkbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* ===== Cyber Datetime Picker ===== */
+.datetime-picker {
+    position: relative;
+}
+
+.cyber-datetime {
+    width: 96%;
+    padding: 0.8rem;
+    background: #0f0f0f;
+    border: 1px solid #00ffff33;
+    color: white;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    padding-right: 2.5rem;
+}
+
+.datetime-picker .fa-calendar-alt {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffff;
+    pointer-events: none;
+}
+
+/* Custom datetime picker appearance */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.8);
+    cursor: pointer;
+    padding-left: 100%;
+    opacity: 0;
+}
+
+/* ===== Form Group Animations ===== */
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group:hover .neon-label {
+    text-shadow: 0 0 10px #00ffff;
+}
+
+.cyber-input:focus, 
+.cyber-textarea:focus,
+.cyber-datetime:focus {
+    border-color: #00ffff;
+    box-shadow: 0 0 15px #00ffff33;
+}
+
+/* ===== Cyber Textarea ===== */
+.cyber-textarea {
+    resize: vertical;
+    min-height: 120px;
+    background: linear-gradient(145deg, #0a0a0a, #111);
+    border: 1px solid #00ffff33;
+    padding: 1rem;
+    line-height: 1.6;
+}
+
+/* ===== File Upload Enhancements ===== */
+.file-upload-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.file-name {
+    display: block;
+    color: #00ffff;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.thumbnail-preview {
+    margin-top: 1rem;
+    min-height: 150px;
+    border: 2px dashed #00ffff33;
+    border-radius: 8px;
+    background: #0f0f0f;
+    display: none;
+}
+
+.thumbnail-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+/* ===== Cyber Input Animations ===== */
+.cyber-input {
+    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #0a0a0a, #111);
+}
+
+.cyber-input:focus {
+    box-shadow: 0 0 20px #00ffff33;
+}
+
+/* ===== Textarea Enhancements ===== */
+.cyber-textarea {
+    background: linear-gradient(145deg, #0a0a0a, #111);
+    border: 1px solid #00ffff33;
+    transition: all 0.3s ease;
+}
+
+.cyber-textarea:focus {
+    border-color: #00ffff;
+    box-shadow: 0 0 15px #00ffff33;
+}
+
+/* ===== File Upload Hover Effects ===== */
+.file-upload-label:hover {
+    background: #00ffff11;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px #00ffff33;
+}
+
+/* ===== Preview Animation ===== */
+@keyframes preview-appear {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Assignment Grid ===== */
+.assignment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.cyber-card {
+    background: #0f0f0f;
+    border-radius: 12px;
+    border: 1px solid #00ffff33;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.cyber-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px #00ffff33;
+}
+
+.card-header {
+    border-bottom: 1px solid #00ffff33;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.glowing-text {
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+}
+
+.course-tag {
+    background: #00ffff22;
+    color: #00ffff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.assignment-description {
+    color: #aaa;
+    line-height: 1.6;
+    min-height: 60px;
+}
+
+.assignment-meta {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #888;
+}
+
+.meta-item i {
+    color: #00ffff;
+    width: 20px;
+    text-align: center;
+}
+
+.card-actions {
+    display: flex;
+    gap: 1rem;
+    border-top: 1px solid #00ffff33;
+    padding-top: 1rem;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 0.8rem;
+    text-align: center;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.edit-btn {
+    background: linear-gradient(135deg, #00adb5, #007b7f);
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+}
+
+.action-btn:hover {
+    filter: brightness(1.2);
+    transform: translateY(-2px);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem;
+    grid-column: 1 / -1;
+    color: #666;
+}
+
+/* Course Grid Styling */
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.neon-subheading {
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+    margin: 2rem 0;
+    font-size: 2rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    border: 2px dashed #00ffff33;
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #00ffff;
 }

@@ -9,20 +9,8 @@
 <div class="dashboard-actions">
     <a href="{% url 'create_course' %}">Create Course</a>
     <a href="{% url 'manage_courses' %}">Manage Courses</a>
-    {% if submissions.exists %}
-        <h2>Submissions to Grade</h2>
-        <ul>
-            {% for submission in submissions %}
-                <li>
-                    Submission by {{ submission.student.username }} for 
-                    {{ submission.assignment.title }}
-                    - <a href="{% url 'grade_submission' submission.id %}">Grade Now</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <a>No submissions</a>
-    {% endif %}
+    <a href="{% url 'educator_assignments' %}">View Assignments</a>
+
 </div>
 
 <div class="dashboard-cards">

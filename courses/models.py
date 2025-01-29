@@ -3,12 +3,12 @@
 # Create your models here.
 from django.db import models
 from django.conf import settings
-
+from django.utils import timezone
 
 class Course(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    thumbnail = models.ImageField(upload_to='courses/course_thumbnails/', null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='course_thumbnails/', null=True, blank=True)
     educator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_courses', limit_choices_to={'role': 'educator'})
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -22,6 +22,8 @@ class Assignment(models.Model):
     description = models.TextField()
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='assignments')
     deadline = models.DateTimeField()
+    # created_at = models.DateTimeField(default=timezone.now)
+    # updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.title} - {self.course.title}"
@@ -36,3 +38,18 @@ class Submission(models.Model):
 
     def __str__(self):
         return f"Submission by {self.student.username} for {self.assignment.title}"
+
+
+class Question(models.Model):
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='questions')
+    question_text = models.TextField()
+    question_type = models.CharField(
+        max_length=20,
+        choices=[('short_answer', 'Short Answer'), ('multiple_choice', 'Multiple Choice'), ('code', 'Code-Based')],
+    )
+    points = models.IntegerField(default=0)
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
+    choice_text = models.CharField(max_length=200)
+    is_correct = models.BooleanField(default=False)

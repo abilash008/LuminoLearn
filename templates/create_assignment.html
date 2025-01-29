@@ -1,24 +1,54 @@
 {% extends 'base.html' %}
-
-{% block title %}Create Assignment{% endblock %}
+{% load static %}
 
 {% block content %}
-<h1>Create Assignment for {{ course.title }}</h1>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div>
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required>
-    </div>
-    <div>
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="5" required></textarea>
-    </div>
-    <div>
-        <label for="deadline">Deadline:</label>
-        <input type="datetime-local" id="deadline" name="deadline" required>
-    </div>
-    <button type="submit">Create Assignment</button>
-</form>
-<a href="{% url 'educator_dashboard' %}">Back to Dashboard</a>
+<main class="cyber-container">
+    <h1 class="neon-heading">Create Assignment for <span class="glowing-text">{{ course.title }}</span></h1>
+    
+    <form class="cyber-form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="neon-label">Assignment Title</label>
+            <input type="text" 
+                class="cyber-input" 
+                id="title" 
+                name="title" 
+                required
+                placeholder="Enter assignment title..."
+                autofocus>
+        </div>
+
+        <div class="form-group">
+            <label class="neon-label">Description</label>
+            <textarea class="cyber-textarea" 
+                    id="description" 
+                    name="description" 
+                    rows="5"
+                    required
+                    placeholder="Describe the assignment..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="neon-label">Deadline</label>
+            <div class="datetime-picker">
+                <input type="datetime-local" 
+                    class="cyber-datetime" 
+                    id="deadline" 
+                    name="deadline" 
+                    required>
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="gradient-btn-cyan">
+                <i class="fas fa-rocket"></i> Launch Assignment
+            </button>
+            <a href="{% url 'educator_dashboard' %}" class="gradient-btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</main>
 {% endblock %}
