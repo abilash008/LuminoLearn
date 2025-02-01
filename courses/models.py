@@ -16,6 +16,20 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+class Topic(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='topics')
+    name = models.CharField(max_length=255)
+    content = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+class TopicDiagram(models.Model):
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='diagrams')
+    image = models.ImageField(upload_to='topic_diagrams/')
+
+    def __str__(self):
+        return f"Diagram for {self.topic.name}"
 
 class Assignment(models.Model):
     title = models.CharField(max_length=255)

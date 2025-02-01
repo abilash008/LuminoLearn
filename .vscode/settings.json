@@ -11,6 +11,7 @@
         "elif",
         "enctype",
         "endfor",
+        "forloop",
         "gamification",
         "gunicorn",
         "Hozx",
@@ -28,6 +29,7 @@
         "truncatechars",
         "tzdata",
         "utmub",
+        "widthratio",
         "wsgi"
     ]
 }

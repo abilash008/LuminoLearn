@@ -41,6 +41,7 @@ header nav ul li a {
 header nav ul li a:hover {
     color: #00ffff; /* Cyan hover effect */
     text-shadow: 0 0 10px #00ffff;
+    transition: background-color 0.3s ease, box-shadow 0.6s ease;
 }
 
 /* Dashboard Main Section */
@@ -126,6 +127,12 @@ main p {
     margin-bottom: 10px;
     text-shadow: 0 0 10px #00ffff;
 }
+h3 {
+    font-size: 1.0rem;
+    color: #fff;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px #00ffff;
+}
 
 .dashboard-card p {
     font-size: 1rem;
@@ -136,20 +143,32 @@ main p {
 .dashboard-card a {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #ff5722; /* Bright orange button */
+    background-color: #00ffff; /* Bright orange button */
     color: #fff;
     text-decoration: none;
     border-radius: 8px;
     font-weight: bold;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 5px 10px rgba(255, 87, 34, 0.4);
+    box-shadow: 0 5px 10px rgba(87, 161, 160, 0.4);
 }
 
 .dashboard-card a:hover {
-    background-color: #e64a19;
-    box-shadow: 0 8px 15px rgba(255, 87, 34, 0.6);
+    background-color: #00ffff;
+    box-shadow: 0 8px 15px rgba(137, 184, 188, 0.6);
 }
-
+a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #67b7ae00; /* Bright orange button */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.6s ease;
+}
+a:hover {
+    box-shadow: 0 8px 15px rgba(84, 227, 184, 0.6);
+}
 /* Footer */
 footer {
     background: linear-gradient(135deg, #111, #222); /* Subtle gradient */
@@ -353,6 +372,7 @@ footer {
     filter: brightness(1.2);
     box-shadow: 0 0 20px #ff000033;
 }
+
 
 .thumbnail-preview-final {
     max-width: 300px;
@@ -795,3 +815,4 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     margin-bottom: 1rem;
     color: #00ffff;
 }
+

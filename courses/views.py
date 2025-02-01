@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Course, Assignment, Submission, Question, Choice
+from .models import Course, Topic, TopicDiagram, Assignment, Submission, Question, Choice
 from django.utils.timezone import now
 
 @login_required
@@ -29,16 +29,51 @@ def create_course(request):
         thumbnail = request.FILES.get('thumbnail')
 
         # Create a new course
-        Course.objects.create(
+        course = Course.objects.create(
             title=title,
             description=description,
             thumbnail=thumbnail,
             educator=request.user
         )
+
         messages.success(request, "Course created successfully!")
-        return redirect('educator_dashboard')
+        return redirect('add_topic', course_id=course.id)
 
     return render(request, 'create_course.html')
+
+@login_required
+def add_topic(request, course_id):
+    # Get the course that belongs to the current educator
+    course = get_object_or_404(Course, id=course_id, educator=request.user)
+    
+    if request.method == 'POST':
+        topic_name = request.POST.get('topic_name')
+        topic_content = request.POST.get('topic_content')
+        
+        if not topic_name or not topic_content:
+            messages.error(request, "Topic name and content are required.")
+            return render(request, 'courses/add_topic.html', {'course': course})
+        
+        # Create the topic
+        topic = Topic.objects.create(
+            course=course,
+            name=topic_name,
+            content=topic_content
+        )
+        
+        # Process multiple diagram uploads (if any)
+        diagrams = request.FILES.getlist('topic_diagrams')
+        for diagram in diagrams:
+            TopicDiagram.objects.create(
+                topic=topic,
+                image=diagram
+            )
+        
+        messages.success(request, "Topic added successfully!")
+        # Redirect to educator dashboard or course detail page as needed
+        return redirect('educator_dashboard')
+    
+    return render(request, 'add_topic.html', {'course': course})
 
 @login_required
 def manage_courses(request):
@@ -87,6 +122,18 @@ def create_assignment(request, course_id):
         return redirect('add_questions', assignment_id=assignment.id)
 
     return render(request, 'create_assignment.html', {'course': course})
+
+@login_required
+def select_assignment_course(request):
+    # Ensure the user is an educator
+    if not hasattr(request.user, 'role') or request.user.role != 'educator':
+        messages.error(request, "You do not have permission to create assignments.")
+        return redirect('home')
+
+    # Get all courses created by this educator
+    courses = Course.objects.filter(educator=request.user)
+    return render(request, 'select_assignment_course.html', {'courses': courses})
+
 
 @login_required
 def educator_assignments(request):
@@ -158,6 +205,7 @@ def edit_course(request, course_id):
         id=course_id,
         educator=request.user
     )
+    topics = course.topics.all()
 
     if request.method == 'POST':
         # Update course details
@@ -174,7 +222,7 @@ def edit_course(request, course_id):
         messages.success(request, "Course updated successfully!")
         return redirect('manage_courses')
 
-    return render(request, 'edit_course.html', {'course': course})
+    return render(request, 'edit_course.html', {'course': course, 'topics':topics })
 
 @login_required
 def delete_course(request, course_id):
@@ -199,6 +247,7 @@ def edit_assignment(request, assignment_id):
         id=assignment_id,
         course__educator=request.user
     )
+    questions = assignment.questions.all()
     
     if request.method == 'POST':
         # Handle form submission
@@ -206,11 +255,35 @@ def edit_assignment(request, assignment_id):
         assignment.description = request.POST.get('description')
         assignment.deadline = request.POST.get('deadline')
         assignment.save()
+        
+        for question in questions:
+            q_text = request.POST.get(f'question_text_{question.id}')
+            q_points = request.POST.get(f'question_points_{question.id}')
+            if q_text:
+                question.question_text = q_text
+            if q_points:
+                try:
+                    question.points = int(q_points)
+                except ValueError:
+                    question.points = 0
+            question.save()
+            
+            # Loop through choices for each question (if applicable)
+            for choice in question.choices.all():
+                c_text = request.POST.get(f'choice_text_{choice.id}')
+                # Checkbox values come as 'on' if checked
+                c_is_correct = request.POST.get(f'is_correct_{choice.id}') == 'on'
+                if c_text:
+                    choice.choice_text = c_text
+                choice.is_correct = c_is_correct
+                choice.save()
+        
         messages.success(request, "Assignment updated successfully!")
         return redirect('educator_assignments')
     
     return render(request, 'edit_assignment.html', {
-        'assignment': assignment
+        'assignment': assignment,
+        'questions': questions,
     })
 
 @login_required
@@ -229,3 +302,55 @@ def delete_assignment(request, assignment_id):
     return render(request, 'delete_assignment.html', {
         'assignment': assignment
     })
+    
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Topic, TopicDiagram
+
+@login_required
+def edit_topic(request, topic_id):
+    # Get the topic and ensure the logged-in educator owns the course for this topic.
+    topic = get_object_or_404(Topic, id=topic_id, course__educator=request.user)
+    
+    if request.method == 'POST':
+        # Update topic fields
+        topic.name = request.POST.get('topic_name', topic.name)
+        topic.content = request.POST.get('topic_content', topic.content)
+        topic.save()
+        
+        # Optional: Handle diagram updates (if provided)
+        # For simplicity, this example does not handle diagram deletion or editing.
+        new_diagrams = request.FILES.getlist('topic_diagrams')
+        for diagram in new_diagrams:
+            TopicDiagram.objects.create(
+                topic=topic,
+                image=diagram
+            )
+        
+        messages.success(request, "Topic updated successfully!")
+        # Redirect back to the edit course page for the topic's course
+        return redirect('edit_course', course_id=topic.course.id)
+    
+    context = {
+        'topic': topic,
+    }
+    return render(request, 'edit_topic.html', context)
+
+
+@login_required
+def delete_topic(request, topic_id):
+    # Get topic and verify ownership
+    topic = get_object_or_404(
+        Topic,
+        id=topic_id,
+        course__educator=request.user
+    )
+    
+    if request.method == 'POST':
+        course_id = topic.course.id
+        topic.delete()
+        messages.success(request, "Topic deleted successfully!")
+        return redirect('edit_course', course_id=course_id)
+    
+    return render(request, 'delete_topic.html', {'topic': topic})

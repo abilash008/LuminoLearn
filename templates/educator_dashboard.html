@@ -4,35 +4,32 @@
 
 {% block content %}
 <h1>Educator Dashboard</h1>
-<p>Welcome, {{ user.username }}! Manage your courses and assignments here:</p>
-
-<div class="dashboard-actions">
-    <a href="{% url 'create_course' %}">Create Course</a>
-    <a href="{% url 'manage_courses' %}">Manage Courses</a>
-    <a href="{% url 'educator_assignments' %}">View Assignments</a>
-
-</div>
+<p>Welcome, <h3>{{ user.username }}!</h3><b> Manage your courses and assignments here:</b></p>
 
 <div class="dashboard-cards">
     <div class="dashboard-card">
+        <h3>Create Course</h3>
+        <p>Create a new Course for your students.</p><br>
+        <a href="{% url 'create_course' %}">Create Now</a>
+    </div>
+    <div class="dashboard-card">
+        <h3>Manage Courses</h3>
+        <p>Modify and Delete your Courses.</p><br>
+        <a href="{% url 'manage_courses' %}">Manage Now</a>
+    </div>
+    <div class="dashboard-card">
         <h3>Create Assignments</h3>
         <p>Design quizzes and assignments for your students.</p>
-        {% if courses %}
-            <ul>
-                {% for course in courses %}
-                    <li><br>
-                        {{ course.title }} - <br><br>
-                        <a href="{% url 'create_assignment' course.id %}">Create Now</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>You haven't created any courses yet. <a href="{% url 'create_course' %}">Create one now!</a></p>
-        {% endif %}
+        <a href="{% url 'select_assignment_course' %}">Create Now</a>
+    </div>
+    <div class="dashboard-card">
+        <h3>Manage Assignments</h3>
+        <p>Modify and Delete your Assignments.</p><br>
+        <a href="{% url 'educator_assignments' %}">Manage Now</a>
     </div>
     <div class="dashboard-card">
         <h3>Student Submissions</h3>
-        <p>Review and grade student assignments.</p>
+        <p>Review and grade student assignments.</p><br>
         <a href="{% url 'review_submissions' %}">Review Submissions</a>
     </div>
 </div>
