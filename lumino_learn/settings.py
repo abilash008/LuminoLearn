@@ -28,6 +28,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['luminolearn.onrender.com','127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://luninolden.onreader.com',
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+
+CSRF_COOKIE_SECURE = True  # For HTTPS
+SESSION_COOKIE_SECURE = True  # For HTTPS
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
 # Application definition
 
