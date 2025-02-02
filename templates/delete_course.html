@@ -13,7 +13,7 @@
             <span class="glowing-text">{{ course.title }}</span></p>
         </div>
 
-        <form method="post" class="confirmation-form" action="{% url 'delete_course' %}">
+        <form method="post" class="confirmation-form" action="{% url 'delete_course' course.id %}">
             {% csrf_token %}
             <div class="confirmation-actions">
                 <button type="submit" class="gradient-btn-red">
