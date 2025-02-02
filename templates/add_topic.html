@@ -7,7 +7,7 @@
 <main class="cyber-container">
     <h1 class="neon-heading">Add Topic to: <span class="glowing-text">{{ course.title }}</span></h1>
     
-    <form class="cyber-form" method="POST" enctype="multipart/form-data">
+    <form class="cyber-form" method="POST" enctype="multipart/form-data" action="{% url 'add_topic' %}">
         {% csrf_token %}
         
         <div class="form-group">
@@ -35,9 +35,14 @@
             <button type="submit" class="gradient-btn-cyan">
                 <i class="fas fa-rocket"></i> Save Topic
             </button>
+            <a href="{% url 'manage_courses' %}" class="gradient-btn-secondary">
+                <i class="fas fa-times"></i> Later
+            </a>
+            <!--
             <a href="{% url 'edit_course' course.id %}" class="gradient-btn-secondary">
                 <i class="fas fa-times"></i> Cancel
             </a>
+            -->
         </div>
     </form>
 </main>

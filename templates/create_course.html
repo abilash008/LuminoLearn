@@ -5,7 +5,7 @@
 <main class="cyber-container">
     <h1 class="neon-heading">Create New Course</h1>
     
-    <form class="cyber-form" method="POST" enctype="multipart/form-data">
+    <form class="cyber-form" method="POST" enctype="multipart/form-data" action="{% url 'create_course' %}">
         {% csrf_token %}
         
         <!-- Course Fields -->

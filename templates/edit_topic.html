@@ -7,7 +7,7 @@
 <main class="cyber-container">
     <h1 class="neon-heading">Edit Topic: <span class="glowing-text">{{ topic.name }}</span></h1>
     
-    <form class="cyber-form" method="post" enctype="multipart/form-data">
+    <form class="cyber-form" method="post" enctype="multipart/form-data" action="{% url 'edit_topic' %}">
         {% csrf_token %}
         
         <!-- Topic Name -->

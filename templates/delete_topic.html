@@ -12,7 +12,7 @@
             <p>You're about to permanently delete:<br>
             <span class="glowing-text">{{ topic.name }}</span></p>
             
-            <form method="post" class="confirmation-form">
+            <form method="post" class="confirmation-form" action="{% url 'delete_topic' %}">
                 {% csrf_token %}
                 <div class="confirmation-actions">
                     <button type="submit" class="gradient-btn-red">
