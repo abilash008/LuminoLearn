@@ -26,10 +26,10 @@ SECRET_KEY = 'a1f20@-1!nnbjm%ywa!g(!zf(70fh0a5d7g1ywn-k&f6+3dg1+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['luminolearn.onrender.com','127.0.0.1']
+ALLOWED_HOSTS = ['luminolearn.onrender.com','127.0.0.1','localhost']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://luninolden.onreader.com',
+    'https://luminolearn.onrender.com',
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
