@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Recommended Courses{% endblock %}
+{% block content %}
+<h1>Recommended Courses</h1>
+{% if recommended_courses %}
+    <ul>
+    {% for course in recommended_courses %}
+        <li>{{ course.title }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No recommendations available.</p>
+{% endif %}
+{% endblock %}

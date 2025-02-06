@@ -28,7 +28,6 @@ urlpatterns = [
     path('explore/', views.explore_view, name='explore'),
     path("login/", views.login_view, name="login"),
     path("register/", views.register_view, name="register"),
-    path("student_dashboard/", views.student_dashboard_view, name="student_dashboard"),
     path("admin_dashboard/", views.admin_dashboard_view, name="admin_dashboard"),
     path("login/", views.logout_view, name="logout"),
     

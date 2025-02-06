@@ -89,12 +89,6 @@ from .decorators import role_required
 
 
 @login_required
-@role_required(["student"])
-def student_dashboard_view(request):
-    return render(request, "student_dashboard.html")
-
-
-@login_required
 @role_required(["admin"])
 def admin_dashboard_view(request):
     return render(request, "admin_dashboard.html")

@@ -27,6 +27,7 @@
         "startproject",
         "stylesheet",
         "truncatechars",
+        "truncatewords",
         "tzdata",
         "utmub",
         "widthratio",

@@ -39,7 +39,7 @@ def create_course(request):
         messages.success(request, "Course created successfully!")
         return redirect('add_topic', course_id=course.id)
 
-    return render(request, 'create_course.html')
+    return render(request, 'courses/create_course.html')
 
 @login_required
 def add_topic(request, course_id):
@@ -73,7 +73,7 @@ def add_topic(request, course_id):
         # Redirect to educator dashboard or course detail page as needed
         return redirect('educator_dashboard')
     
-    return render(request, 'add_topic.html', {'course': course})
+    return render(request, 'courses/add_topic.html', {'course': course})
 
 @login_required
 def manage_courses(request):
@@ -84,7 +84,7 @@ def manage_courses(request):
 
     # Fetch all courses created by the educator
     courses = Course.objects.filter(educator=request.user)
-    return render(request, 'manage_courses.html', {'courses': courses})
+    return render(request, 'courses/manage_courses.html', {'courses': courses})
 
 @login_required
 def review_submissions(request):
@@ -95,7 +95,7 @@ def review_submissions(request):
 
     # Fetch all submissions for assignments in the educator's courses
     submissions = Submission.objects.filter(assignment__course__educator=request.user)
-    return render(request, 'review_submissions.html', {'submissions': submissions})
+    return render(request, 'courses/review_submissions.html', {'submissions': submissions})
 
 @login_required
 def create_assignment(request, course_id):
@@ -121,7 +121,7 @@ def create_assignment(request, course_id):
         messages.success(request, "Assignment created successfully! Add questions to it.")
         return redirect('add_questions', assignment_id=assignment.id)
 
-    return render(request, 'create_assignment.html', {'course': course})
+    return render(request, 'courses/create_assignment.html', {'course': course})
 
 @login_required
 def select_assignment_course(request):
@@ -132,7 +132,7 @@ def select_assignment_course(request):
 
     # Get all courses created by this educator
     courses = Course.objects.filter(educator=request.user)
-    return render(request, 'select_assignment_course.html', {'courses': courses})
+    return render(request, 'courses/select_assignment_course.html', {'courses': courses})
 
 
 @login_required
@@ -150,7 +150,7 @@ def educator_assignments(request):
     courses = Course.objects.filter(educator=request.user)
     
     context = {'courses': courses, 'assignments': assignments}
-    return render(request, 'educator_assignments.html', context)
+    return render(request, 'courses/educator_assignments.html', context)
 
 
 @login_required
@@ -175,7 +175,7 @@ def add_questions(request, assignment_id):
         messages.success(request, "Question added successfully!")
         return redirect('add_questions', assignment_id=assignment.id)
 
-    return render(request, 'add_questions.html', {'assignment': assignment})
+    return render(request, 'courses/add_questions.html', {'assignment': assignment})
 
 
 @login_required
@@ -195,7 +195,7 @@ def add_choices(request, question_id):
         messages.success(request, "Choice added successfully!")
         return redirect('add_choices', question_id=question.id)
 
-    return render(request, 'add_choices.html', {'question': question})
+    return render(request, 'courses/add_choices.html', {'question': question})
 
 @login_required
 def edit_course(request, course_id):
@@ -222,7 +222,7 @@ def edit_course(request, course_id):
         messages.success(request, "Course updated successfully!")
         return redirect('manage_courses')
 
-    return render(request, 'edit_course.html', {'course': course, 'topics':topics })
+    return render(request, 'courses/edit_course.html', {'course': course, 'topics':topics })
 
 @login_required
 def delete_course(request, course_id):
@@ -238,7 +238,7 @@ def delete_course(request, course_id):
         messages.success(request, "Course deleted successfully!")
         return redirect('manage_courses')
 
-    return render(request, 'delete_course.html', {'course': course})
+    return render(request, 'courses/delete_course.html', {'course': course})
 
 @login_required
 def edit_assignment(request, assignment_id):
@@ -281,7 +281,7 @@ def edit_assignment(request, assignment_id):
         messages.success(request, "Assignment updated successfully!")
         return redirect('educator_assignments')
     
-    return render(request, 'edit_assignment.html', {
+    return render(request, 'courses/edit_assignment.html', {
         'assignment': assignment,
         'questions': questions,
     })
@@ -299,15 +299,10 @@ def delete_assignment(request, assignment_id):
         messages.success(request, "Assignment deleted successfully!")
         return redirect('educator_assignments')
     
-    return render(request, 'delete_assignment.html', {
+    return render(request, 'courses/delete_assignment.html', {
         'assignment': assignment
     })
     
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import Topic, TopicDiagram
-
 @login_required
 def edit_topic(request, topic_id):
     # Get the topic and ensure the logged-in educator owns the course for this topic.
@@ -335,7 +330,7 @@ def edit_topic(request, topic_id):
     context = {
         'topic': topic,
     }
-    return render(request, 'edit_topic.html', context)
+    return render(request, 'courses/edit_topic.html', context)
 
 
 @login_required
@@ -353,4 +348,170 @@ def delete_topic(request, topic_id):
         messages.success(request, "Topic deleted successfully!")
         return redirect('edit_course', course_id=course_id)
     
-    return render(request, 'delete_topic.html', {'topic': topic})
+    return render(request, 'courses/delete_topic.html', {'topic': topic})
+
+
+
+
+
+
+
+
+
+
+
+#    Student Dashboard
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from courses.models import Course, StudentCourse, Progress, Assignment, Submission
+from gamification.models import Gamification
+from django.db.models import Avg, Count
+from django.contrib import messages
+import random
+from django.db.models import Q
+
+@login_required
+def student_dashboard(request):
+    # Ensure the user is a student.
+    if not hasattr(request.user, 'role') or request.user.role != 'student':
+        messages.error(request, "You do not have permission to view the Student Dashboard.")
+        return redirect('home')
+    return render(request, 'student_dashboard.html')
+
+# View for Enrolled Courses
+@login_required
+def student_enrolled_courses(request):
+    # Ensure the user is a student.
+    if not hasattr(request.user, 'role') or request.user.role != 'student':
+        messages.error(request, "You do not have permission to view the Student Dashboard.")
+        return redirect('home')
+    
+    enrollments = StudentCourse.objects.filter(student=request.user)
+    enrolled_courses = [enrollment.course for enrollment in enrollments]
+    
+    return render(request, 'student/student_enrolled_courses.html', {'enrolled_courses': enrolled_courses})
+
+
+# View for Progress Tracking
+@login_required
+def student_progress(request):
+    if not hasattr(request.user, 'role') or request.user.role != 'student':
+        messages.error(request, "You do not have permission to view the Student Dashboard.")
+        return redirect('home')
+    
+    enrollments = StudentCourse.objects.filter(student=request.user)
+    progress_data = []
+    for enrollment in enrollments:
+        # If using a Progress model attached to enrollment; else, set a default.
+        progress = enrollment.progress.percentage if hasattr(enrollment, 'progress') else 0
+        progress_data.append({'course': enrollment.course, 'progress': progress})
+    
+    return render(request, 'student/student_progress.html', {'progress_data': progress_data})
+
+
+# View for Quiz & Assignment Updates
+@login_required
+def student_assignments(request):
+    if not hasattr(request.user, 'role') or request.user.role != 'student':
+        messages.error(request, "You do not have permission to view the Student Dashboard.")
+        return redirect('home')
+    
+    enrollments = StudentCourse.objects.filter(student=request.user)
+    enrolled_courses = [enrollment.course for enrollment in enrollments]
+    upcoming_assignments = Assignment.objects.filter(
+        course__in=enrolled_courses
+    ).order_by('deadline')
+    
+    return render(request, 'student/student_assignments.html', {'upcoming_assignments': upcoming_assignments})
+
+
+# View for Leaderboard & Gamification Stats
+@login_required
+def student_leaderboard(request):
+    if not hasattr(request.user, 'role') or request.user.role != 'student':
+        messages.error(request, "You do not have permission to view the Student Dashboard.")
+        return redirect('home')
+    
+    try:
+        my_gamification = request.user.gamification
+    except Gamification.DoesNotExist:
+        my_gamification = None
+        
+    top_students = Gamification.objects.all().order_by('-points')[:5]
+    
+    return render(request, 'student/student_leaderboard.html', {
+        'my_gamification': my_gamification,
+        'top_students': top_students,
+    })
+
+
+# View for Personalized Recommendations
+@login_required
+def student_recommendations(request):
+    if not hasattr(request.user, 'role') or request.user.role != 'student':
+        messages.error(request, "You do not have permission to view the Student Dashboard.")
+        return redirect('home')
+    
+    enrollments = StudentCourse.objects.filter(student=request.user)
+    enrolled_courses = [enrollment.course for enrollment in enrollments]
+    all_courses = list(Course.objects.all())
+    recommended_courses = [course for course in all_courses if course not in enrolled_courses]
+    if recommended_courses:
+        recommended_courses = random.sample(recommended_courses, min(3, len(recommended_courses)))
+    else:
+        recommended_courses = []
+    
+    return render(request, 'student/student_recommendations.html', {'recommended_courses': recommended_courses})
+
+
+# Online Compiler View (already implemented)
+@login_required
+def online_compiler(request):
+    return render(request, 'student/online_compiler.html')
+
+
+@login_required
+def search_courses(request):
+    # Ensure the user is a student.
+    if not hasattr(request.user, 'role') or request.user.role != 'student':
+        messages.error(request, "You do not have permission to search courses.")
+        return redirect('home')
+
+    query = request.GET.get('q', '')
+    results = []
+    if query:
+        # Filter courses by title or description (case-insensitive)
+        results = Course.objects.filter(
+            Q(title__icontains=query) | Q(description__icontains=query)
+        )
+    
+    context = {
+        'query': query,
+        'results': results,
+    }
+    return render(request, 'student/student_search_courses.html', context)
+
+@login_required
+def enroll_in_course(request, course_id):
+    # Enroll the student in the selected course if not already enrolled.
+    course = get_object_or_404(Course, id=course_id)
+    enrollment, created = StudentCourse.objects.get_or_create(student=request.user, course=course)
+    if created:
+        messages.success(request, f"You have been enrolled in {course.title}.")
+    else:
+        messages.info(request, f"You are already enrolled in {course.title}.")
+    return redirect('student_enrolled_courses')  # or any page you'd like to redirect to

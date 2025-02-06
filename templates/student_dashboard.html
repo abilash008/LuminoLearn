@@ -4,24 +4,53 @@
 
 {% block content %}
 <h1>Student Dashboard</h1>
-<p>Welcome, {{ user.username }}! Here are your options:</p>
+<p>Welcome, <h3>{{ user.username }}!</h3><b> Enroll, Learn, Practice, and Conquer!</b></p>
 
-<div class="dashboard-actions">
-    <a href="#">View Courses</a>
-    <a href="#">Track Progress</a>
-    <a href="#">Take Quizzes</a>
+<!-- Search Courses -->
+<div align="center">
+<div class="dashboard-card">
+    <form action="{% url 'search_courses' %}" method="get">
+        <input type="text" name="q" placeholder="Search courses..." value="{{ request.GET.q|default:'' }}"><br><br>
+        <button type="submit">Search</button>
+    </form>
+</div>
 </div>
 
 <div class="dashboard-cards">
     <div class="dashboard-card">
         <h3>Your Courses</h3>
         <p>Access your enrolled courses and materials.</p>
-        <a href="#">Go to Courses</a>
+        <a href="{% url 'student_enrolled_courses' %}">Go to Courses</a>
+    </div>
+    <div class="dashboard-card">
+        <h3>Online Compiler</h3>
+        <p>For hands-on code practicing...</p>
+        <a href="{% url 'online_compiler' %}">Practice Now</a>
     </div>
     <div class="dashboard-card">
         <h3>Progress Tracker</h3>
         <p>Check your learning milestones and performance.</p>
-        <a href="#">View Progress</a>
+        <a href="{% url 'student_progress' %}">View Progress</a>
+    </div>
+    <div class="dashboard-card">
+        <h3>Take Quizzes</h3>
+        <p>Test yourself by taking quizzes.</p>
+        <a href="{% url 'student_assignments' %}">Take Now</a>
+    </div>
+    <div class="dashboard-card">
+        <h3>Leaderboard</h3>
+        <p>Check your position in the leaderboard.</p>
+        <a href="{% url 'student_leaderboard' %}">View Leaderboard</a>
+    </div>
+    <div class="dashboard-card">
+        <h3>Recommended Courses</h3>
+        <p>Personalized course recommendations by AI.</p>
+        <a href="{% url 'student_recommendations' %}">Get Now</a>
+    </div>
+    <div class="dashboard-card">
+        <h3>AI Mentor</h3>
+        <p>Have a doubt? Solve here using GPT..</p>
+        <a href="#">Ask a Question</a>
     </div>
 </div>
 {% endblock %}

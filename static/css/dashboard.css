@@ -816,3 +816,88 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     color: #00ffff;
 }
 
+
+
+/* Online Compiler */
+
+/* General styles for the student dashboard have been defined previously.
+   Add additional styling for the online compiler section: */
+
+.compiler-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    color: #fff;
+}
+
+#editor {
+    margin-bottom: 20px;
+}
+
+#runCode {
+    background: linear-gradient(45deg, #00f, #0ff);
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#output {
+    background: #222;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+
+
+/* Style the search input field */
+form input[type="text"] {
+    width: 80%;
+    padding: 10px 15px;
+    border: 2px solid #00ffff; /* Cyan border */
+    border-radius: 4px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    outline: none;
+    background-color: #000;  /* Black background */
+    color: #fff;             /* White text */
+}
+
+/* Style the placeholder text */
+form input[type="text"]::placeholder {
+    color: #66ffff;          /* Lighter cyan for placeholder */
+    transition: color 0.3s ease;
+}
+
+/* When the input is focused, change border and background colors */
+form input[type="text"]:focus {
+    border-color: #00cccc;   /* Slightly darker cyan */
+    background-color: #111;  /* A very dark gray, almost black */
+}
+
+form input[type="text"]:focus::placeholder {
+    color: #00ffff;
+}
+
+/* Style the search button */
+form button {
+    padding: 10px 20px;
+    font-size: 1em;
+    background: linear-gradient(45deg, #00ffff, #00cccc); /* Gradient with cyan shades */
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+    margin-left: 10px;
+}
+
+/* Hover effect for the search button */
+form button:hover {
+    background: linear-gradient(45deg, #00cccc, #009999);
+    transform: scale(1.05);
+}
