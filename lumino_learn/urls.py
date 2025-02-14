@@ -20,10 +20,14 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from users.urls import views
 
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("users/", include("users.urls")),
     path('courses/', include("courses.urls")),
+    path('editor', include('editor.urls')),
     path('', TemplateView.as_view(template_name="index.html"), name='home'),
     path('explore/', views.explore_view, name='explore'),
     path("login/", views.login_view, name="login"),

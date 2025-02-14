@@ -179,3 +179,10 @@ AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_REDIRECT_URL = '/users/dashboard/'
 LOGOUT_REDIRECT_URL = '/users/login/'  # Optional logout redirect
 '''
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+JDOODLE_CLIENT_ID = os.getenv('JDOODLE_CLIENT_ID')
+JDOODLE_CLIENT_SECRET = os.getenv('JDOODLE_CLIENT_SECRET')

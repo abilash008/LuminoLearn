@@ -23,7 +23,6 @@ urlpatterns = [
     
     
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
-    path('online_compiler/', views.online_compiler, name='online_compiler'),
     path('student/enrolled/', views.student_enrolled_courses, name='student_enrolled_courses'),
     path('student/progress/', views.student_progress, name='student_progress'),
     path('student/assignments/', views.student_assignments, name='student_assignments'),

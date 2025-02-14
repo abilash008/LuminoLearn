@@ -478,10 +478,7 @@ def student_recommendations(request):
     return render(request, 'student/student_recommendations.html', {'recommended_courses': recommended_courses})
 
 
-# Online Compiler View (already implemented)
-@login_required
-def online_compiler(request):
-    return render(request, 'student/online_compiler.html')
+
 
 
 @login_required
