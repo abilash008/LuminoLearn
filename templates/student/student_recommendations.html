@@ -1,16 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}Recommended Courses{% endblock %}
 {% block content %}
-<h1>Recommended Courses</h1><br>
-{% if recommended_courses %}
-    {% for course in recommended_courses %}
-    <div align="center">
-        <div class="dashboard-card">
-            {{ course.title }}
-        </div><br>
-    </div>
-    {% endfor %}
-{% else %}
-    <p>No recommendations available.</p>
-{% endif %}
+
+
+
+<h1 class="neon-subheading">Recommended Courses</h1>
+    <div class="assignment-grid">
+        {% if recommended_courses %}
+        {% for course in recommended_courses %}
+        <div class="cyber-card">
+            <div class="card-header">
+                <h3 class="glowing-text">{{ course.title }}</h3>
+            </div>
+            <div class="card-body">
+                <p class="assignment-description">{{ course.description|truncatewords:30 }}</p>
+                <div class="assignment-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Created By : {{ course.educator.username }} </span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <a href="{% url 'enroll_in_course' course.id %}" class="action-btn edit-btn">
+                    <i class="fas fa-edit"></i> Enroll Now
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No recommendations available.</p>
+    {% endif %}
+    </div><br>
+    <a href="{% url 'student_dashboard' %}" class="back-button">Back to Dashboard</a>
 {% endblock %}

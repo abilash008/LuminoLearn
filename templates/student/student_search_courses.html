@@ -1,27 +1,39 @@
 {% extends 'base.html' %}
 {% block title %}Search Courses{% endblock %}
 {% block content %}
-<h1>Search Results</h1><br>
+
+<h1 class="neon-subheading">Search Results</h1>
 {% if query %}
-    <a>Results for <b> "{{ query }}"</b>:</a><br>
+    <h3>Results for <b> "{{ query }}"</b>:</h3><br>
+    <div class="assignment-grid">
     {% if results %}
-        <ul class="course-results">
-        {% for course in results %}
-        <div align="center">
-            <div class="dashboard-card">
-            
-                <h3>{{ course.title }}</h3>
-                <p>{{ course.description|truncatewords:30 }}</p>
-                <a href="{% url 'enroll_in_course' course.id %}" class="enroll-button">Enroll</a>
-            </div><br>
+    {% for course in results %}
+        <div class="cyber-card">
+            <div class="card-header">
+                <h3 class="glowing-text">{{ course.title }}</h3>
+            </div>
+            <div class="card-body">
+                <p class="assignment-description">{{ course.description|truncatewords:30 }}</p>
+                <div class="assignment-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Created By : {{ course.educator.username }} </span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <a href="{% url 'enroll_in_course' course.id %}" class="action-btn edit-btn">
+                    <i class="fas fa-edit"></i> Enroll
+                </a>
+            </div>
         </div>
         {% endfor %}
-        </ul>
-    {% else %}
+        {% else %}
         <p>No courses found matching your query.</p>
     {% endif %}
-{% else %}
-    <p>Please enter a search term above.</p>
-{% endif %}
-<a href="{% url 'student_dashboard' %}" class="back-button">Back to Dashboard</a>
+    {% else %}
+        <p>Go back and Please enter a search term.</p>
+    {% endif %}
+    </div><br>
+    <a href="{% url 'student_dashboard' %}" class="back-button">Back to Dashboard</a>
 {% endblock %}

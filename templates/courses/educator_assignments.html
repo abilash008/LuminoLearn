@@ -42,12 +42,14 @@
                 <div class="assignment-meta">
                     <div class="meta-item">
                         <i class="fas fa-clock"></i>
-                        <span>Due: {{ assignment.deadline|date:"M d, Y H:i" }}</span>
+                        <span>Deadline: {{ assignment.deadline|date:"M d, Y H:i" }}</span>
                     </div>
+                    <!--
                     <div class="meta-item">
                         <i class="fas fa-calendar-plus"></i>
-                        <span>Created: {{ assignment.created_at|date:"M d, Y" }}</span>
+                    <span>Created: {{ assignment.created_at|date:"M d, Y" }}</span> 
                     </div>
+                    -->
                 </div>
             </div>
             <div class="card-actions">

@@ -34,12 +34,12 @@ class TopicDiagram(models.Model):
 class Assignment(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='assignments')
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='assignments')
     deadline = models.DateTimeField()
     # created_at = models.DateTimeField(default=timezone.now)
     # updated_at = models.DateTimeField(auto_now=True)
-    created_at = models.DateTimeField(auto_now_add=True)  # Automatically set on creation
-    updated_at = models.DateTimeField(auto_now=True)      # Automatically updated on save
+    # created_at = models.DateTimeField(auto_now_add=True)  # Automatically set on creation
+    # updated_at = models.DateTimeField(auto_now=True)      # Automatically updated on save
 
     def __str__(self):
         return f"{self.title} - {self.course.title}"

@@ -7,14 +7,27 @@
 <p>Welcome, <h3>{{ user.username }}!</h3><b> Enroll, Learn, Practice, and Conquer!</b></p>
 
 <!-- Search Courses -->
-<div align="center">
-<div class="dashboard-card">
-    <form action="{% url 'search_courses' %}" method="get">
-        <input type="text" name="q" placeholder="Search courses..." value="{{ request.GET.q|default:'' }}"><br><br>
-        <button type="submit">Search</button>
+<div class="search-container">
+    <form class="search-form" action="{% url 'search_courses' %}" method="get">
+        <div class="search-input-group">
+            <i class="fas fa-search search-icon"></i>
+            <input 
+                type="text" 
+                name="q" 
+                class="search-input"
+                placeholder="Search courses by title, or keywords..."
+                value="{{ request.GET.q|default:'' }}"
+                autocomplete="off"
+                aria-label="Course search"
+            >
+            <button type="submit" class="search-button">
+                Search
+                <i class="fas fa-arrow-right search-button-icon"></i>
+            </button>
+        </div>
     </form>
 </div>
-</div>
+
 
 <div class="dashboard-cards">
     <div class="dashboard-card">

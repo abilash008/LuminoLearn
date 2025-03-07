@@ -1,18 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}Your Enrolled Courses{% endblock %}
 {% block content %}
-<h1>Your Enrolled Courses</h1><br>
-{% if enrolled_courses %}
-    <ul>
+
+
+
+<h1 class="neon-subheading">Your Enrolled Courses</h1>
+    <div class="assignment-grid">
+    {% if enrolled_courses %}
     {% for course in enrolled_courses %}
-    <div align="center">
-    <div class="dashboard-card">
-    {{ course.title }}
+        <div class="cyber-card">
+            <div class="card-header">
+                <h3 class="glowing-text">{{ course.title }}</h3>
+            </div>
+            <div class="card-body">
+                <p class="assignment-description">{{ course.description|truncatewords:30 }}</p>
+                <div class="assignment-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Created By : {{ course.educator.username }} </span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <a href="#" class="action-btn edit-btn">
+                    <i class="fas fa-edit"></i> Learn Now
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>You are not enrolled in any courses yet.</p>
+    {% endif %}
     </div><br>
-    </div>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>You are not enrolled in any courses yet.</p>
-{% endif %}
+    <a href="{% url 'student_dashboard' %}" class="back-button">Back to Dashboard</a>
 {% endblock %}
