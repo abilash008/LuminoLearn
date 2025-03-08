@@ -22,8 +22,13 @@
                 </div>
             </div>
             <div class="card-actions">
-                <progress value="{{ item.progress }}" max="100">{{ item.progress }}%</progress>
-                
+                <div class="progress-container">
+                    <div class="progress-text">
+                        {{ item.completed }}/{{ item.total }} topics completed
+                    </div>
+                    <progress value="{{ item.progress }}" max="100"></progress>
+                    <div class="progress-percent">{{ item.progress }}%</div>
+                </div>
             </div>
         </div>
         {% endfor %}
@@ -32,4 +37,29 @@
     {% endif %}
     </div><br>
     <a href="{% url 'student_dashboard' %}" class="back-button">Back to Dashboard</a>
+
+<style>
+.progress-container {
+    width: 100%;
+}
+
+progress {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.progress-percent {
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--success-color);
+    margin-top: 4px;
+}
+</style>
 {% endblock %}

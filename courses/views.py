@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -407,6 +408,22 @@ def student_enrolled_courses(request):
 
 
 # View for Progress Tracking
+# @login_required
+# def student_progress(request):
+#     if not hasattr(request.user, 'role') or request.user.role != 'student':
+#         messages.error(request, "You do not have permission to view the Student Dashboard.")
+#         return redirect('home')
+    
+#     enrollments = StudentCourse.objects.filter(student=request.user)
+#     progress_data = []
+#     for enrollment in enrollments:
+#         # If using a Progress model attached to enrollment; else, set a default.
+#         progress = enrollment.progress.percentage if hasattr(enrollment, 'progress') else 0
+#         progress_data.append({'course': enrollment.course, 'progress': progress})
+    
+#     return render(request, 'student/student_progress.html', {'progress_data': progress_data})
+
+
 @login_required
 def student_progress(request):
     if not hasattr(request.user, 'role') or request.user.role != 'student':
@@ -415,13 +432,24 @@ def student_progress(request):
     
     enrollments = StudentCourse.objects.filter(student=request.user)
     progress_data = []
-    for enrollment in enrollments:
-        # If using a Progress model attached to enrollment; else, set a default.
-        progress = enrollment.progress.percentage if hasattr(enrollment, 'progress') else 0
-        progress_data.append({'course': enrollment.course, 'progress': progress})
     
-    return render(request, 'student/student_progress.html', {'progress_data': progress_data})
-
+    for enrollment in enrollments:
+        # Get or create progress record
+        progress, created = Progress.objects.get_or_create(
+            enrollment=enrollment,
+            defaults={'percentage': Decimal('0.00')}
+        )
+        
+        progress_data.append({
+            'course': enrollment.course,
+            'progress': progress.percentage,
+            'completed': progress.completed_topics.count(),
+            'total': enrollment.course.topics.count()
+        })
+    
+    return render(request, 'student/student_progress.html', {
+        'progress_data': progress_data
+    })
 
 # View for Quiz & Assignment Updates
 @login_required
@@ -512,3 +540,75 @@ def enroll_in_course(request, course_id):
     else:
         messages.info(request, f"You are already enrolled in {course.title}.")
     return redirect('student_enrolled_courses')  # or any page you'd like to redirect to
+
+
+from django.views.decorators.http import require_GET
+
+@login_required
+def course_learn(request, course_id, topic_id=None):
+    course = get_object_or_404(Course, id=course_id)
+    topics = course.topics.all().order_by('id')
+    
+    # Ensure active_topic is properly set
+    if topic_id:
+        active_topic = get_object_or_404(Topic, id=topic_id, course=course)
+    else:
+        active_topic = topics.first() if topics.exists() else None
+    
+    context = {
+        'course': course,
+        'topics': topics,
+        'active_topic': active_topic,
+    }
+    return render(request, 'student/course_learn.html', context)
+
+
+from django.views.decorators.http import require_POST
+from django.db import transaction
+import logging
+logger = logging.getLogger(__name__)
+
+@require_POST
+@login_required
+def complete_topic(request, course_id, topic_id):
+    try:
+        with transaction.atomic():
+            # Get course and topic
+            course = get_object_or_404(Course, id=course_id)
+            topic = get_object_or_404(Topic, id=topic_id, course=course)
+            
+            # Get or create enrollment and progress
+            enrollment, e_created = StudentCourse.objects.get_or_create(
+                student=request.user,
+                course=course
+            )
+            progress, p_created = Progress.objects.get_or_create(
+                enrollment=enrollment,
+                defaults={'percentage': Decimal('0.00')}
+            )
+            
+            # Mark topic as completed if not already
+            if not progress.completed_topics.filter(id=topic_id).exists():
+                progress.completed_topics.add(topic)
+                
+                # Update progress using the model method
+                progress.update_progress()
+            
+            # Get next topic only if not the last one
+            next_topic = None
+            if progress.percentage < 100:
+                next_topic = Topic.objects.filter(
+                    course=course, 
+                    id__gt=topic.id
+                ).order_by('id').first()
+            
+            if next_topic:
+                return redirect('course_topic', course_id=course.id, topic_id=next_topic.id)
+            else:
+                messages.success(request, "Congratulations! You've completed this course!")
+                return redirect('course_learn', course_id=course.id)
+            
+    except Exception as e:
+        logger.error(f"Error completing topic: {str(e)}")
+        messages.error(request, "Could not update progress. Please try again.")
+        return redirect('course_topic', course_id=course_id, topic_id=topic_id)

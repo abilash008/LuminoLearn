@@ -30,6 +30,9 @@ urlpatterns = [
     path('student/recommendations/', views.student_recommendations, name='student_recommendations'),
     path('student/search_courses/', views.search_courses, name='search_courses'),
     path('student/enroll/<int:course_id>/', views.enroll_in_course, name='enroll_in_course'),
+    path('course/<int:course_id>/learn/', views.course_learn, name='course_learn'),
+    path('course/<int:course_id>/learn/topic/<int:topic_id>/', views.course_learn, name='course_topic'),
+    path('course/<int:course_id>/complete/<int:topic_id>/', views.complete_topic, name='complete_topic'),
 ]
 
 if settings.DEBUG:

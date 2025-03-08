@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+        {% if message.tags == 'error' %}
+        <p>Please contact support if this issue persists.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="course-learn-container">
+    <!-- Sidebar -->
+    <div class="course-sidebar">
+        <div class="sidebar-header"><br>
+            <h2>{{ course.title }}</h2>
+            <div class="progress-container">
+                <div class="progress">
+                    <div class="progress-bar" style="width: {{ progress }}%"></div>
+                </div>
+        <!--    <small>{{ progress }}% Complete</small>  -->
+            </div>
+        </div>
+        
+        <div class="topics-list">
+            {% for topic in topics %}
+            <a href="{% url 'course_topic' course_id=course.id topic_id=topic.id %}" 
+                class="topic-item {% if topic == active_topic %}active{% endif %}">
+                <span class="topic-order">{{ forloop.counter }}{% if topic == active_topic %}{% else %}{% endif %}</span>
+                <span class="topic-title">{{ topic.name }}</span>
+            </a>
+            {% empty %}
+            <div class="no-topics">No topics available yet</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="course-main-content">
+        {% if active_topic %}
+        <div class="topic-content">
+            <h1 class="topic-title-content">{{ active_topic.name }}</h1>
+            <div class="content-body">
+                {{ active_topic.content|linebreaks }}
+                
+                {% if active_topic.diagrams.all %}
+                <div class="diagrams-grid">
+                    {% for diagram in active_topic.diagrams.all %}
+                    <div class="diagram-card">
+                        <img src="{{ diagram.image.url }}" 
+                            alt="Diagram for {{ active_topic.name }}"
+                            class="diagram-image">
+                        <div class="diagram-meta">Diagram {{ forloop.counter }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="no-topic-selected">
+            <i class="fas fa-book-open"></i>
+            <p>Select a topic from the sidebar to begin learning</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class="topic-actions">
+    {% if active_topic %}
+    <form method="post" action="{% url 'complete_topic' course_id=course.id topic_id=active_topic.id %}">
+        {% csrf_token %}
+        <button type="submit" class="complete-btn">
+            <i class="fas fa-check-circle"></i> {% if progress.percentage == 100 %}Course Completed!{% else %}Complete & Next{% endif %}
+        </button>
+    </form>
+    {% else %}
+    <div class="no-topic-actions">
+        <p>No active topic selected</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // AJAX navigation
+    document.querySelectorAll('.topic-item').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.href;
+            
+            // Update active state
+            document.querySelectorAll('.topic-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            // Load content
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newContent = doc.querySelector('.course-main-content').innerHTML;
+                    document.querySelector('.course-main-content').innerHTML = newContent;
+                    window.scrollTo(0, 0);
+                });
+        });
+    });
+});
+</script>
+
+<style>
+.course-learn-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: calc(100vh - 80px);
+}
+
+.course-sidebar {
+    background: #000000;
+    padding: 20px;
+    border-right: 1px solidrgb(32, 165, 163);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+}
+
+.topics-list {
+    margin-top: 20px;
+}
+
+.topic-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin: 5px 0;
+    border-radius: 6px;
+    color: #cccccc;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.topic-item:hover {
+    background: #3a3a3a;
+    color: white;
+}
+
+.topic-item.active {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.topic-order {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+}
+
+.course-main-content {
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.topic-title {
+    font-size: 1rem;
+    margin-bottom: 10px auto;
+    color: var(--heading-color);
+}
+
+.topic-title-content {
+    font-size: 1.5rem;
+    margin-bottom: 10px auto;
+    color: var(--heading-color);
+}
+
+.content-body {
+    text-align: left;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #e0e0e0;
+}
+
+.diagrams-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    margin: 30px 0;
+}
+
+.diagram-card {
+    background: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.diagram-image {
+    width: 100%;
+    height: 200px auto;
+    object-fit: cover;
+}
+
+.diagram-meta {
+    padding: 10px;
+    background: #252525;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.no-topic-selected {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 1.2rem;
+}
+
+.no-topic-selected i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.topic-actions {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #333;
+}
+
+.no-topic-actions {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+.complete-btn {
+    background: var(--success-color);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.complete-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.complete-btn i {
+    font-size: 1.2rem;
+}
+
+.messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    animation: slideIn 0.5s ease-out;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .course-learn-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .course-sidebar {
+        height: auto;
+        position: relative;
+    }
+    
+    .course-main-content {
+        padding: 20px;
+    }
+}
+</style>
+{% endblock %}

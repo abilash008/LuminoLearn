@@ -1,6 +1,7 @@
 
 
 # Create your models here.
+from decimal import Decimal
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
@@ -80,7 +81,7 @@ class StudentCourse(models.Model):
     student = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE,
-        related_name='enrollments',
+        related_name='course_enrollments',
         limit_choices_to={'role': 'student'}
     )
     course = models.ForeignKey(
@@ -94,13 +95,43 @@ class StudentCourse(models.Model):
         return f"{self.student.username} enrolled in {self.course.title}"
 
 
+from django.db import models
+from django.utils import timezone
+from decimal import Decimal
+
 class Progress(models.Model):
-    enrollment = models.OneToOneField(StudentCourse, on_delete=models.CASCADE, related_name='progress')
-    # For simplicity, we store progress as a percentage
-    percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    enrollment = models.OneToOneField(
+        'StudentCourse', 
+        on_delete=models.CASCADE,
+        related_name='progress'
+    )
+    completed_topics = models.ManyToManyField('Topic', blank=True)
+    percentage = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=Decimal('0.00')
+    )
+    completed_at = models.DateTimeField(null=True, blank=True)
 
-    def __str__(self):
-        return f"{self.enrollment.student.username}: {self.percentage}% in {self.enrollment.course.title}"
+    def update_progress(self):
+        """Recalculates progress based on current topics"""
+        # Get fresh count from database
+        total_topics = self.enrollment.course.topics.count()
+        completed = self.completed_topics.count()
+        
+        # Calculate new percentage
+        new_percentage = Decimal('100.00') if total_topics == 0 else Decimal(
+            (completed / total_topics) * 100
+        ).quantize(Decimal('0.00'))
 
+        # Update completion status
+        if new_percentage == Decimal('100.00') and not self.completed_at:
+            self.completed_at = timezone.now()
+        elif new_percentage < Decimal('100.00') and self.completed_at:
+            self.completed_at = None
 
+        # Only update if changed
+        if self.percentage != new_percentage:
+            self.percentage = new_percentage
+            self.save(update_fields=['percentage', 'completed_at'])
 
