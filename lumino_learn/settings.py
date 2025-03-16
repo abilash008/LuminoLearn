@@ -190,5 +190,4 @@ JDOODLE_CLIENT_SECRET = os.getenv('JDOODLE_CLIENT_SECRET')
 
 # Chatbot
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-# HF_API_TOKEN = os.getenv("HF_API_TOKEN")
+HF_API_TOKEN = os.getenv("HF_API_TOKEN")
