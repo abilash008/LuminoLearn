@@ -25,6 +25,8 @@
     {% csrf_token %}
 </div>
 
+<a href="{% url 'student_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+
 <script>
     const chatWindow = document.getElementById('chat-window');
     const chatHistory = chatWindow.querySelector('.chat-history');

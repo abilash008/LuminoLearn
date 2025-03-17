@@ -17,7 +17,7 @@
             <p class="assignment-description">{{ assignment.description|truncatechars:150 }}</p>
             <div class="assignment-meta">
                 <div class="meta-item">
-                    <i class="fas fa-calendar-plus"></i>
+                    <i class="fas fa-code"></i>
                 <span>Created By: {{ assignment.course.educator.username }}</span> 
                 </div>
                 <div class="meta-item">
@@ -28,7 +28,7 @@
         </div>
         <div class="card-actions">
             <a href="#" class="action-btn edit-btn">
-                <i class="fas fa-edit"></i> Take Now
+                <i class="fas fa-pencil-alt"></i> Take Now
             </a>
         </div>
     </div>
@@ -37,5 +37,5 @@
     <p>No upcoming assignments.</p>
 {% endif %}
 </div><br>
-<a href="{% url 'student_dashboard' %}" class="back-button">Back to Dashboard</a>
+<a href="{% url 'student_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
 {% endblock %}

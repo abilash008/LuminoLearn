@@ -16,7 +16,7 @@
                 <p class="assignment-description">{{ item.course.description|truncatewords:30 }}</p>
                 <div class="assignment-meta">
                     <div class="meta-item">
-                        <i class="fas fa-clock"></i>
+                        <i class="fas fa-code"></i>
                         <span>Created By : {{ item.course.educator.username }} </span>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
         <p>No progress data available.</p>
     {% endif %}
     </div><br>
-    <a href="{% url 'student_dashboard' %}" class="back-button">Back to Dashboard</a>
+    <a href="{% url 'student_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
 
 <style>
 .progress-container {

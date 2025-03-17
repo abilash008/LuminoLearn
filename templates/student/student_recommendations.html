@@ -16,14 +16,14 @@
                 <p class="assignment-description">{{ course.description|truncatewords:30 }}</p>
                 <div class="assignment-meta">
                     <div class="meta-item">
-                        <i class="fas fa-clock"></i>
+                        <i class="fas fa-code"></i>
                         <span>Created By : {{ course.educator.username }} </span>
                     </div>
                 </div>
             </div>
             <div class="card-actions">
                 <a href="{% url 'enroll_in_course' course.id %}" class="action-btn edit-btn">
-                    <i class="fas fa-edit"></i> Enroll Now
+                    <i class="fas fa-file-signature"></i> Enroll Now
                 </a>
             </div>
         </div>
@@ -32,5 +32,7 @@
         <p>No recommendations available.</p>
     {% endif %}
     </div><br>
-    <a href="{% url 'student_dashboard' %}" class="back-button">Back to Dashboard</a>
+
+    <a href="{% url 'student_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+    
 {% endblock %}
