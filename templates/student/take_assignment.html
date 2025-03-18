@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<main class="cyber-container">
+    <h1 class="neon-heading">{{ assignment.title }}</h1>
+    <p class="deadline-notice">Deadline: {{ assignment.deadline|date:"M d, Y H:i" }}</p>
+    
+    <form id="assignment-form" method="post" action="{% url 'submit_assignment' assignment.id %}">
+        {% csrf_token %}
+        
+        <div class="questions-container">
+            {% for question in questions %}
+            <div class="cyber-question">
+                <div class="question-header">
+                    <span class="question-number">Question {{ forloop.counter }}</span>
+                    <span class="question-points">{{ question.points }} pts</span>
+                </div>
+                
+                <p class="question-text">{{ question.question_text }}</p>
+                
+                <div class="answer-section">
+                    {% if question.question_type == 'multiple_choice' %}
+                        {% for choice in question.choices.all %}
+                        <label class="cyber-radio">
+                            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}">
+                            <span class="radio-label">{{ choice.choice_text }}</span>
+                        </label>
+                        {% endfor %}
+                        
+                    {% elif question.question_type == 'short_answer' %}
+                        <textarea class="cyber-textarea short-answer" 
+                                name="question_{{ question.id }}" 
+                                placeholder="Type your answer here..."></textarea>
+                    
+                    {% elif question.question_type == 'code' %}
+                        <div class="code-editor-container" data-question-id="{{ question.id }}">
+                            <div id="editor-{{ question.id }}" class="monaco-editor"></div>
+                            <textarea class="hidden-code-input" 
+                                    name="question_{{ question.id }}" 
+                                    id="hidden-input-{{ question.id }}"></textarea>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="gradient-btn-cyan">
+                <i class="fas fa-paper-plane"></i> Submit Assignment
+            </button>
+            <a href="{% url 'student_assignments' %}" class="gradient-btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</main>
+
+<!-- Monaco Editor Integration -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Monaco Editors for code questions
+        const codeEditors = new Map();
+        
+        document.querySelectorAll('.code-editor-container').forEach(container => {
+            const questionId = container.dataset.questionId;
+            const textarea = document.getElementById(`hidden-input-${questionId}`);
+            
+            require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+            require(['vs/editor/editor.main'], function() {
+                const editor = monaco.editor.create(document.getElementById(`editor-${questionId}`), {
+                    value: '',
+                    language: 'python',
+                    theme: 'vs-dark',
+                    minimap: { enabled: false },
+                    automaticLayout: true
+                });
+                
+                editor.onDidChangeModelContent(() => {
+                    textarea.value = editor.getValue();
+                });
+                
+                codeEditors.set(questionId, editor);
+            });
+        });
+    });
+</script>
+
+<style>
+
+/* Assignment Taking Interface */
+
+.deadline-notice {
+    color: #ff5555;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.cyber-question {
+    background: #0a0a1a;
+    border: 1px solid #00f7ff;
+    border-radius: 5px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.question-number {
+    color: #00f7ff;
+    font-weight: bold;
+}
+
+.question-points {
+    background: #0044cc;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+}
+
+.hidden-code-input {
+    display: none;
+}
+
+.code-editor-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    overflow: hidden;  /* Contain editor within fixed dimensions */
+    border-radius: 3px;
+    text-align: left !important;
+}
+
+.monaco-editor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid #00f7ff !important;
+    box-sizing: border-box;  /* Include border in dimension calculation */
+}
+
+.cyber-radio {
+    display: block;
+    margin: 0.5rem 0;
+    padding: 0.8rem;
+    background: #111122;
+    border: 1px solid #00f7ff;
+    border-radius: 3px;
+}
+
+.radio-label {
+    margin-left: 0.5rem;
+}
+
+</style>
+{% endblock %}

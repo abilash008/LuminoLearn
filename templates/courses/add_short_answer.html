@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="cyber-container">
+    <h1 class="neon-heading">Add Correct Answer</h1>
+    
+    <form class="cyber-form" method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="neon-label">Question:</label>
+            <p class="cyber-text">{{ question.question_text }}</p>
+        </div>
+
+        <div class="form-group">
+            <label class="neon-label">Correct Answer</label>
+            <textarea class="cyber-textarea" 
+                    name="correct_answer" 
+                    rows="4"
+                    required>{% if short_answer %}{{ short_answer.correct_answer }}{% endif %}</textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="gradient-btn-cyan">
+                <i class="fas fa-save"></i> Save Answer
+            </button>
+            <a href="{% url 'add_questions' question.assignment.id %}" class="gradient-btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Questions
+            </a>
+        </div>
+    </form>
+</main>
+{% endblock %}

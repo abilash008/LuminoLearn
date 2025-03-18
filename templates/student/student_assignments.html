@@ -2,6 +2,17 @@
 {% block title %}Upcoming Assignments{% endblock %}
 {% block content %}
 
+<!-- Deadline Alert Container -->
+<div id="deadline-alerts">
+    {% for message in messages %}
+        {% if 'deadline' in message.tags %}
+            <div class="deadline-alert">
+                {{ message }}
+                <button class="deadline-alert-close" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
 
 <!-- Assignment List -->
 <h1 class="neon-subheading">Your Assignments</h1>
@@ -27,7 +38,7 @@
             </div>
         </div>
         <div class="card-actions">
-            <a href="#" class="action-btn edit-btn">
+            <a href="{% url 'take_assignment' assignment.id %}" class="action-btn edit-btn">
                 <i class="fas fa-pencil-alt"></i> Take Now
             </a>
         </div>
@@ -38,4 +49,63 @@
 {% endif %}
 </div><br>
 <a href="{% url 'student_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+
+<script>
+    // Auto-remove messages after 5 seconds
+    document.querySelectorAll('.deadline-alert').forEach(alert => {
+        setTimeout(() => {
+            alert.style.transform = 'translateX(150%)';
+            setTimeout(() => alert.remove(), 500);
+        }, 5000);
+    });
+</script>
+
+<style>
+    /* Deadline Alert Animation */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.deadline-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #2a0a0a;
+    border: 1px solid #ff5555;
+    border-radius: 4px;
+    color: #ff8888;
+    font-family: 'Courier New', monospace;
+    box-shadow: 0 0 15px rgba(255, 85, 85, 0.4);
+    animation: slideInRight 0.5s ease-out;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.deadline-alert::before {
+    content: '⚠';
+    font-size: 1.5em;
+    filter: drop-shadow(0 0 5px #ff5555);
+}
+
+.deadline-alert-close {
+    margin-left: 15px;
+    cursor: pointer;
+    color: #ff8888;
+    background: none;
+    border: none;
+    font-size: 1.2em;
+}
+
+.deadline-alert-close:hover {
+    color: #ff5555;
+}
+</style>
 {% endblock %}

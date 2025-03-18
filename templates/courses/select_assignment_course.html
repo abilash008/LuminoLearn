@@ -3,6 +3,7 @@
 {% block title %}Select Course for Assignment{% endblock %}
 
 {% block content %}
+<!--
 <div class="dashboard-card">
     <h3>Create Assignments</h3>
     <p>Design quizzes and assignments for your students.</p>
@@ -20,5 +21,33 @@
     {% else %}
         <p>You haven't created any courses yet. <a href="{% url 'create_course' %}">Create one now!</a></p>
     {% endif %}
-</div>
+</div> -->
+
+
+<main class="dashboard-container">
+    <h1>Create Assignments</h1><br>
+    
+    <!-- Course List -->
+    <div class="course-grid">
+        {% for course in courses %}
+        <div class="cyber-card">
+            <div class="card-header">
+                <h3 class="glowing-text">{{ course.title }}</h3>
+                <a href="{% url 'create_assignment' course_id=course.id %}" 
+                class="gradient-btn-cyan">
+                    <i class="fas fa-plus"></i> New Assignment
+                </a>
+            </div>
+            <div class="card-body">
+                <p class="course-description">{{ course.description|truncatechars:100 }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-graduation-cap"></i>
+            <p>You haven't created any courses yet. <a href="{% url 'create_course' %}">Create one now!</a></p>
+        </div>
+        {% endfor %}
+    </div>
+</main>
 {% endblock %}

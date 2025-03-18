@@ -1,8 +1,9 @@
+from django.utils import timezone
 from decimal import Decimal
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Course, Topic, TopicDiagram, Assignment, Submission, Question, Choice
+from .models import CodeQuestion, Course, ShortAnswer, StudentAnswer, Topic, TopicDiagram, Assignment, Submission, Question, Choice
 from django.utils.timezone import now
 
 @login_required
@@ -172,9 +173,14 @@ def add_questions(request, assignment_id):
 
         if question_type == 'multiple_choice':
             return redirect('add_choices', question_id=question.id)
+        elif question_type == 'short_answer':
+            return redirect('add_short_answer', question_id=question.id)
+        elif question_type == 'code':
+            return redirect('add_code_question', question_id=question.id)
 
         messages.success(request, "Question added successfully!")
         return redirect('add_questions', assignment_id=assignment.id)
+
 
     return render(request, 'courses/add_questions.html', {'assignment': assignment})
 
@@ -197,6 +203,88 @@ def add_choices(request, question_id):
         return redirect('add_choices', question_id=question.id)
 
     return render(request, 'courses/add_choices.html', {'question': question})
+
+
+@login_required
+def add_short_answer(request, question_id):
+    question = get_object_or_404(
+        Question,
+        id=question_id,
+        assignment__course__educator=request.user
+    )
+    if question.question_type != 'short_answer':
+        messages.error(request, "Invalid question type.")
+        return redirect('educator_assignments')
+
+    try:
+        short_answer = ShortAnswer.objects.get(question=question)
+    except ShortAnswer.DoesNotExist:
+        short_answer = None
+
+    if request.method == 'POST':
+        correct_answer = request.POST.get('correct_answer', '').strip()
+        if not correct_answer:
+            messages.error(request, "Correct answer is required.")
+            return redirect('add_short_answer', question_id=question.id)
+
+        if short_answer:
+            short_answer.correct_answer = correct_answer
+            short_answer.save()
+        else:
+            ShortAnswer.objects.create(
+                question=question,
+                correct_answer=correct_answer
+            )
+        messages.success(request, "Correct answer saved successfully!")
+        return redirect('add_questions', assignment_id=question.assignment.id)
+
+    return render(request, 'courses/add_short_answer.html', {
+        'question': question,
+        'short_answer': short_answer
+    })
+
+@login_required
+def add_code_question(request, question_id):
+    question = get_object_or_404(
+        Question,
+        id=question_id,
+        assignment__course__educator=request.user
+    )
+    if question.question_type != 'code':
+        messages.error(request, "Invalid question type.")
+        return redirect('educator_assignments')
+
+    try:
+        code_question = CodeQuestion.objects.get(question=question)
+    except CodeQuestion.DoesNotExist:
+        code_question = None
+
+    if request.method == 'POST':
+        test_cases = request.POST.get('test_cases', '').strip()
+        expected_output = request.POST.get('expected_output', '').strip()
+
+        if not (test_cases and expected_output):
+            messages.error(request, "Test cases and expected output are required.")
+            return redirect('add_code_question', question_id=question.id)
+
+        if code_question:
+            code_question.test_cases = test_cases
+            code_question.expected_output = expected_output
+            code_question.save()
+        else:
+            CodeQuestion.objects.create(
+                question=question,
+                test_cases=test_cases,
+                expected_output=expected_output
+            )
+        messages.success(request, "Code question details saved successfully!")
+        return redirect('add_questions', assignment_id=question.assignment.id)
+
+    return render(request, 'courses/add_code_question.html', {
+        'question': question,
+        'code_question': code_question
+    })
+
 
 @login_required
 def edit_course(request, course_id):
@@ -612,3 +700,72 @@ def complete_topic(request, course_id, topic_id):
         logger.error(f"Error completing topic: {str(e)}")
         messages.error(request, "Could not update progress. Please try again.")
         return redirect('course_topic', course_id=course_id, topic_id=topic_id)
+    
+@login_required
+def take_assignment(request, assignment_id):
+    if request.user.role != 'student':
+        return redirect('home')
+    
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    submission, created = Submission.objects.get_or_create(
+        assignment=assignment,
+        student=request.user,
+        defaults={'status': 'pending'}
+    )
+    
+    if timezone.now() > assignment.deadline:
+        messages.error(request, "The deadline for this assignment has passed.", extra_tags='deadline')
+        return redirect('student_assignments')
+    
+    questions = assignment.questions.all().prefetch_related('choices')
+    return render(request, 'student/take_assignment.html', {
+        'assignment': assignment,
+        'questions': questions,
+        'submission': submission
+    })
+
+@login_required
+def submit_assignment(request, assignment_id):
+    if request.user.role != 'student':
+        return redirect('home')
+    
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    submission = get_object_or_404(Submission, assignment=assignment, student=request.user)
+    
+    if request.method == 'POST':
+        # Process answers
+        for question in assignment.questions.all():
+            answer_key = f"question_{question.id}"
+            
+            if question.question_type == 'multiple_choice':
+                choice_id = request.POST.get(answer_key)
+                if choice_id:
+                    choice = get_object_or_404(Choice, id=choice_id)
+                    StudentAnswer.objects.update_or_create(
+                        submission=submission,
+                        question=question,
+                        defaults={'chosen_choice': choice}
+                    )
+            elif question.question_type == 'short_answer':
+                answer_text = request.POST.get(answer_key, '').strip()
+                if answer_text:
+                    StudentAnswer.objects.update_or_create(
+                        submission=submission,
+                        question=question,
+                        defaults={'answer_text': answer_text}
+                    )
+            elif question.question_type == 'code':
+                code_answer = request.POST.get(answer_key, '').strip()
+                if code_answer:
+                    StudentAnswer.objects.update_or_create(
+                        submission=submission,
+                        question=question,
+                        defaults={'code_answer': code_answer}
+                    )
+        
+        submission.status = 'submitted'
+        submission.save()
+        messages.success(request, "Assignment submitted successfully!")
+        return redirect('student_assignments')
+    
+    return redirect('take_assignment', assignment_id=assignment_id)

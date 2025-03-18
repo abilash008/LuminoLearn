@@ -20,6 +20,8 @@ urlpatterns = [
     path('educator/assignments/', views.educator_assignments, name='educator_assignments'),
     path('assignment/edit/<int:assignment_id>/', views.edit_assignment, name='edit_assignment'),
     path('assignment/delete/<int:assignment_id>/', views.delete_assignment, name='delete_assignment'),
+    path('add_short_answer/<int:question_id>/', views.add_short_answer, name='add_short_answer'),
+    path('add_code_question/<int:question_id>/', views.add_code_question, name='add_code_question'),
     
     
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
@@ -33,6 +35,8 @@ urlpatterns = [
     path('course/<int:course_id>/learn/', views.course_learn, name='course_learn'),
     path('course/<int:course_id>/learn/topic/<int:topic_id>/', views.course_learn, name='course_topic'),
     path('course/<int:course_id>/complete/<int:topic_id>/', views.complete_topic, name='complete_topic'),
+    path('take_assignment/<int:assignment_id>/', views.take_assignment, name='take_assignment'),
+    path('submit_assignment/<int:assignment_id>/', views.submit_assignment, name='submit_assignment'),
 ]
 
 if settings.DEBUG:

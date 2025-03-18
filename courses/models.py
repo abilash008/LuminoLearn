@@ -71,6 +71,34 @@ class Choice(models.Model):
     choice_text = models.CharField(max_length=200)
     is_correct = models.BooleanField(default=False)
     
+class ShortAnswer(models.Model):
+    question = models.OneToOneField(
+        Question,
+        on_delete=models.CASCADE,
+        related_name='short_answer'
+    )
+    correct_answer = models.TextField()
+
+    def __str__(self):
+        return f"Short answer for {self.question.question_text[:50]}"
+
+class CodeQuestion(models.Model):
+    question = models.OneToOneField(
+        Question,
+        on_delete=models.CASCADE,
+        related_name='code_question'
+    )
+    test_cases = models.TextField(
+        help_text="Enter each test case on a new line.",
+        blank=True
+    )
+    expected_output = models.TextField(
+        help_text="Enter the expected output for each test case on a new line."
+    )
+
+    def __str__(self):
+        return f"Code question for {self.question.question_text[:50]}"
+    
     
     
 #  Student Dashboard
@@ -135,3 +163,13 @@ class Progress(models.Model):
             self.percentage = new_percentage
             self.save(update_fields=['percentage', 'completed_at'])
 
+class StudentAnswer(models.Model):
+    submission = models.ForeignKey(Submission, on_delete=models.CASCADE, related_name='answers')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    answer_text = models.TextField(null=True, blank=True)
+    code_answer = models.TextField(null=True, blank=True)
+    chosen_choice = models.ForeignKey(Choice, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Answer for {self.question.question_text[:50]} by {self.submission.student.username}"
