@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load static assignment_tags %}
 {% block content %}
 
     <h1 class="neon-heading">{{ assignment.title }}</h1>
@@ -33,12 +34,43 @@
                                 placeholder="Type your answer here..."></textarea>
                     
                     {% elif question.question_type == 'code' %}
-                        <div class="code-editor-container" data-question-id="{{ question.id }}">
-                            <div id="editor-{{ question.id }}" class="monaco-editor"></div>
-                            <textarea class="hidden-code-input" 
-                                    name="question_{{ question.id }}" 
-                                    id="hidden-input-{{ question.id }}"></textarea>
-                        </div>
+                    {% with answer=submission.answers.filter|get_question_answer:question %}
+                    <div class="code-question-container">
+                        {% if submission.status == 'submitted' and answer.test_results %}
+                            <div class="test-results cyber-glow">
+                                <h4 class="neon-cyan">Code Execution Results</h4>
+                                <div class="submitted-code">
+                                    <pre class="cyber-code">{{ answer.code_answer }}</pre>
+                                </div>
+                                
+                                <div class="test-cases">
+                                    {% for test_case in answer.test_results.splitlines %}
+                                        {% if 'Test ' in test_case %}
+                                            <div class="test-case {% if 'PASS' in test_case %}pass{% else %}fail{% endif %}">
+                                                <div class="test-header">
+                                                    <span class="test-status">{{ test_case }}</span>
+                                                    <span class="test-badge {% if 'PASS' in test_case %}bg-cyan{% else %}bg-red{% endif %}">
+                                                        {% if 'PASS' in test_case %}✓{% else %}✗{% endif %}
+                                                    </span>
+                                                </div>
+                                        {% else %}
+                                            <div class="test-detail">
+                                                {{ test_case }}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="code-editor-container" data-question-id="{{ question.id }}">
+                                <div id="editor-{{ question.id }}" class="monaco-editor"></div>
+                                <textarea class="hidden-code-input" 
+                                        name="question_{{ question.id }}" 
+                                        id="hidden-input-{{ question.id }}"></textarea>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endwith %}
                     {% endif %}
                 </div>
             </div>
@@ -156,6 +188,105 @@
 
 .radio-label {
     margin-left: 0.5rem;
+}
+
+/* Code Evaluation Results */
+.test-results {
+    background: #0a0a1a;
+    border: 2px solid #00f7ff;
+    border-radius: 5px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 0 15px rgba(0, 247, 255, 0.2);
+}
+
+.submitted-code {
+    background: #000;
+    padding: 1rem;
+    border-radius: 3px;
+    margin-bottom: 2rem;
+}
+
+.cyber-code {
+    color: #00f7ff;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+}
+
+.test-cases {
+    display: grid;
+    gap: 1rem;
+}
+
+.test-case {
+    background: #111122;
+    border-left: 4px solid;
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.test-case.pass {
+    border-color: #00ff88;
+    box-shadow: inset 4px 0 15px rgba(0, 255, 136, 0.1);
+}
+
+.test-case.fail {
+    border-color: #ff5555;
+    box-shadow: inset 4px 0 15px rgba(255, 85, 85, 0.1);
+}
+
+.test-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.test-status {
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.test-badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.bg-cyan {
+    background: #00f7ff;
+    color: #000;
+}
+
+.bg-red {
+    background: #ff5555;
+    color: #000;
+}
+
+.test-detail {
+    color: #a0a0ff;
+    font-family: monospace;
+    font-size: 0.9em;
+    margin: 0.3rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid #303050;
+}
+
+/* Glow Animation */
+@keyframes cyber-glow {
+    0% { box-shadow: 0 0 10px rgba(0, 247, 255, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(0, 247, 255, 0.4); }
+    100% { box-shadow: 0 0 10px rgba(0, 247, 255, 0.2); }
+}
+
+.cyber-glow {
+    animation: cyber-glow 2s infinite;
 }
 
 </style>

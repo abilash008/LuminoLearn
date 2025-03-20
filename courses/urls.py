@@ -28,7 +28,6 @@ urlpatterns = [
     path('student/enrolled/', views.student_enrolled_courses, name='student_enrolled_courses'),
     path('student/progress/', views.student_progress, name='student_progress'),
     path('student/assignments/', views.student_assignments, name='student_assignments'),
-    path('student/leaderboard/', views.student_leaderboard, name='student_leaderboard'),
     path('student/recommendations/', views.student_recommendations, name='student_recommendations'),
     path('student/search_courses/', views.search_courses, name='search_courses'),
     path('student/enroll/<int:course_id>/', views.enroll_in_course, name='enroll_in_course'),

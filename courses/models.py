@@ -170,6 +170,8 @@ class StudentAnswer(models.Model):
     code_answer = models.TextField(null=True, blank=True)
     chosen_choice = models.ForeignKey(Choice, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_correct = models.BooleanField(default=False)
+    test_results = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"Answer for {self.question.question_text[:50]} by {self.submission.student.username}"

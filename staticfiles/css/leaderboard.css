@@ -1,0 +1,164 @@
+/* Leaderboard container */
+.leaderboard-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.leaderboard-title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+/* Card styling */
+.leaderboard-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+/* Header row */
+.leaderboard-header {
+    background: #3498db;
+    padding: 1rem;
+    color: white;
+}
+
+.header-row {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+/* List styling */
+.leaderboard-list {
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboard-item {
+    padding: 1rem;
+    border-bottom: 1px solid #ecf0f1;
+    transition: background-color 0.2s;
+}
+
+.leaderboard-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Grid layout */
+.leaderboard-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.rank-col { flex: 0 0 80px; }
+.student-col { flex: 3; }
+.badges-col { flex: 2; }
+.points-col { flex: 1; }
+
+/* Student info */
+.student-col {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.student-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #3498db;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.student-name {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+/* Badges */
+.achievement-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #ecf0f1;
+    border-radius: 15px;
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    position: relative;
+    cursor: help;
+}
+
+/* Points styling */
+.points-value {
+    color: #27ae60;
+    font-weight: 600;
+}
+
+/* Rank badge */
+.rank-badge {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #3498db;
+    color: white;
+    text-align: center;
+    line-height: 30px;
+    font-weight: 500;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #7f8c8d;
+}
+
+/* Tooltip */
+.custom-tooltip {
+    position: fixed;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+@media (max-width: 768px) {
+    .leaderboard-row {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .rank-col, .student-col, 
+    .badges-col, .points-col {
+        flex: 1 1 100%;
+    }
+    
+    .header-row {
+        display: none;
+    }
+    
+    .leaderboard-item {
+        padding: 1rem 0.5rem;
+    }
+}

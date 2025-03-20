@@ -3,6 +3,9 @@ from decimal import Decimal
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
+from gamification.models import Point
+from lumino_learn import settings
 from .models import CodeQuestion, Course, ShortAnswer, StudentAnswer, Topic, TopicDiagram, Assignment, Submission, Question, Choice
 from django.utils.timezone import now
 
@@ -467,7 +470,6 @@ def delete_topic(request, topic_id):
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from courses.models import Course, StudentCourse, Progress, Assignment, Submission
-from gamification.models import Gamification
 from django.db.models import Avg, Count
 from django.contrib import messages
 import random
@@ -555,24 +557,6 @@ def student_assignments(request):
     return render(request, 'student/student_assignments.html', {'upcoming_assignments': upcoming_assignments})
 
 
-# View for Leaderboard & Gamification Stats
-@login_required
-def student_leaderboard(request):
-    if not hasattr(request.user, 'role') or request.user.role != 'student':
-        messages.error(request, "You do not have permission to view the Student Dashboard.")
-        return redirect('home')
-    
-    try:
-        my_gamification = request.user.gamification
-    except Gamification.DoesNotExist:
-        my_gamification = None
-        
-    top_students = Gamification.objects.all().order_by('-points')[:5]
-    
-    return render(request, 'student/student_leaderboard.html', {
-        'my_gamification': my_gamification,
-        'top_students': top_students,
-    })
 
 
 # View for Personalized Recommendations
@@ -724,6 +708,16 @@ def take_assignment(request, assignment_id):
         'submission': submission
     })
 
+from django.db.models import Prefetch
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
+import os
+import subprocess
+import tempfile
+import docker
+
+@transaction.atomic
 @login_required
 def submit_assignment(request, assignment_id):
     if request.user.role != 'student':
@@ -731,41 +725,179 @@ def submit_assignment(request, assignment_id):
     
     assignment = get_object_or_404(Assignment, id=assignment_id)
     submission = get_object_or_404(Submission, assignment=assignment, student=request.user)
-    
+    questions = assignment.questions.all().prefetch_related(
+    Prefetch(
+        'studentanswer_set',
+        queryset=StudentAnswer.objects.filter(submission=submission),
+        to_attr='current_answers'
+    ))
+    total_points = 0
+
     if request.method == 'POST':
-        # Process answers
         for question in assignment.questions.all():
             answer_key = f"question_{question.id}"
-            
+            is_correct = False
+            points_earned = 0
+
+            # Check existing answer before processing new submission
+            existing_answer = StudentAnswer.objects.filter(
+                submission=submission,
+                question=question
+            ).first()
+
             if question.question_type == 'multiple_choice':
                 choice_id = request.POST.get(answer_key)
                 if choice_id:
                     choice = get_object_or_404(Choice, id=choice_id)
+                    is_correct = choice.is_correct
+
+                    # Update or create AFTER points calculation
                     StudentAnswer.objects.update_or_create(
                         submission=submission,
                         question=question,
-                        defaults={'chosen_choice': choice}
+                        defaults={
+                            'chosen_choice': choice,
+                            'is_correct': is_correct
+                        }
                     )
+
             elif question.question_type == 'short_answer':
                 answer_text = request.POST.get(answer_key, '').strip()
                 if answer_text:
+                    correct_answer = question.short_answer.correct_answer.lower()
+                    is_correct = (answer_text.lower() == correct_answer)
+                    
                     StudentAnswer.objects.update_or_create(
                         submission=submission,
                         question=question,
-                        defaults={'answer_text': answer_text}
+                        defaults={
+                            'answer_text': answer_text,
+                            'is_correct': is_correct
+                        }
                     )
+
             elif question.question_type == 'code':
                 code_answer = request.POST.get(answer_key, '').strip()
                 if code_answer:
+                    # Initialize all variables with defaults
+                    is_correct = False
+                    test_cases = []
+                    expected_outputs = []
+                    all_outputs = []
+                    test_results = []
+
+                    try:
+                        # Attempt to get code question parameters
+                        code_question = question.code_question
+                        test_cases = code_question.test_cases.split('\n')
+                        expected_outputs = code_question.expected_output.split('\n')
+                    except ObjectDoesNotExist:
+                        logger.error(f"Missing CodeQuestion for question {question.id}")
+                        messages.error(request, 
+                            f"System error in question {question.id} - contact instructor"
+                        )
+                        test_cases = []
+                        expected_outputs = []
+
+                    # Only execute if we have test cases
+                    if test_cases and expected_outputs:
+                        with tempfile.TemporaryDirectory() as temp_dir:
+                            # Save code to temporary file
+                            code_path = os.path.join(temp_dir, 'main.py')
+                            with open(code_path, 'w') as f:
+                                f.write(code_answer)
+
+                            try:
+                                # Docker-based execution
+                                client = docker.from_env()
+                                all_outputs = []
+                                
+                                for test_case in test_cases:
+                                    try:
+                                        container = client.containers.run(
+                                            image='python:3.9-slim',
+                                            command=f"python main.py {test_case}",
+                                            volumes={temp_dir: {'bind': '/code', 'mode': 'ro'}},
+                                            working_dir='/code',
+                                            stdout=True,
+                                            stderr=True,
+                                            detach=False,
+                                            remove=True,
+                                            mem_limit='100m',
+                                            timeout=5
+                                        )
+                                        output = container.decode('utf-8').strip()
+                                    except Exception as e:
+                                        output = f"Execution Error: {str(e)}"
+                                    
+                                    all_outputs.append(output)
+
+                                # Validate results
+                                is_correct = all(
+                                    actual.strip() == expected.strip()
+                                    for actual, expected in zip(all_outputs, expected_outputs)
+                                )
+
+                            except docker.errors.DockerException:
+                                # Fallback to local execution in development
+                                if settings.DEBUG:
+                                    try:
+                                        result = subprocess.run(
+                                            ['python3', code_path],
+                                            capture_output=True,
+                                            text=True,
+                                            timeout=5,
+                                            check=True
+                                        )
+                                        all_outputs = [result.stdout.strip()]
+                                        is_correct = all_outputs[0] == expected_outputs[0]
+                                    except Exception:
+                                        all_outputs = ["Local execution failed"]
+                                        is_correct = False
+
+                            # Generate test results report
+                            test_results = []
+                            for i, (test, actual, expected) in enumerate(zip(test_cases, all_outputs, expected_outputs)):
+                                test_results.append(
+                                    f"Test {i+1}: {'PASS' if actual.strip() == expected.strip() else 'FAIL'}\n"
+                                    f"Input: {test}\n"
+                                    f"Expected: {expected}\n"
+                                    f"Received: {actual}\n"
+                                )
+
+                    # Save results to database
                     StudentAnswer.objects.update_or_create(
                         submission=submission,
                         question=question,
-                        defaults={'code_answer': code_answer}
+                        defaults={
+                            'code_answer': code_answer,
+                            'is_correct': is_correct,
+                            'test_results': '\n'.join(test_results) if test_results else "No test results available"
+                        }
                     )
-        
+
+            # Points calculation logic (applies to all question types)
+            if existing_answer:
+                if not existing_answer.is_correct and is_correct:
+                    points_earned = question.points
+                elif existing_answer.is_correct and is_correct:
+                    points_earned = 0  # Already earned points
+            else:
+                points_earned = question.points if is_correct else 0
+
+            if points_earned > 0:
+                Point.objects.create(
+                    user=request.user,
+                    points=points_earned,
+                    reason=f"Correct answer: {question.question_text[:50]}...",
+                    content_object=question
+                )
+                total_points += points_earned
+
         submission.status = 'submitted'
         submission.save()
-        messages.success(request, "Assignment submitted successfully!")
+        
+        messages.success(request, f"Assignment submitted! Earned {total_points} new points!")
         return redirect('student_assignments')
     
     return redirect('take_assignment', assignment_id=assignment_id)

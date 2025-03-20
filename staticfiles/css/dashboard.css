@@ -1016,3 +1016,23 @@ form button:hover {
         transform: translateX(0);
     }
 }
+
+/* static/css/dashboard.css for leaderboard */
+.list-group-item:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+}
+.badge-primary {
+    background-color: #4a90e2;
+}
+.avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #4a90e2;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}

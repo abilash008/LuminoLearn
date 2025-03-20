@@ -35,6 +35,7 @@ urlpatterns = [
     path("admin_dashboard/", views.admin_dashboard_view, name="admin_dashboard"),
     path("login/", views.logout_view, name="logout"),
     path('chatbot/', include('chatbot.urls')),
+    path('gamification/', include(('gamification.urls', 'gamification'), namespace='gamification')),
 ]
 
 # For serving static files during development

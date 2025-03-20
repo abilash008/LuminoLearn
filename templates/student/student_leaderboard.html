@@ -1,17 +1,83 @@
 {% extends 'base.html' %}
-{% block title %}Leaderboard{% endblock %}
+{% load humanize static %}
+
 {% block content %}
-<h1>Leaderboard</h1>
-{% if top_students %}
-    <ol>
-    {% for entry in top_students %}
-        <li>{{ entry.user.username }}: {{ entry.points }} points</li>
-    {% endfor %}
-    </ol>
-{% else %}
-    <p>Leaderboard is not available.</p>
-{% endif %}
-{% if my_gamification %}
-    <p>Your Points: {{ my_gamification.points }}</p>
-{% endif %}
+<link rel="stylesheet" href="{% static 'css/leaderboard.css' %}">
+
+<div class="leaderboard-container">
+    <h2 class="leaderboard-title">Class Leaderboard</h2>
+    
+    <div class="leaderboard-card">
+        <div class="leaderboard-header">
+            <div class="leaderboard-row header-row">
+                <div class="rank-col">Rank</div>
+                <div class="student-col">Student</div>
+                <div class="badges-col">Achievements</div>
+                <div class="points-col">Points</div>
+            </div>
+        </div>
+        
+        <div class="leaderboard-list">
+            {% for student in leaderboard %}
+            <div class="leaderboard-item">
+                <div class="leaderboard-row">
+                    <div class="rank-col">
+                        <span class="rank-badge">{{ forloop.counter }}</span>
+                    </div>
+                    <div class="student-col">
+                        {% if student.profile.profile_picture %}
+                        <img src="{{ student.profile.profile_picture.url }}" 
+                            alt="{{ student.username }}" 
+                            class="student-avatar">
+                        {% else %}
+                        <div class="avatar-placeholder">
+                            {{ student.username|first|upper }}
+                        </div>
+                        {% endif %}
+                        <span class="student-name">{{ student.get_full_name|default:student.username }}</span>
+                    </div>
+                    <div class="badges-col">
+                        {% for badge in student.badges_earned.all|slice:":5" %}
+                        <span class="achievement-badge" title="{{ badge.badge.description }}">
+                            {{ badge.badge.name }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    <div class="points-col">
+                        <span class="points-value">{{ student.total_points|default:0|intcomma }} pts</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                No leaderboard data available yet
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div><br>
+<a href="{% url 'student_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Simple tooltip implementation
+document.querySelectorAll('.achievement-badge').forEach(item => {
+    item.addEventListener('mouseover', function(e) {
+        const tooltip = document.createElement('div');
+        tooltip.className = 'custom-tooltip';
+        tooltip.textContent = this.title;
+        document.body.appendChild(tooltip);
+        
+        const rect = this.getBoundingClientRect();
+        tooltip.style.top = (rect.top - 30) + 'px';
+        tooltip.style.left = (rect.left + rect.width/2 - tooltip.offsetWidth/2) + 'px';
+        
+        this.addEventListener('mouseout', () => {
+            tooltip.remove();
+        });
+    });
+});
+</script>
 {% endblock %}

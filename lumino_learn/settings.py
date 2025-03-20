@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',  
     'rest_framework',
     'users',
     'courses',
@@ -172,6 +173,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'  # URL prefix for media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory to store uploaded media
+
+CODE_EVALUATION_TIMEOUT = 5  # seconds
+MAX_CODE_MEMORY = '100m'     # 100MB
 
 
 
