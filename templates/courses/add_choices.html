@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<main class="cyber-container">
+
     <h1 class="neon-heading">Add Choices for: <span class="glowing-text">{{ question.question_text }}</span></h1>
     
     <form class="cyber-form" method="post" action="{% url 'add_choices' question.id %}">
@@ -35,5 +35,5 @@
             </a>
         </div>
     </form>
-</main>
+
 {% endblock %}

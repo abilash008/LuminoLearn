@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<main class="cyber-container">
+
     <h1 class="neon-heading">Add Questions to <span class="glowing-text">{{ assignment.title }}</span></h1>
     
     <form class="cyber-form" method="post" action="{% url 'add_questions' assignment.id %}">
@@ -47,5 +47,5 @@
             </a>
         </div>
     </form>
-</main>
+
 {% endblock %}

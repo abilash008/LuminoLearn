@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<main class="dashboard-container">
+
     <h1 class="neon-heading">Your Courses & Assignments</h1>
     
     <!-- Course List -->
@@ -67,6 +67,7 @@
             <p>No assignments found. Create your first assignment!</p>
         </div>
         {% endfor %}
-    </div>
-</main>
+    </div><br>
+    <a href="{% url 'educator_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+
 {% endblock %}

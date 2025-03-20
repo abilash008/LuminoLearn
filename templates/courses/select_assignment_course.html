@@ -24,7 +24,7 @@
 </div> -->
 
 
-<main class="dashboard-container">
+
     <h1>Create Assignments</h1><br>
     
     <!-- Course List -->
@@ -48,6 +48,7 @@
             <p>You haven't created any courses yet. <a href="{% url 'create_course' %}">Create one now!</a></p>
         </div>
         {% endfor %}
-    </div>
-</main>
+    </div><br>
+    <a href="{% url 'educator_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+
 {% endblock %}

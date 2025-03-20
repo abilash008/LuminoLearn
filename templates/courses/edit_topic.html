@@ -4,7 +4,7 @@
 {% block title %}Edit Topic: {{ topic.name }}{% endblock %}
 
 {% block content %}
-<main class="cyber-container">
+
     <h1 class="neon-heading">Edit Topic: <span class="glowing-text">{{ topic.name }}</span></h1>
     
     <form class="cyber-form" method="post" enctype="multipart/form-data" action="{% url 'edit_topic' topic.id %}">
@@ -44,5 +44,5 @@
             </a>
         </div>
     </form>
-</main>
+
 {% endblock %}

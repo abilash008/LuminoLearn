@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<main class="cyber-container">
+
     <h1 class="neon-heading">Create Assignment for <span class="glowing-text">{{ course.title }}</span></h1>
     
     <form class="cyber-form" method="POST" enctype="multipart/form-data" action="{% url 'create_assignment' course.id %}">
@@ -50,5 +50,4 @@
             </a>
         </div>
     </form>
-</main>
 {% endblock %}

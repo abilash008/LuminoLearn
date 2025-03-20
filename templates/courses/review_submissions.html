@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<main class="cyber-container">
+
     <h1 class="neon-heading">Review Submissions</h1>
     
     <div class="cyber-table">
@@ -18,7 +18,7 @@
         <div class="table-row">
             <div class="td">
                 <i class="fas fa-user"></i>
-                {{ submission.user.username }}
+                <b>{{ submission.student.username }}</b>
             </div>
             <div class="td">
                 {{ submission.assignment.title }}
@@ -47,9 +47,9 @@
         {% empty %}
         <div class="empty-state">
             <i class="fas fa-inbox"></i>
-            <p>No submissions found</p>
+            <p>No submissions at this time!</p>
         </div>
         {% endfor %}
-    </div>
-</main>
+    </div><br>
+    <a href="{% url 'educator_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
 {% endblock %}

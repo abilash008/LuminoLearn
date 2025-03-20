@@ -4,7 +4,7 @@
 {% block title %}Edit Assignment: {{ assignment.title }}{% endblock %}
 
 {% block content %}
-<main class="cyber-container">
+
     <h1 class="neon-heading">Edit: <span class="glowing-text">{{ assignment.title }}</span></h1>
     
     <form class="cyber-form" method="post" action="{% url 'edit_assignment' assignment.id %}">
@@ -73,5 +73,5 @@
             <i class="fas fa-plus"></i> Add Question
         </a>
     </div>
-</main>
+
 {% endblock %}

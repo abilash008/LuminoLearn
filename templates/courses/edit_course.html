@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<main class="edit-course-container">
+
     <h1 class="neon-heading">Edit: <span class="glowing-text">{{ course.title }}</span></h1>
     
     <form class="cyber-form" method="post" enctype="multipart/form-data" action="{% url 'edit_course' course.id %}">
@@ -83,9 +83,9 @@
         <a href="{% url 'add_topic' course.id %}" class="gradient-btn-cyan">
             <i class="fas fa-plus"></i> Add Topic
         </a>
-        <a href="{% url 'manage_courses' %}" class="gradient-btn-secondary">
-            <i class="fas fa-times"></i> Back to Courses
+        <a href="{% url 'manage_courses' %}"  class="back-button">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Courses
         </a>
     </div>
-</main>
+
 {% endblock %}

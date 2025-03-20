@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<main class="manage-courses-container">
+
     <h1 class="neon-heading">Manage Your Courses</h1>
     
     <a href="{% url 'create_course' %}" class="gradient-btn-cyan">
@@ -42,6 +42,7 @@
             <p>No courses found. Start by creating a new course!</p>
         </div>
         {% endfor %}
-    </div>
-</main>
+    </div><br>
+    <a href="{% url 'educator_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+
 {% endblock %}
