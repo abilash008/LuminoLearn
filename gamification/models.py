@@ -44,3 +44,6 @@ class Point(models.Model):
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey()
     date_awarded = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        app_label = 'gamification'
