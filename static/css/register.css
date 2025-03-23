@@ -24,7 +24,7 @@ h1 {
     margin-bottom: 20px;
     font-size: 2.5em;
     color: #00ffff; /* Cyan heading */
-    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; /* Neon glow effect */
+    /* text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; /* Neon glow effect */
 }
 
 .form-group {

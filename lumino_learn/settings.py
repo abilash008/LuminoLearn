@@ -189,9 +189,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-JDOODLE_CLIENT_ID = os.getenv('JDOODLE_CLIENT_ID')
-JDOODLE_CLIENT_SECRET = os.getenv('JDOODLE_CLIENT_SECRET')
-
 # Chatbot
 
 HF_API_TOKEN = os.getenv("HF_API_TOKEN")
