@@ -26,7 +26,7 @@ SECRET_KEY = 'a1f20@-1!nnbjm%ywa!g(!zf(70fh0a5d7g1ywn-k&f6+3dg1+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['luminolearn.onrender.com','127.0.0.1','localhost']
+ALLOWED_HOSTS = ['luminolearn.onrender.com','127.0.0.1','localhost','*']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://luminolearn.onrender.com',
@@ -69,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware', 
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -127,7 +128,9 @@ DATABASES = {
         'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
     }
 }
-
+DATABASES = {
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -169,6 +172,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 MEDIA_URL = '/media/'  # URL prefix for media files
