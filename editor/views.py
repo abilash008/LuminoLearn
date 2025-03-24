@@ -1,6 +1,3 @@
-
-
-# views.py (updated for Piston API)
 import json
 import requests
 from django.shortcuts import render
@@ -29,7 +26,7 @@ def execute_code(request):
             data = json.loads(request.body.decode('utf-8'))
             code = data.get('code')
             frontend_lang = data.get('language', 'python3')
-            user_input = data.get('input', '') + '\n'
+            user_input = data.get('input', '')
 
             language_mapping = {
                 'python3': {'piston_lang': 'python', 'version': '3.10.0'},
@@ -39,20 +36,10 @@ def execute_code(request):
             }
             lang_info = language_mapping.get(frontend_lang, language_mapping['python3'])
 
-            # Language-specific code modifications
+            # For Java, ensure proper class packaging if needed
             modified_code = code
-            if lang_info['piston_lang'] == 'python':
-                modified_code = code.replace('input(', 'print("\\x1B[INPUT]"); input(')
-            elif lang_info['piston_lang'] == 'java':
-                # Use proper Java Unicode escape sequence
-                modified_code = code.replace(
-                    'new Scanner(System.in);', 
-                    'new Scanner(System.in); System.out.print("\\u001B[INPUT]");'
-                )
-                if 'public class Main' in modified_code and 'package' not in modified_code:
-                    modified_code = f'package tmp;\n{modified_code}'
-            elif lang_info['piston_lang'] == 'cpp':
-                modified_code = code.replace('std::cin', 'std::cout << "\\x1B[INPUT]"; std::cin')
+            if lang_info['piston_lang'] == 'java' and 'public class Main' in code and 'package' not in code:
+                modified_code = f'package tmp;\n{code}'
 
             payload = {
                 "language": lang_info['piston_lang'],
@@ -65,26 +52,20 @@ def execute_code(request):
             response.raise_for_status()
             result = response.json()
 
-            # Handle output and errors for different languages
+            # Handle output and errors
             output = ''
             error = ''
-
             if lang_info['piston_lang'] in ['java', 'cpp']:
-                # Combine compile and run outputs
                 compile_output = result.get('compile', {}).get('output', '')
                 run_output = result.get('run', {}).get('output', '')
                 output = f"{compile_output}\n{run_output}".strip()
                 error = result.get('compile', {}).get('stderr', '') or result.get('run', {}).get('stderr', '')
             else:
-                # Interpreted languages
                 output = result.get('run', {}).get('output', '')
                 error = result.get('run', {}).get('stderr', '')
 
-            # Format input prompts
-            formatted_output = output.replace('Enter Your name:', '\x1B[INPUT]Enter Your name:')
-
             return JsonResponse({
-                'output': formatted_output.strip(),
+                'output': output.strip(),
                 'error': error.strip()
             })
 

@@ -36,7 +36,7 @@
                     <i class="fas fa-terminal"></i>
                     <span>Input</span>
                 </div>
-                <textarea id="user-input" class="cyber-input" placeholder="Enter program input here..."></textarea>
+                <textarea id="user-input" class="cyber-input" placeholder="Enter all program inputs here, each on a new line..."></textarea>
             </div>
             <div class="io-panel output-panel">
                 <div class="panel-header">
@@ -63,104 +63,112 @@
     document.addEventListener('DOMContentLoaded', function() {
         const languageMap = {
             'python3': 'python',
-            'javascript': 'javascript',
+            'nodejs': 'javascript',
             'java': 'java',
             'cpp': 'cpp'
         };
     
-    // Initialize Editor
-    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
-    require(['vs/editor/editor.main'], function() {
-        window.editor = monaco.editor.create(document.getElementById('editor-container'), {
-            value: "print('Welcome to LuminoLearn!')\n# Start coding here...",
-            language: languageMap['python3'],  // Match default select value
-            theme: 'vs-dark',
-            automaticLayout: true,
-            minimap: { enabled: true },
-            fontSize: 14,
-            scrollBeyondLastLine: false,
-            roundedSelection: false,
-            padding: { top: 10 },
+        // Initialize Editor
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+        require(['vs/editor/editor.main'], function() {
+            window.editor = monaco.editor.create(document.getElementById('editor-container'), {
+                value: "print('Welcome to LuminoLearn!')\n# Start coding here...",
+                language: languageMap['python3'],
+                theme: 'vs-dark',
+                automaticLayout: true,
+                minimap: { enabled: true },
+                fontSize: 14,
+                scrollBeyondLastLine: false,
+                roundedSelection: false,
+                padding: { top: 10 },
+            });
+        });
+
+        // Language Switch
+        document.getElementById('language-select').addEventListener('change', function() {
+            const model = window.editor.getModel();
+            const selectedLang = this.value;
+            const monacoLang = languageMap[selectedLang];
+            monaco.editor.setModelLanguage(model, monacoLang);
+        });
+
+        // Code Execution
+        document.getElementById('run-code').addEventListener('click', executeCode);
+        
+        // Ctrl+Enter shortcut
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                executeCode();
+            }
         });
     });
 
-    // Language Switch
-    document.getElementById('language-select').addEventListener('change', function() {
-        const model = window.editor.getModel();
-        const selectedLang = this.value;
-        const monacoLang = languageMap[selectedLang]; // Get mapped Monaco language
-        monaco.editor.setModelLanguage(model, monacoLang);
-    });
-
-    // Code Execution
-    document.getElementById('run-code').addEventListener('click', executeCode);
-    
-    // Ctrl+Enter shortcut
-    document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-            executeCode();
-        }
-    });
-});
     async function executeCode() {
         if (isRunning) return;
         
         const code = window.editor.getValue();
         const language = document.getElementById('language-select').value;
-        let inputBuffer = document.getElementById('user-input').value;
-        let currentInputIndex = 0;
-        
+        const inputElement = document.getElementById('user-input');
+        const userInput = inputElement.value.trim();
         const runButton = document.getElementById('run-code');
         const outputElement = document.getElementById('output');
-        const inputElement = document.getElementById('user-input');
         
         try {
             isRunning = true;
             runButton.classList.add('running');
             outputElement.innerHTML = '';
-            inputElement.disabled = false;
-            inputElement.value = '';
-            inputElement.placeholder = 'Enter input when prompted...';
 
-            // Modified execution flow
-            const processOutput = async (output) => {
-                const safeOutput = output || '';
-                const lines = output.split('\n');
-                for (const line of lines) {
-                    const inputMarkerIndex = line.indexOf('\u001B[INPUT]');
-                    if (line.includes('\x1B[INPUT]')) { // Custom input marker
-                        // Show input field and wait for user input
-                        inputElement.disabled = false;
-                        inputElement.placeholder = ''; // Enter input and press Enter...
-                        await new Promise(resolve => {
-                            const handler = async (e) => {
-                                if (e.key === 'Enter') {
-                                    e.preventDefault();
-                                    inputBuffer = inputElement.value;
-                                    inputElement.value = '';
-                                    inputElement.disabled = true;
-                                    inputElement.removeEventListener('keypress', handler);
-                                    resolve();
-                                }
-                            };
-                            inputElement.addEventListener('keypress', handler);
-                        });
-                        return inputBuffer;
-                    }
-                    outputElement.textContent += line + '\n';
-                    outputElement.scrollTop = outputElement.scrollHeight;
+            // Send code and input to backend
+            const response = await fetch("{% url 'execute_code' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ 
+                    code, 
+                    language,
+                    input: userInput 
+                })
+            });
+            const result = await response.json();
+
+            if (result.error) {
+                outputElement.classList.add('error');
+                outputElement.textContent = result.error;
+            } else {
+                // Filter output to separate prompts from actual output
+                const outputLines = result.output.split('\n');
+                let prompts = [];
+                let finalOutput = [];
+                
+                // For Python, extract prompts from input() calls in the code
+                if (language === 'python3') {
+                    const codeLines = code.split('\n');
+                    codeLines.forEach(line => {
+                        const match = line.match(/input\s*\(['"](.*?)['"]\)/);
+                        if (match) prompts.push(match[1]);
+                    });
                 }
-                return null;
-            };
+                // For other languages, assume prompts are explicitly printed (simplified)
+                // This could be enhanced with language-specific parsing if needed
 
-            // Initial execution
-            let result = await executeOnBackend(code, language, '');
-            let nextInput = await processOutput(result.output);
+                // Filter output: exclude lines matching prompts
+                outputLines.forEach(line => {
+                    if (prompts.includes(line.trim())) {
+                        // Prompt line, skip it in output
+                    } else {
+                        finalOutput.push(line);
+                    }
+                });
 
-            // Subsequent executions with user input
-            while (nextInput !== null) {
-                result = await executeOnBackend(code, language, nextInput);
-                nextInput = await processOutput(result.output);
+                // Display prompts in input field if user hasn't provided input yet
+                if (!userInput && prompts.length > 0) {
+                    inputElement.value = prompts.join('\n');
+                    outputElement.textContent = 'Please enter the required inputs above and run again.';
+                } else {
+                    outputElement.textContent = finalOutput.join('\n').trim();
+                }
             }
 
         } catch (error) {
@@ -169,29 +177,12 @@
         } finally {
             isRunning = false;
             runButton.classList.remove('running');
-            inputElement.disabled = false;
-            inputElement.placeholder = 'Enter program input here...';
         }
-    }
-
-    async function executeOnBackend(code, language, input) {
-        const response = await fetch("{% url 'execute_code' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ 
-                code, 
-                language,
-                input 
-            })
-        });
-        return await response.json();
     }
 </script>
 
 <style>
+    /* Existing styles remain unchanged, removing only unnecessary parts */
     :root {
         --neon-cyan: #00ffff;
         --neon-purple: #bc13fe;
@@ -209,7 +200,7 @@
         display: flex;
         flex-direction: column;
         box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
-        text-align: left
+        text-align: left;
     }
 
     .ide-header {
@@ -338,27 +329,6 @@
         color: var(--neon-cyan);
         text-decoration: none;
         border: 1px solid rgba(0, 255, 255, 0.2);
-    }
-
-    .loading-spinner {
-        width: 24px;
-        height: 24px;
-        border: 3px solid var(--neon-cyan);
-        border-top-color: transparent;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 20px auto;
-    }
-    /* Add to existing styles */
-    .cyber-input.waiting {
-        border: 1px solid var(--neon-cyan);
-        animation: pulse-border 1.5s infinite;
-    }
-
-    @keyframes pulse-border {
-        0% { border-color: var(--neon-cyan); }
-        50% { border-color: rgba(0, 255, 255, 0.2); }
-        100% { border-color: var(--neon-cyan); }
     }
 </style>
 {% endblock %}
