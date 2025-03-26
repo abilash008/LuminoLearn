@@ -196,3 +196,5 @@ load_dotenv()
 # Chatbot
 
 HF_API_TOKEN = os.getenv("HF_API_TOKEN")
+
+COHERE_API_KEY = os.getenv('COHERE_API_KEYS')
