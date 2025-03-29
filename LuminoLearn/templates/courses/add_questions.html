@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="cyber-container">
+    <h1 class="neon-heading">Add Questions to <span class="glowing-text">{{ assignment.title }}</span></h1>
+    
+    <form class="cyber-form" method="post" action="{% url 'add_questions' assignment.id %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="neon-label">Question Text</label>
+            <textarea class="cyber-textarea" 
+                    name="question_text" 
+                    rows="4"
+                    required
+                    placeholder="Enter your question..."></textarea>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="neon-label">Question Type</label>
+                <select class="cyber-select" name="question_type">
+                    <option value="short_answer">Short Answer</option>
+                    <option value="multiple_choice">Multiple Choice</option>
+                    <option value="code">Code-Based</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="neon-label">Points</label>
+                <input type="number" 
+                    class="cyber-input" 
+                    name="points" 
+                    min="0"
+                    required
+                    placeholder="Enter points...">
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="gradient-btn-cyan">
+                <i class="fas fa-question-circle"></i> Add Question
+            </button>
+            <a href="{% url 'educator_assignments' %}" class="gradient-btn-secondary">
+                <i class="fas fa-times"></i> Back to Assignments
+            </a>
+        </div>
+    </form>
+</main>
+{% endblock %}

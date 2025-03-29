@@ -1,0 +1,2 @@
+# web: gunicorn lumino_learn.wsgi:application
+waitress-serve --port=$PORT lumino_learn.wsgi:application

@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="csrf-token" content="{{ csrf_token }}">
+<link rel="icon" type="image/svg+xml" href="{% static 'assets/images/lumino_favicon.svg' %}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuminoLearn</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<!-- Hero Section -->
+<section class="hero">
+<div class="hero-content">
+    <h1>LuminoLearn</h1>
+    <p>Illuminating the Path to Learning and Success</p>
+    <a href="{% url 'explore' %}"><b><i>Explore</i></b></a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+<h2>Key Features</h2>
+<div class="feature-list">
+    <div class="feature">
+        <i class="icon">🧠</i>
+        <h3>AI-Powered Learning</h3>
+        <p>Personalized learning paths tailored to your needs.</p>
+    </div>
+    <div class="feature">
+        <i class="icon">🎮</i>
+        <h3>Gamification</h3>
+        <p>Engage with points, badges, and leaderboards.</p>
+    </div>
+    <div class="feature">
+        <i class="icon">💻</i>
+        <h3>Real-Time Coding</h3>
+        <p>Practice and learn programming with live code execution.</p>
+    </div>
+    </div>
+</section>
+
+</body>
+</html>

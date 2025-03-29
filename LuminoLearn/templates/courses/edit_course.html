@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="edit-course-container">
+    <h1 class="neon-heading">Edit: <span class="glowing-text">{{ course.title }}</span></h1>
+    
+    <form class="cyber-form" method="post" enctype="multipart/form-data" action="{% url 'edit_course' course.id %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="neon-label">Course Title</label>
+            <input type="text" class="cyber-input" name="title" value="{{ course.title }}" required>
+        </div>
+
+        <div class="form-group">
+            <label class="neon-label">Description</label>
+            <textarea class="cyber-textarea" name="description" rows="6" required>{{ course.description }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="neon-label">Course Thumbnail</label>
+            <div class="file-upload-wrapper">
+                <input type="file" class="cyber-file-input" id="thumbnail" name="thumbnail">
+                <label for="thumbnail" class="file-upload-label">
+                    <i class="fas fa-cloud-upload-alt"></i> Choose File
+                </label>
+            </div>
+            {% if course.thumbnail %}
+            <div class="current-thumbnail">
+                <img src="{{ course.thumbnail.url }}" alt="Current thumbnail" class="thumbnail-preview">
+                <div class="thumbnail-controls">
+                    <label class="cyber-checkbox">
+                        <input type="checkbox" name="thumbnail-clear">
+                        <span class="checkmark"></span>
+                        Remove Thumbnail
+                    </label>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="gradient-btn-cyan">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <a href="{% url 'manage_courses' %}" class="gradient-btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+
+    <!-- Topic Editing Section -->
+    <div class="card-grid">
+        <a><h2>Course Topics</h2></a><br>
+        {% for topic in topics %}
+        <div class="cyber-card topic-card">
+            <div class="card-content">
+                <div class="topic-header">
+                    <h3 class="card-title">{{ topic.name }}</h3>
+                    <span class="course-tag">{{ topic.course.title }}</span>
+                </div>
+                <p class="card-description">{{ topic.content|truncatechars:150 }}</p>
+                
+                <div class="card-actions">
+                    <a href="{% url 'edit_topic' topic.id %}" class="action-btn edit-btn">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'delete_topic' topic.id %}" class="action-btn delete-btn">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-comment-slash"></i>
+            <p>No topics found. Add your first topic!</p>
+        </div>
+        {% endfor %}
+    </div><br>
+    <div class="form-actions">
+        <a href="{% url 'add_topic' course.id %}" class="gradient-btn-cyan">
+            <i class="fas fa-plus"></i> Add Topic
+        </a>
+        <a href="{% url 'manage_courses' %}" class="gradient-btn-secondary">
+            <i class="fas fa-times"></i> Back to Courses
+        </a>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% csrf_token %}
+
+<div class="cyber-editor-container">
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <select id="language-select">
+            {% for lang in languages %}
+            <option value="{{ lang.value }}">{{ lang.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Monaco Editor -->
+    <div id="editor-container" class="left-align-editor" style="height: 500px; width: 100%; border: 1px solid #00ffff;"></div>
+
+    <!-- Controls -->
+    <div class="editor-controls">
+        <button id="run-code" class="gradient-btn-cyan">
+            <i class="fas fa-play"></i> Run Code
+        </button>
+    </div>
+    <!--
+    <div class="cyber-output">
+        <label for="user-input">Program Input:</label>
+        <textarea id="user-input" rows="4" cols="50" placeholder="Enter input for your code here..."></textarea>
+    </div> -->
+    
+    <!-- Output -->
+    <div id="output" class="cyber-output"></div>
+</div>
+
+<!-- Monaco Editor Setup -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+<script>
+    // CSRF token from the template
+    const csrfToken = "{{ csrf_token }}";
+
+    // Initialize Editor
+    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+    require(['vs/editor/editor.main'], function() {
+        window.editor = monaco.editor.create(document.getElementById('editor-container'), {
+            value: "print('Welcome to LuminoLearn!')",
+            language: 'python',
+            theme: 'vs-dark',
+            automaticLayout: true,
+            wordWrap: 'off',       // Disable word wrap
+            lineNumbers: 'on',     // Show line numbers
+        });
+    });
+
+    // Language Switch
+    document.getElementById('language-select').addEventListener('change', function() {
+        const model = window.editor.getModel();
+        const newLang = this.value;
+        monaco.editor.setModelLanguage(model, newLang);
+    });
+
+    // Code Execution
+    document.getElementById('run-code').addEventListener('click', async function() {
+        const code = window.editor.getValue();
+        const language = document.getElementById('language-select').value;
+        
+        
+        try {
+            const response = await fetch("{% url 'execute_code' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ code, language })
+            });
+            
+            const result = await response.json();
+            document.getElementById('output').innerText = result.output || result.error || JSON.stringify(result);
+        } catch (error) {
+            document.getElementById('output').innerText = `Error: ${error.message}`;
+        }
+    });
+</script>
+
+<!-- Cyberpunk Styling -->
+<style>
+    .cyber-editor-container {
+        background: #0f0f0f;
+        border: 2px solid #00ffff;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px;
+        color: #fff;
+        /* Force left alignment if any parent has text-align: center */
+        text-align: left !important;
+    }
+
+    .left-align-editor {
+        text-align: left !important;
+    }
+
+    .language-selector select {
+        background: #1a1a1a;
+        color: #00ffff;
+        border: 1px solid #00ffff;
+        padding: 8px;
+        margin-bottom: 15px;
+        outline: none;
+    }
+
+    .editor-controls {
+        margin-top: 15px;
+    }
+
+    .gradient-btn-cyan {
+        background: linear-gradient(45deg, #00ffff, #00cccc);
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.3s ease;
+        font-weight: bold;
+    }
+    .gradient-btn-cyan:hover {
+        background: linear-gradient(45deg, #00cccc, #009999);
+        transform: scale(1.05);
+    }
+
+    .cyber-output {
+        background: #000;
+        color: #00ffff;
+        padding: 15px;
+        margin-top: 15px;
+        border: 1px solid #00ffff33;
+        border-radius: 4px;
+        min-height: 50px;
+        white-space: pre-wrap;
+    }
+</style>
+{% endblock %}

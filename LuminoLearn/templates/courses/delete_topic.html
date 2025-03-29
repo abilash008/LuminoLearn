@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="cyber-container">
+    <h1 class="neon-heading-danger">Delete Topic</h1>
+    
+    <div class="cyber-alert">
+        <div class="alert-content">
+            <i class="fas fa-exclamation-triangle fa-2x"></i>
+            <h3>Confirm Deletion</h3>
+            <p>You're about to permanently delete:<br>
+            <span class="glowing-text">{{ topic.name }}</span></p>
+            
+            <form method="post" class="confirmation-form" action="{% url 'delete_topic' topic.id %}">
+                {% csrf_token %}
+                <div class="confirmation-actions">
+                    <button type="submit" class="gradient-btn-red">
+                        <i class="fas fa-skull-crossbones"></i> Confirm Delete
+                    </button>
+                    <a href="{% url 'edit_course' course_id=topic.course.id %}" 
+                    class="gradient-btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

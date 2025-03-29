@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="dashboard-container">
+    <h1 class="neon-heading">Your Courses & Assignments</h1>
+    
+    <!-- Course List -->
+    <div class="course-grid">
+        {% for course in courses %}
+        <div class="cyber-card">
+            <div class="card-header">
+                <h3 class="glowing-text">{{ course.title }}</h3>
+                <a href="{% url 'create_assignment' course_id=course.id %}" 
+                class="gradient-btn-cyan">
+                    <i class="fas fa-plus"></i> New Assignment
+                </a>
+            </div>
+            <div class="card-body">
+                <p class="course-description">{{ course.description|truncatechars:100 }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-graduation-cap"></i>
+            <p>No courses found. Create your first course!</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Assignment List -->
+    <h2 class="neon-subheading">All Assignments</h2>
+    <div class="assignment-grid">
+        {% for assignment in assignments %}
+        <div class="cyber-card">
+            <div class="card-header">
+                <h3 class="glowing-text">{{ assignment.title }}</h3>
+                <span class="course-tag">{{ assignment.course.title }}</span>
+            </div>
+            <div class="card-body">
+                <p class="assignment-description">{{ assignment.description|truncatechars:150 }}</p>
+                <div class="assignment-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Due: {{ assignment.deadline|date:"M d, Y H:i" }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Created: {{ assignment.created_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <a href="{% url 'edit_assignment' assignment.id %}" class="action-btn edit-btn">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="{% url 'delete_assignment' assignment.id %}" class="action-btn delete-btn">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-tasks"></i>
+            <p>No assignments found. Create your first assignment!</p>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}
