@@ -117,20 +117,22 @@ WSGI_APPLICATION = 'lumino_learn.wsgi.application'
 
 import os
 import dj_database_url
+from dotenv import load_dotenv
+load_dotenv()  # Loads .env file for local development
 
 # Base configuration - works for local development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'lumino_learn'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'Itsme@bhi143'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': os.getenv('DB_NAME', 'DB_NAME'),
+        'USER': os.getenv('DB_USER', 'DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST', 'DB_HOST'),
+        'PORT': os.getenv('DB_PORT', 'DB_PORT'),
     }
 }
 
-# Override with DATABASE_URL if present (for production on Render)
+# # Override with DATABASE_URL if present (for production on Render)
 if 'DATABASE_URL' in os.environ:
     DATABASES['default'] = dj_database_url.config(
         default=os.environ['DATABASE_URL'],
