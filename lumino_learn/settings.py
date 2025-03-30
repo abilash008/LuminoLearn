@@ -125,12 +125,16 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD', 'Itsme@bhi143'),  # Render DB Password
         'HOST': os.getenv('DB_HOST', 'localhost'),  # Render DB Host
         'PORT': os.getenv('DB_PORT', '5432'),  # Render DB Port
-        'DATABASE_URL' : dj_database_url.config(default=os.getenv('DATABASE_URL')),
-        # 'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+        'DATABASE_URL' : os.environ.get('DATABASE_URL', 'postgres://postgres:Itsme@bhi143@localhost:5432/lumino_learn')
     }
 }
+
 # DATABASES = {
-#     'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+#     'default': dj_database_url.config(
+#         default=os.getenv('DATABASE_URL'),
+#         conn_max_age=600,
+#         conn_health_checks=True,
+#     )
 # }
 
 # Password validation
