@@ -115,26 +115,28 @@ WSGI_APPLICATION = 'lumino_learn.wsgi.application'
 #     }
 # }
 
+import os
 import dj_database_url
 
+# Base configuration - works for local development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'lumino_learn'),  # Render DB Name
-        'USER': os.getenv('DB_USER', 'postgres'),  # Render DB User
-        'PASSWORD': os.getenv('DB_PASSWORD', 'Itsme@bhi143'),  # Render DB Password
-        'HOST': os.getenv('DB_HOST', 'localhost'),  # Render DB Host
-        'PORT': os.getenv('DB_PORT', '5432'),  # Render DB Port
+        'NAME': os.getenv('DB_NAME', 'lumino_learn'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'Itsme@bhi143'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
+# Override with DATABASE_URL if present (for production on Render)
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default'] = dj_database_url.config(
+        default=os.environ['DATABASE_URL'],
         conn_max_age=600,
         conn_health_checks=True,
     )
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
