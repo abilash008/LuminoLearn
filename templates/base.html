@@ -5,14 +5,117 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>{% block title %}LuminoLearn{% endblock %}</title>
+    <title>{% block title %}LUMINO//LEARN{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="icon" type="image/svg+xml" href="{% static 'assets/images/lumino_favicon.svg' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- In your base.html -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
+    <style>
+        :root {
+            --neon-cyan: #00ffb3;
+            --neon-pink: #ff00ff;
+            --cyber-dark: #0a0a0f;
+            --cyber-border: 2px solid var(--neon-cyan);
+        }
+
+        body {
+            background-color: var(--cyber-dark);
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            border-bottom: var(--cyber-border);
+            box-shadow: 0 0 15px rgba(0, 255, 179, 0.2);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: bold;
+            position: relative;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        nav a::before {
+            content: '>';
+            margin-right: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+            background: rgba(0, 255, 179, 0.1);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        nav a:hover::before {
+            opacity: 1;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        footer {
+            border-top: var(--cyber-border);
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+            box-shadow: 0 0 15px rgba(0, 255, 179, 0.2);
+        }
+
+        footer p {
+            margin: 0;
+            color: var(--neon-cyan);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+        }
+
+        .neon-cyan { color: var(--neon-cyan); }
+        .neon-pink { color: var(--neon-pink); }
+        .cyber-glitch {
+            text-shadow: 2px 2px var(--neon-pink),
+                        -2px -2px var(--neon-cyan);
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -20,18 +123,18 @@
             {% if user.is_authenticated %}
                 <ul>
                     {% if user.role == "student" %}
-                        <li><a href="{% url 'student_dashboard' %}">Student Dashboard</a></li>
+                        <li><a href="{% url 'student_dashboard' %}" class="neon-cyan">> STUDENT_TERMINAL</a></li>
                     {% elif user.role == "educator" %}
-                        <li><a href="{% url 'educator_dashboard' %}">Educator Dashboard</a></li>
+                        <li><a href="{% url 'educator_dashboard' %}" class="neon-cyan">> EDUCATOR_HUB</a></li>
                     {% elif user.role == "admin" %}
-                        <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                        <li><a href="{% url 'admin_dashboard' %}" class="neon-cyan">> ADMIN_CONSOLE</a></li>
                     {% endif %}
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    <li><a href="{% url 'logout' %}" class="neon-pink">> LOGOUT_SEQUENCE</a></li>
                 </ul>
             {% else %}
                 <ul>
-                    <li><a href="{% url 'login' %}">Login</a></li>
-                    <li><a href="{% url 'register' %}">Register</a></li>
+                    <li><a href="{% url 'login' %}" class="neon-cyan">> SYSTEM_ACCESS</a></li>
+                    <li><a href="{% url 'register' %}" class="neon-cyan">> NEW_USER_INIT</a></li>
                 </ul>
             {% endif %}
         </nav>
@@ -39,30 +142,40 @@
 
     <main>
         {% block content %}
-        <!-- Content specific to each page -->
+        <!-- Cyberpunk content injection point -->
         {% endblock %}
     </main>
 
     <footer>
-        <p>&copy; 2025 LuminoLearn. All rights reserved.</p>
+        <p class="cyber-glitch">// LUMINO_LEARN_SYSTEM // © 2025 ALL_RIGHTS_ENCRYPTED //</p>
     </footer>
+
     <script>
-        // Thumbnail preview functionality
-        document.getElementById('thumbnail').addEventListener('change', function(e) {
+        // Enhanced cyberpunk file input effect
+        document.getElementById('thumbnail')?.addEventListener('change', function(e) {
             const file = e.target.files[0];
             const preview = document.getElementById('thumbnail-preview');
             const fileName = document.getElementById('file-name');
             
-            fileName.textContent = file.name;
+            fileName.textContent = `> UPLOADING: ${file.name}`;
             preview.style.display = 'block';
             
             const reader = new FileReader();
             reader.onload = function(e) {
-                preview.innerHTML = `<img src="${e.target.result}" class="thumbnail-preview-image">`;
-                preview.style.animation = 'preview-appear 0.3s ease';
+                preview.innerHTML = `
+                    <div style="border: 2px solid #00ffb3; padding: 10px;">
+                        <img src="${e.target.result}" class="thumbnail-preview-image" 
+                            style="filter: hue-rotate(120deg) contrast(1.2);">
+                    </div>
+                `;
+                preview.style.animation = 'scanline 0.3s linear';
             }
             reader.readAsDataURL(file);
         });
-        </script>
-</body>
-</html>
+
+        // Add cyberpunk terminal effect to all code blocks
+        document.querySelectorAll('code').forEach(codeBlock => {
+            codeBlock.style.border = '2px solid #00ffb3';
+            codeBlock.style.background = '#001a14';
+            codeBlock.style.padding = '1rem';
+            codeBlock.style.margin = '1rem 0

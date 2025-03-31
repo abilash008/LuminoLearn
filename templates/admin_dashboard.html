@@ -1,27 +1,128 @@
 {% extends 'base.html' %}
-
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<h1>Admin Dashboard</h1>
-<p>Welcome, {{ user.username }}! Manage users and platform settings here:</p>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">SYSTEM CONTROL PANEL</h1>
+    <div class="cyber-welcome">
+        <p class="neon-cyan">ADMINISTRATOR: <span class="neon-pink">{{ user.username }}</span></p>
+        <p class="neon-text">[ SYSTEM OVERRIDE AUTHORIZED ]</p>
+    </div>
 
-<div class="dashboard-actions">
-    <a href="#">Manage Users</a>
-    <a href="#">Platform Analytics</a>
-    <a href="#">System Settings</a>
+    <div class="cyber-grid">
+        <div class="cyber-card">
+            <div class="card-header neon-cyan">
+                <i class="fas fa-users-cog"></i>
+                <h3>USER CONTROL PANEL</h3>
+            </div>
+            <p class="neon-white">Manage user access and permissions</p>
+            <a href="#" class="cyber-button small cyan">
+                <i class="fas fa-terminal"></i> ACCESS TERMINAL
+            </a>
+        </div>
+
+        <div class="cyber-card">
+            <div class="card-header neon-cyan">
+                <i class="fas fa-chart-network"></i>
+                <h3>SYSTEM ANALYTICS</h3>
+            </div>
+            <p class="neon-white">Monitor platform performance metrics</p>
+            <a href="#" class="cyber-button small cyan pulse">
+                <i class="fas fa-project-diagram"></i> VIEW STATISTICS
+            </a>
+        </div>
+
+        <div class="cyber-card">
+            <div class="card-header neon-cyan">
+                <i class="fas fa-sliders-h"></i>
+                <h3>CORE CONFIGURATION</h3>
+            </div>
+            <p class="neon-white">Adjust system-wide parameters</p>
+            <a href="#" class="cyber-button small">
+                <i class="fas fa-cog"></i> ENTER SETTINGS
+            </a>
+        </div>
+
+        <div class="cyber-card">
+            <div class="card-header neon-cyan">
+                <i class="fas fa-database"></i>
+                <h3>DATA WAREHOUSE</h3>
+            </div>
+            <p class="neon-white">Access raw system databases</p>
+            <a href="#" class="cyber-button small">
+                <i class="fas fa-server"></i> INITIATE QUERY
+            </a>
+        </div>
+    </div>
 </div>
 
-<div class="dashboard-cards">
-    <div class="dashboard-card">
-        <h3>Manage Users</h3>
-        <p>View and manage platform users and roles.</p>
-        <a href="#">Manage Now</a>
-    </div>
-    <div class="dashboard-card">
-        <h3>Platform Analytics</h3>
-        <p>View usage statistics and reports.</p>
-        <a href="#">View Analytics</a>
-    </div>
-</div>
+<style>
+.cyber-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.cyber-welcome {
+    text-align: center;
+    margin-bottom: 3rem;
+    border-bottom: 2px solid #00ffb3;
+    padding-bottom: 2rem;
+}
+
+.cyber-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.cyber-card {
+    background: #0a0a0f;
+    border: 2px solid #00ffb3;
+    border-radius: 8px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(0, 255, 179, 0.3);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #00ffb3;
+}
+
+.cyber-button.small {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+    width: 100%;
+    text-align: center;
+}
+
+.pulse {
+    animation: button-pulse 1.5s infinite;
+}
+
+@keyframes button-pulse {
+    0% { box-shadow: 0 0 10px rgba(0, 255, 179, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 179, 0.6); }
+    100% { box-shadow: 0 0 10px rgba(0, 255, 179, 0.3); }
+}
+
+@media (max-width: 768px) {
+    .cyber-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 {% endblock %}

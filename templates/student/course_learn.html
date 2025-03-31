@@ -3,60 +3,65 @@
 
 {% block content %}
 {% if messages %}
-<div class="messages">
+<div class="cyber-alerts">
     {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">
-        {{ message }}
-        {% if message.tags == 'error' %}
-        <p>Please contact support if this issue persists.</p>
-        {% endif %}
+    <div class="cyber-alert neon-{{ message.tags }}">
+        <div class="glow-bar"></div>
+        <div class="alert-content">
+            <span class="alert-icon">⮾</span>
+            {{ message }}
+            {% if message.tags == 'error' %}
+            <p class="neon-pink">[ CONTACT SUPPORT SYSTEM ]</p>
+            {% endif %}
+        </div>
     </div>
     {% endfor %}
 </div>
 {% endif %}
 
-<div class="course-learn-container">
-    <!-- Sidebar -->
-    <div class="course-sidebar">
-        <div class="sidebar-header"><br>
-            <h2>{{ course.title }}</h2>
-            <div class="progress-container">
-                <div class="progress">
-                    <div class="progress-bar" style="width: {{ progress }}%"></div>
+<div class="cyber-learn-container">
+    <!-- Cyber Sidebar -->
+    <div class="cyber-sidebar">
+        <div class="cyber-sidebar-header">
+            <h2 class="neon-cyan cyber-glitch">{{ course.title }}</h2>
+            <div class="cyber-progress">
+                <div class="progress-bar" style="width: {{ progress }}%">
+                    <div class="progress-glow"></div>
                 </div>
-        <!--    <small>{{ progress }}% Complete</small>  -->
+                <div class="progress-text neon-cyan">{{ progress }}% SYNTHESIZED</div>
             </div>
         </div>
         
-        <div class="topics-list">
+        <div class="cyber-topics-list">
             {% for topic in topics %}
             <a href="{% url 'course_topic' course_id=course.id topic_id=topic.id %}" 
-                class="topic-item {% if topic == active_topic %}active{% endif %}">
-                <span class="topic-order">{{ forloop.counter }}{% if topic == active_topic %}{% else %}{% endif %}</span>
-                <span class="topic-title">{{ topic.name }}</span>
+                class="cyber-topic-item {% if topic == active_topic %}active{% endif %}">
+                <span class="topic-order neon-badge">{{ forloop.counter }}</span>
+                <span class="topic-title neon-white">{{ topic.name }}</span>
+                <div class="topic-hover-glow"></div>
             </a>
             {% empty %}
-            <div class="no-topics">No topics available yet</div>
+            <div class="no-topics neon-pink">NO DATA STREAMS AVAILABLE</div>
             {% endfor %}
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="course-main-content">
+    <!-- Main Cyber Content -->
+    <div class="cyber-main-content">
         {% if active_topic %}
-        <div class="topic-content">
-            <h1 class="topic-title-content">{{ active_topic.name }}</h1>
-            <div class="content-body">
-                {{ active_topic.content|linebreaks }}
+        <div class="cyber-topic-content">
+            <h1 class="neon-heading cyber-glitch">{{ active_topic.name }}</h1>
+            <div class="cyber-content-body">
+                <div class="matrix-text">{{ active_topic.content|linebreaks }}</div>
                 
                 {% if active_topic.diagrams.all %}
-                <div class="diagrams-grid">
+                <div class="cyber-diagrams-grid">
                     {% for diagram in active_topic.diagrams.all %}
-                    <div class="diagram-card">
+                    <div class="cyber-card diagram-card">
                         <img src="{{ diagram.image.url }}" 
                             alt="Diagram for {{ active_topic.name }}"
-                            class="diagram-image">
-                        <div class="diagram-meta">Diagram {{ forloop.counter }}</div>
+                            class="cyber-diagram-image">
+                        <div class="cyber-diagram-meta">VISUAL PROTOCOL {{ forloop.counter }}</div>
                     </div>
                     {% endfor %}
                 </div>
@@ -65,249 +70,213 @@
         </div>
         {% else %}
         <div class="no-topic-selected">
-            <i class="fas fa-book-open"></i>
-            <p>Select a topic from the sidebar to begin learning</p>
+            <i class="fas fa-terminal neon-cyan"></i>
+            <p class="neon-pink">SELECT KNOWLEDGE STREAM TO INITIATE</p>
         </div>
         {% endif %}
     </div>
 </div>
-<div class="topic-actions">
+
+<div class="cyber-actions">
     {% if active_topic %}
     <form method="post" action="{% url 'complete_topic' course_id=course.id topic_id=active_topic.id %}">
         {% csrf_token %}
-        <button type="submit" class="complete-btn">
-            <i class="fas fa-check-circle"></i> {% if progress.percentage == 100 %}Course Completed!{% else %}Complete & Next{% endif %}
-            <i class="fas fa-chevron-right"></i>
+        <button type="submit" class="cyber-button cyan pulse">
+            <i class="fas fa-check-circle"></i> 
+            [ {% if progress == 100 %}SYSTEM MASTERY ACHIEVED{% else %}CONFIRM KNOWLEDGE UPLOAD{% endif %} ]
         </button>
     </form>
     {% else %}
-    <div class="no-topic-actions">
-        <p>No active topic selected</p>
+    <div class="no-topic-actions neon-pink">
+        <p>[ NO ACTIVE DATA STREAM ]</p>
     </div>
     {% endif %}
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // AJAX navigation
-    document.querySelectorAll('.topic-item').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const url = this.href;
-            
-            // Update active state
-            document.querySelectorAll('.topic-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            this.classList.add('active');
-            
-            // Load content
-            fetch(url)
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const newContent = doc.querySelector('.course-main-content').innerHTML;
-                    document.querySelector('.course-main-content').innerHTML = newContent;
-                    window.scrollTo(0, 0);
-                });
-        });
-    });
-});
-</script>
-
 <style>
-.course-learn-container {
+.cyber-learn-container {
     display: grid;
-    grid-template-columns: 300px 1fr;
-    min-height: calc(100vh - 80px);
+    grid-template-columns: 320px 1fr;
+    min-height: calc(100vh - 120px);
+    background: #0a0a0f;
+    border-top: 2px solid #00ffb3;
 }
 
-.course-sidebar {
-    background: #000000;
-    padding: 20px;
-    border-right: 1px solidrgb(32, 165, 163);
+.cyber-sidebar {
+    background: #0a0a0f;
+    padding: 2rem;
+    border-right: 2px solid #00ffb3;
+    box-shadow: 5px 0 15px rgba(0, 255, 179, 0.1);
     height: 100vh;
     position: sticky;
     top: 0;
-    overflow-y: auto;
 }
 
-.topics-list {
-    margin-top: 20px;
+.cyber-sidebar-header {
+    border-bottom: 1px solid #00ffb3;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
-.topic-item {
+.cyber-progress {
+    background: #000;
+    height: 8px;
+    border-radius: 4px;
+    position: relative;
+    margin: 1rem 0;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #00ffb3;
+    position: relative;
+    transition: width 0.5s ease;
+}
+
+.progress-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        rgba(0,255,179,0) 0%, 
+        rgba(0,255,179,0.4) 50%, 
+        rgba(0,255,179,0) 100%);
+    animation: progress-glow 2s infinite;
+}
+
+@keyframes progress-glow {
+    0% { opacity: 0; transform: translateX(-100%); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(100%); }
+}
+
+.cyber-topics-list {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.cyber-topic-item {
     display: flex;
     align-items: center;
-    padding: 12px 15px;
-    margin: 5px 0;
-    border-radius: 6px;
-    color: #cccccc;
-    text-decoration: none;
-    transition: all 0.2s ease;
+    padding: 1rem;
+    background: #111122;
+    border: 1px solid #00ffb3;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
-.topic-item:hover {
-    background: #3a3a3a;
-    color: white;
+.cyber-topic-item:hover {
+    background: rgba(0, 255, 179, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 179, 0.3);
 }
 
-.topic-item.active {
-    background: var(--primary-color);
-    color: white;
-    font-weight: 500;
+.cyber-topic-item.active {
+    border-color: #ff006e;
+    background: rgba(255, 0, 110, 0.1);
 }
 
 .topic-order {
-    margin-right: 12px;
-    width: 20px;
-    text-align: center;
+    background: #ff006e;
+    padding: 0.3rem 0.6rem;
+    border-radius: 3px;
+    margin-right: 1rem;
+    font-family: 'Orbitron', sans-serif;
 }
 
-.course-main-content {
-    padding: 40px;
+.cyber-main-content {
+    padding: 3rem;
+    background: linear-gradient(45deg, #0a0a0f 0%, #0a1a1a 100%);
+}
+
+.cyber-topic-content {
     max-width: 800px;
     margin: 0 auto;
 }
 
-.topic-title {
-    font-size: 1rem;
-    margin-bottom: 10px auto;
-    color: var(--heading-color);
-}
-
-.topic-title-content {
-    font-size: 1.5rem;
-    margin-bottom: 10px auto;
-    color: var(--heading-color);
-}
-
-.content-body {
-    text-align: left;
-    font-size: 1.1rem;
+.matrix-text {
+    color: #00ffb3;
+    font-family: 'Courier New', monospace;
     line-height: 1.7;
-    color: #e0e0e0;
+    text-shadow: 0 0 5px rgba(0, 255, 179, 0.3);
+    text-align: left;
 }
 
-.diagrams-grid {
+.cyber-diagrams-grid {
     display: grid;
-    gap: 20px;
+    gap: 2rem;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    margin: 30px 0;
+    margin: 3rem 0;
 }
 
 .diagram-card {
-    background: #1a1a1a;
-    border-radius: 8px;
-    overflow: hidden;
+    border: 2px solid #00ffb3;
+    background: #000;
+    transition: transform 0.3s ease;
 }
 
-.diagram-image {
+.diagram-card:hover {
+    transform: translateY(-5px);
+}
+
+.cyber-diagram-image {
     width: 100%;
-    height: 200px auto;
+    height: 250px;
     object-fit: cover;
+    border-bottom: 2px solid #00ffb3;
 }
 
-.diagram-meta {
-    padding: 10px;
-    background: #252525;
-    font-size: 0.9rem;
-    color: #888;
+.cyber-diagram-meta {
+    padding: 1rem;
+    background: #0a0a0f;
+    color: #00ffb3;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.cyber-actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: rgba(10, 10, 15, 0.9);
+    border-top: 2px solid #00ffb3;
+    text-align: center;
+}
+
+.cyber-button.cyan.pulse {
+    animation: button-pulse 1.5s infinite;
+}
+
+@keyframes button-pulse {
+    0% { box-shadow: 0 0 10px rgba(0, 255, 179, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 179, 0.6); }
+    100% { box-shadow: 0 0 10px rgba(0, 255, 179, 0.3); }
 }
 
 .no-topic-selected {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-    font-size: 1.2rem;
-}
-
-.no-topic-selected i {
-    font-size: 3rem;
-    margin-bottom: 15px;
-}
-
-.topic-actions {
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid #333;
-}
-
-.no-topic-actions {
-    padding: 20px;
     text-align: center;
-    color: #666;
-    font-style: italic;
-}
-
-.complete-btn {
-    background: var(--success-color);
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: transform 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.complete-btn:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-}
-
-.complete-btn i {
-    font-size: 1.2rem;
-}
-
-.messages {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-
-.alert {
-    padding: 15px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    animation: slideIn 0.5s ease-out;
-}
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-    }
-    to {
-        transform: translateX(0);
-    }
+    padding: 5rem;
+    border: 2px dashed #00ffb3;
+    margin: 2rem;
 }
 
 @media (max-width: 768px) {
-    .course-learn-container {
+    .cyber-learn-container {
         grid-template-columns: 1fr;
     }
     
-    .course-sidebar {
+    .cyber-sidebar {
         height: auto;
         position: relative;
+        border-right: none;
     }
     
-    .course-main-content {
-        padding: 20px;
+    .cyber-main-content {
+        padding: 1rem;
     }
 }
 </style>

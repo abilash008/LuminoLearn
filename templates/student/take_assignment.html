@@ -3,96 +3,104 @@
 {% load static assignment_tags %}
 {% block content %}
 
-    <h1 class="neon-heading">{{ assignment.title }}</h1>
-    <p class="deadline-notice">Deadline: {{ assignment.deadline|date:"M d, Y H:i" }}</p>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">{{ assignment.title }}</h1>
+    <p class="deadline-notice neon-red">
+        <i class="fas fa-clock"></i> Deadline: {{ assignment.deadline|date:"M d, Y H:i" }}
+    </p>
     
-    <form id="assignment-form" method="post" action="{% url 'submit_assignment' assignment.id %}">
+    <form id="assignment-form" method="post" action="{% url 'submit_assignment' assignment.id %}" class="cyber-form">
         {% csrf_token %}
         
-        <div class="questions-container">
+        <div class="questions-grid">
             {% for question in questions %}
-            <div class="cyber-question">
-                <div class="question-header">
-                    <span class="question-number">Question {{ forloop.counter }}</span>
-                    <span class="question-points">{{ question.points }} pts</span>
+            <div class="cyber-card question-card">
+                <div class="card-header">
+                    <span class="neon-cyan">Question {{ forloop.counter }}</span>
+                    <span class="neon-badge">{{ question.points }} XP</span>
                 </div>
                 
-                <p class="question-text">{{ question.question_text }}</p>
-                
-                <div class="answer-section">
-                    {% if question.question_type == 'multiple_choice' %}
-                        {% for choice in question.choices.all %}
-                        <label class="cyber-radio">
-                            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}">
-                            <span class="radio-label">{{ choice.choice_text }}</span>
-                        </label>
-                        {% endfor %}
-                        
-                    {% elif question.question_type == 'short_answer' %}
-                        <textarea class="cyber-textarea short-answer" 
-                                name="question_{{ question.id }}" 
-                                placeholder="Type your answer here..."></textarea>
+                <div class="card-body">
+                    <p class="question-text neon-white">{{ question.question_text }}</p>
                     
-                    {% elif question.question_type == 'code' %}
-                    {% with answer=submission.answers.filter|get_question_answer:question %}
-                    <div class="code-question-container">
-                        {% if submission.status == 'submitted' and answer.test_results %}
-                            <div class="test-results cyber-glow">
-                                <h4 class="neon-cyan">Code Execution Results</h4>
-                                <div class="submitted-code">
-                                    <pre class="cyber-code">{{ answer.code_answer }}</pre>
-                                </div>
-                                
-                                <div class="test-cases">
-                                    {% for test_case in answer.test_results.splitlines %}
-                                        {% if 'Test ' in test_case %}
-                                            <div class="test-case {% if 'PASS' in test_case %}pass{% else %}fail{% endif %}">
-                                                <div class="test-header">
-                                                    <span class="test-status">{{ test_case }}</span>
-                                                    <span class="test-badge {% if 'PASS' in test_case %}bg-cyan{% else %}bg-red{% endif %}">
-                                                        {% if 'PASS' in test_case %}✓{% else %}✗{% endif %}
-                                                    </span>
+                    <div class="answer-section">
+                        {% if question.question_type == 'multiple_choice' %}
+                            <div class="radio-grid">
+                            {% for choice in question.choices.all %}
+                            <label class="cyber-radio">
+                                <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}">
+                                <span class="radio-indicator"></span>
+                                <span class="radio-label">{{ choice.choice_text }}</span>
+                            </label>
+                            {% endfor %}
+                            </div>
+                            
+                        {% elif question.question_type == 'short_answer' %}
+                            <textarea class="cyber-textarea short-answer" 
+                                    name="question_{{ question.id }}" 
+                                    placeholder=">> ENTER RESPONSE HERE <<"></textarea>
+                        
+                        {% elif question.question_type == 'code' %}
+                        {% with answer=submission.answers.filter|get_question_answer:question %}
+                        <div class="code-question-container">
+                            {% if submission.status == 'submitted' and answer.test_results %}
+                                <div class="test-results cyber-glow">
+                                    <h4 class="neon-cyan"><i class="fas fa-terminal"></i> CODE ANALYSIS REPORT</h4>
+                                    <div class="submitted-code">
+                                        <pre class="cyber-code">{{ answer.code_answer }}</pre>
+                                    </div>
+                                    
+                                    <div class="test-grid">
+                                        {% for test_case in answer.test_results.splitlines %}
+                                            {% if 'Test ' in test_case %}
+                                                <div class="test-case {% if 'PASS' in test_case %}pass{% else %}fail{% endif %}">
+                                                    <div class="test-header">
+                                                        <span class="test-status">{{ test_case }}</span>
+                                                        <span class="test-badge {% if 'PASS' in test_case %}bg-cyan{% else %}bg-red{% endif %}">
+                                                            {% if 'PASS' in test_case %}✓{% else %}✗{% endif %}
+                                                        </span>
+                                                    </div>
+                                            {% else %}
+                                                <div class="test-detail">
+                                                    {{ test_case }}
                                                 </div>
-                                        {% else %}
-                                            <div class="test-detail">
-                                                {{ test_case }}
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
                                 </div>
-                            </div>
-                        {% else %}
-                            <div class="code-editor-container" data-question-id="{{ question.id }}">
-                                <div id="editor-{{ question.id }}" class="monaco-editor"></div>
-                                <textarea class="hidden-code-input" 
-                                        name="question_{{ question.id }}" 
-                                        id="hidden-input-{{ question.id }}"></textarea>
-                            </div>
+                            {% else %}
+                                <div class="code-editor-container" data-question-id="{{ question.id }}">
+                                    <div id="editor-{{ question.id }}" class="monaco-editor"></div>
+                                    <textarea class="hidden-code-input" 
+                                            name="question_{{ question.id }}" 
+                                            id="hidden-input-{{ question.id }}"></textarea>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endwith %}
                         {% endif %}
                     </div>
-                    {% endwith %}
-                    {% endif %}
                 </div>
             </div>
             {% endfor %}
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="gradient-btn-cyan">
-                <i class="fas fa-paper-plane"></i> Submit Assignment
+            <button type="submit" class="cyber-button cyan">
+                <i class="fas fa-paper-plane"></i> [ EXECUTE SUBMISSION ]
             </button>
-            <a href="{% url 'student_assignments' %}" class="gradient-btn-secondary">
-                <i class="fas fa-times"></i> Cancel
+            <a href="{% url 'student_assignments' %}" class="cyber-button red">
+                <i class="fas fa-times"></i> [ TERMINATE PROCESS ]
             </a>
         </div>
     </form>
-
+</div>
 
 <!-- Monaco Editor Integration -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Monaco Editors for code questions
+        // Initialize Monaco Editors with cyberpunk theme
         const codeEditors = new Map();
         
         document.querySelectorAll('.code-editor-container').forEach(container => {
@@ -101,12 +109,29 @@
             
             require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
             require(['vs/editor/editor.main'], function() {
+                monaco.editor.defineTheme('cyberpunk', {
+                    base: 'vs-dark',
+                    inherit: true,
+                    rules: [
+                        { token: '', foreground: '00ffb3', background: '0a0a0f' },
+                        { token: 'keyword', foreground: 'ff006e' },
+                        { token: 'number', foreground: '00f7ff' }
+                    ],
+                    colors: {
+                        'editor.background': '#0a0a0f',
+                    }
+                });
+
                 const editor = monaco.editor.create(document.getElementById(`editor-${questionId}`), {
                     value: '',
                     language: 'python',
-                    theme: 'vs-dark',
+                    theme: 'cyberpunk',
                     minimap: { enabled: false },
-                    automaticLayout: true
+                    automaticLayout: true,
+                    fontSize: 16,
+                    lineNumbers: 'on',
+                    roundedSelection: false,
+                    scrollBeyondLastLine: false
                 });
                 
                 editor.onDidChangeModelContent(() => {
@@ -120,174 +145,156 @@
 </script>
 
 <style>
-
-/* Assignment Taking Interface */
-
-.deadline-notice {
-    color: #ff5555;
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
+.cyber-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
-.cyber-question {
-    background: #0a0a1a;
-    border: 1px solid #00f7ff;
-    border-radius: 5px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+.questions-grid {
+    display: grid;
+    gap: 2rem;
 }
 
-.question-header {
+.cyber-form {
+    background: rgba(10, 10, 15, 0.9);
+    padding: 2rem;
+    border: 1px solid #00ffb3;
+    box-shadow: 0 0 30px rgba(0, 255, 179, 0.2);
+}
+
+.question-card {
+    background: #0a0a0f;
+    border: 1px solid #00ffb3;
+    transition: transform 0.3s ease;
+}
+
+.question-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(0, 255, 179, 0.3);
+}
+
+.card-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;
-}
-
-.question-number {
-    color: #00f7ff;
-    font-weight: bold;
-}
-
-.question-points {
-    background: #0044cc;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
-}
-
-.hidden-code-input {
-    display: none;
-}
-
-.code-editor-container {
-    position: relative;
-    height: 300px;
-    width: 100%;
-    overflow: hidden;  /* Contain editor within fixed dimensions */
-    border-radius: 3px;
-    text-align: left !important;
-}
-
-.monaco-editor {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border: 1px solid #00f7ff !important;
-    box-sizing: border-box;  /* Include border in dimension calculation */
-}
-
-.cyber-radio {
-    display: block;
-    margin: 0.5rem 0;
-    padding: 0.8rem;
-    background: #111122;
-    border: 1px solid #00f7ff;
-    border-radius: 3px;
-}
-
-.radio-label {
-    margin-left: 0.5rem;
-}
-
-/* Code Evaluation Results */
-.test-results {
-    background: #0a0a1a;
-    border: 2px solid #00f7ff;
-    border-radius: 5px;
+    align-items: center;
     padding: 1.5rem;
-    margin: 1rem 0;
-    box-shadow: 0 0 15px rgba(0, 247, 255, 0.2);
+    border-bottom: 1px solid #00ffb3;
+    background: linear-gradient(90deg, rgba(0,255,179,0.1) 0%, rgba(10,10,15,0) 100%);
 }
 
-.submitted-code {
-    background: #000;
-    padding: 1rem;
+.neon-badge {
+    background: #ff006e;
+    padding: 0.3rem 0.8rem;
     border-radius: 3px;
-    margin-bottom: 2rem;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255,0,110,0.5);
 }
 
-.cyber-code {
-    color: #00f7ff;
-    font-family: 'Courier New', monospace;
-    margin: 0;
-}
-
-.test-cases {
+.radio-grid {
     display: grid;
     gap: 1rem;
 }
 
-.test-case {
-    background: #111122;
-    border-left: 4px solid;
+.cyber-radio {
+    display: flex;
+    align-items: center;
     padding: 1rem;
+    background: #111122;
+    border: 1px solid #00ffb3;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.cyber-radio:hover {
+    background: rgba(0, 255, 179, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 179, 0.2);
+}
+
+.radio-indicator {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #00ffb3;
+    border-radius: 50%;
+    margin-right: 1rem;
     position: relative;
+}
+
+input[type="radio"]:checked + .radio-indicator::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 8px;
+    height: 8px;
+    background: #00ffb3;
+    border-radius: 50%;
+}
+
+.cyber-textarea {
+    width: 100%;
+    padding: 1rem;
+    background: #111122;
+    border: 1px solid #00ffb3;
+    color: #00ffb3;
+    font-family: 'Courier New', monospace;
+    min-height: 150px;
+}
+
+.code-editor-container {
+    height: 400px;
+    border: 1px solid #00ffb3;
+    background: #0a0a0f;
+    border-radius: 3px;
     overflow: hidden;
+}
+
+.test-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
 .test-case.pass {
     border-color: #00ff88;
-    box-shadow: inset 4px 0 15px rgba(0, 255, 136, 0.1);
+    background: rgba(0, 255, 136, 0.05);
 }
 
 .test-case.fail {
     border-color: #ff5555;
-    box-shadow: inset 4px 0 15px rgba(255, 85, 85, 0.1);
+    background: rgba(255, 85, 85, 0.05);
 }
 
-.test-header {
+.form-actions {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: flex-end;
 }
 
-.test-status {
-    color: #fff;
-    font-weight: bold;
+.cyber-button {
+    padding: 1rem 2rem;
+    border: none;
+    font-family: 'Orbitron', sans-serif;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
 }
 
-.test-badge {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
-.bg-cyan {
-    background: #00f7ff;
+.cyber-button.cyan {
+    background: linear-gradient(45deg, #00ffb3, #00f7ff);
     color: #000;
 }
 
-.bg-red {
-    background: #ff5555;
-    color: #000;
+.cyber-button.red {
+    background: linear-gradient(45deg, #ff006e, #ff5555);
+    color: #fff;
 }
 
-.test-detail {
-    color: #a0a0ff;
-    font-family: monospace;
-    font-size: 0.9em;
-    margin: 0.3rem 0;
-    padding-left: 1rem;
-    border-left: 2px solid #303050;
+.cyber-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 255, 179, 0.4);
 }
-
-/* Glow Animation */
-@keyframes cyber-glow {
-    0% { box-shadow: 0 0 10px rgba(0, 247, 255, 0.2); }
-    50% { box-shadow: 0 0 20px rgba(0, 247, 255, 0.4); }
-    100% { box-shadow: 0 0 10px rgba(0, 247, 255, 0.2); }
-}
-
-.cyber-glow {
-    animation: cyber-glow 2s infinite;
-}
-
 </style>
 {% endblock %}

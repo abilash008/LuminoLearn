@@ -2,50 +2,154 @@
 {% load static %}
 
 {% block content %}
-
-    <h1 class="neon-heading">Add Questions to <span class="glowing-text">{{ assignment.title }}</span></h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">ADD QUESTIONS: <span class="neon-pink">{{ assignment.title|upper }}</span></h1>
     
     <form class="cyber-form" method="post" action="{% url 'add_questions' assignment.id %}">
         {% csrf_token %}
         
-        <div class="form-group">
-            <label class="neon-label">Question Text</label>
-            <textarea class="cyber-textarea" 
-                    name="question_text" 
-                    rows="4"
-                    required
-                    placeholder="Enter your question..."></textarea>
-        </div>
-
-        <div class="form-grid">
-            <div class="form-group">
-                <label class="neon-label">Question Type</label>
-                <select class="cyber-select" name="question_type">
-                    <option value="short_answer">Short Answer</option>
-                    <option value="multiple_choice">Multiple Choice</option>
-                    <option value="code">Code-Based</option>
-                </select>
+        <div class="cyber-card">
+            <div class="node-header neon-cyan">
+                <h3>> QUESTION_CREATION_PROTOCOL</h3>
             </div>
+            <div class="node-body">
+                <div class="form-group">
+                    <label class="neon-label">> QUERY_TEXT</label>
+                    <textarea class="cyber-textarea code-font" 
+                            name="question_text" 
+                            rows="4"
+                            required
+                            placeholder="INITIATE_QUESTION_INPUT..."
+                            data-cyber-required></textarea>
+                </div>
 
-            <div class="form-group">
-                <label class="neon-label">Points</label>
-                <input type="number" 
-                    class="cyber-input" 
-                    name="points" 
-                    min="0"
-                    required
-                    placeholder="Enter points...">
+                <div class="cyber-grid">
+                    <div class="form-group">
+                        <label class="neon-label">> RESPONSE_TYPE</label>
+                        <div class="cyber-select-wrapper">
+                            <select class="cyber-select" name="question_type">
+                                <option value="short_answer">SHORT ANSWER</option>
+                                <option value="multiple_choice">MULTIPLE CHOICE</option>
+                                <option value="code">CODING QUESTION</option>
+                            </select>
+                            <i class="fas fa-chevron-down cyber-select-arrow"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="neon-label">> XP_VALUE</label>
+                        <div class="cyber-input-wrapper">
+                            <input type="number" 
+                                class="cyber-grade-input" 
+                                name="points" 
+                                min="0"
+                                required
+                                placeholder="0000"
+                                data-cyber-required>
+                            <span class="unit-symbol">XP</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="gradient-btn-cyan">
-                <i class="fas fa-question-circle"></i> Add Question
+            <button type="submit" class="cyber-button cyan pulse">
+                <i class="fas fa-question-circle"></i> INJECT_QUERY
             </button>
-            <a href="{% url 'educator_assignments' %}" class="gradient-btn-secondary">
-                <i class="fas fa-times"></i> Back to Assignments
+            <a href="{% url 'educator_assignments' %}" class="cyber-button pink">
+                <i class="fas fa-power-off"></i> TERMINATE
             </a>
         </div>
     </form>
+</div>
 
+<style>
+.cyber-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.cyber-card {
+    background: #0a0a0f;
+    border: 2px solid #00ffb3;
+    border-radius: 5px;
+    margin: 2rem 0;
+}
+
+.node-header {
+    padding: 1.5rem;
+    background: #001a14;
+    border-bottom: 2px solid #00ffb3;
+}
+
+.node-body {
+    padding: 2rem;
+}
+
+.code-font {
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+}
+
+.cyber-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.unit-symbol {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffb3;
+    font-weight: bold;
+}
+
+.cyber-grade-input {
+    width: 100%;
+    padding: 12px 35px 12px 15px;
+    background: #001a14;
+    border: 2px solid #00ffb3;
+    color: #ffffff;
+    -moz-appearance: textfield;
+}
+
+.cyber-grade-input::-webkit-outer-spin-button,
+.cyber-grade-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .cyber-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cyber-container {
+        padding: 1rem;
+    }
+    
+    .node-body {
+        padding: 1rem;
+    }
+}
+</style>
+
+<script>
+document.querySelectorAll('[data-cyber-required]').forEach(element => {
+    element.addEventListener('input', function() {
+        if(this.value) {
+            this.style.borderColor = '#00ffb3';
+            this.style.boxShadow = '0 0 15px rgba(0, 255, 179, 0.3)';
+        } else {
+            this.style.borderColor = '#ff0066';
+            this.style.boxShadow = '0 0 15px rgba(255, 0, 102, 0.3)';
+        }
+    });
+});
+</script>
 {% endblock %}

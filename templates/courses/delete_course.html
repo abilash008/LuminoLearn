@@ -2,36 +2,130 @@
 {% load static %}
 
 {% block content %}
-
-    <h1 class="neon-heading-danger">Delete Course</h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch-red">TERMINATE_COURSE</h1>
     
     <div class="cyber-alert">
-        <div class="alert-content">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Confirm Deletion</h3>
-            <p>You're about to permanently delete:<br>
-            <span class="glowing-text">{{ course.title }}</span></p>
+        <div class="alert-header danger">
+            <i class="fas fa-radiation"></i>
+            <h3 class="neon-red">FINAL_DELETION_PROTOCOL</h3>
+        </div>
+        
+        <div class="alert-body">
+            <p class="neon-white">TARGET_IDENTIFIED:</p>
+            <p class="neon-red glitch-text">{{ course.title|upper }}</p>
+            <div class="circuit-pattern"></div>
         </div>
 
-        <form method="post" class="confirmation-form" action="{% url 'delete_course' course.id %}">
+        {% if course.thumbnail %}
+        <div class="cyber-preview">
+            <img src="{{ course.thumbnail.url }}" 
+                class="hologram-preview"
+                alt="Course thumbnail">
+        </div>
+        {% endif %}
+
+        <form method="post" class="cyber-form" action="{% url 'delete_course' course.id %}">
             {% csrf_token %}
-            <div class="confirmation-actions">
-                <button type="submit" class="gradient-btn-red">
-                    <i class="fas fa-skull-crossbones"></i> Confirm Delete
+            <div class="form-actions">
+                <button type="submit" class="cyber-button red pulse">
+                    <i class="fas fa-skull-crossbones"></i> EXECUTE_TERMINATION
                 </button>
-                <a href="{% url 'manage_courses' %}" class="gradient-btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Cancel
+                <a href="{% url 'manage_courses' %}" class="cyber-button cyan">
+                    <i class="fas fa-shield-alt"></i> ABORT_SEQUENCE
                 </a>
             </div>
         </form>
     </div>
+</div>
 
-    {% if course.thumbnail %}
-    <div class="final-preview">
-        <img src="{{ course.thumbnail.url }}" 
-            alt="Course thumbnail"
-            class="thumbnail-preview-final">
-    </div>
-    {% endif %}
+<style>
+.cyber-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
 
+.cyber-alert {
+    border: 3px solid #ff003c;
+    border-radius: 5px;
+    background: #0a0a0f;
+    box-shadow: 0 0 30px rgba(255, 0, 60, 0.3);
+}
+
+.alert-header {
+    padding: 2rem;
+    text-align: center;
+    border-bottom: 2px solid #ff003c;
+    background: linear-gradient(45deg, #2a0a0a, #0a0a0f);
+}
+
+.alert-body {
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.circuit-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="100" height="100" fill="none"/><path d="M20,20 L80,80 M80,20 L20,80" stroke="%23ff003c" stroke-width="2"/></svg>');
+}
+
+.hologram-preview {
+    width: 100%;
+    max-width: 300px;
+    margin: 2rem auto;
+    border: 2px solid #ff003c;
+    box-shadow: 0 0 20px rgba(255, 0, 60, 0.5);
+    filter: hue-rotate(120deg) contrast(1.2);
+    transition: all 0.3s ease;
+}
+
+.hologram-preview:hover {
+    transform: rotateZ(1deg) scale(1.05);
+    filter: hue-rotate(180deg) contrast(1.5);
+}
+
+.neon-red {
+    color: #ff003c;
+    text-shadow: 0 0 10px #ff003c;
+}
+
+.cyber-button.red {
+    background: linear-gradient(45deg, #ff003c, #80001c);
+    color: #ffffff;
+}
+
+.glitch-text {
+    animation: text-glitch 1s infinite;
+}
+
+@keyframes text-glitch {
+    0% { text-shadow: 2px 2px #ff003c, -2px -2px #00ffb3; }
+    25% { text-shadow: -2px 2px #ff003c, 2px -2px #00ffb3; }
+    50% { text-shadow: 2px -2px #ff003c, -2px 2px #00ffb3; }
+    75% { text-shadow: -2px -2px #ff003c, 2px 2px #00ffb3; }
+    100% { text-shadow: 2px 2px #ff003c, -2px -2px #00ffb3; }
+}
+
+@media (max-width: 768px) {
+    .form-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .cyber-container {
+        padding: 1rem;
+    }
+    
+    .hologram-preview {
+        max-width: 200px;
+    }
+}
+</style>
 {% endblock %}

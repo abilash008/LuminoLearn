@@ -2,58 +2,266 @@
 {% load static %}
 
 {% block content %}
-
-    <h1 class="neon-heading">Create New Course</h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">CREATE_NEW_COURSE</h1>
     
     <form class="cyber-form" method="POST" enctype="multipart/form-data" action="{% url 'create_course' %}">
         {% csrf_token %}
         
         <!-- Course Fields -->
         <div class="form-group">
-            <label class="neon-label">Course Title</label>
+            <label class="neon-label">> COURSE_TITLE</label>
             <input type="text" 
                 class="cyber-input" 
                 id="title" 
                 name="title" 
                 required
-                placeholder="Enter course title..."
+                placeholder="ENTER_TITLE_SEQUENCE..."
                 autofocus>
         </div>
 
         <div class="form-group">
-            <label class="neon-label">Course Description</label>
+            <label class="neon-label">> COURSE_DESCRIPTION</label>
             <textarea class="cyber-textarea" 
                     id="description" 
                     name="description" 
                     rows="5"
                     required
-                    placeholder="Describe your course..."></textarea>
+                    placeholder="INITIATE_DESCRIPTION_PROTOCOL..."></textarea>
         </div>
 
         <div class="form-group">
-            <label class="neon-label">Course Thumbnail</label>
+            <label class="neon-label">> CATEGORY_SELECT</label>
+            <div class="cyber-select-wrapper">
+                <select class="cyber-select" name="category" required>
+                    {% for value, label in categories %}
+                        <option value="{{ value }}" {% if value == 'beginner' %}selected{% endif %}>
+                            {{ label|upper }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <i class="fas fa-chevron-down cyber-select-arrow"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="neon-label">> THUMBNAIL_UPLOAD</label>
             <div class="file-upload-wrapper">
                 <input type="file" 
                     class="cyber-file-input" 
                     id="thumbnail" 
                     name="thumbnail"
                     required>
-                <label for="thumbnail" class="file-upload-label">
-                    <i class="fas fa-cloud-upload-alt"></i> Choose Thumbnail
+                <label for="thumbnail" class="cyber-file-label">
+                    <i class="fas fa-cloud-upload-alt neon-cyan"></i> 
+                    <span class="pulse-text">SELECT_FILE</span>
                 </label>
-                <span class="file-name" id="file-name">No file selected</span>
+                <span class="cyber-file-name" id="file-name">NO_FILE_SELECTED</span>
             </div>
-            <div class="thumbnail-preview" id="thumbnail-preview"></div>
+            <div class="thumbnail-preview cyber-preview" id="thumbnail-preview"></div>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="gradient-btn-cyan">
-                <i class="fas fa-rocket"></i> Launch Course
+            <button type="submit" class="cyber-button cyan">
+                <i class="fas fa-rocket"></i> LAUNCH_SEQUENCE
             </button>
-            <a href="{% url 'manage_courses' %}" class="gradient-btn-secondary">
-                <i class="fas fa-times"></i> Cancel
+            <a href="{% url 'manage_courses' %}" class="cyber-button pink">
+                <i class="fas fa-times"></i> ABORT_MISSION
             </a>
         </div>
     </form>
+</div>
 
+<style>
+.cyber-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 2px solid #00ffb3;
+    border-radius: 5px;
+    background: rgba(10, 10, 15, 0.9);
+    box-shadow: 0 0 30px rgba(0, 255, 179, 0.2);
+}
+
+.neon-heading {
+    color: #00ffb3;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px #00ffb3;
+}
+
+.cyber-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+.neon-label {
+    color: #00ffb3;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.cyber-input, .cyber-textarea, .cyber-select {
+    width: 100%;
+    padding: 12px;
+    background: #001a14;
+    border: 2px solid #00ffb3;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+    transition: all 0.3s ease;
+}
+
+.cyber-input:focus, .cyber-textarea:focus, .cyber-select:focus {
+    outline: none;
+    box-shadow: 0 0 15px rgba(0, 255, 179, 0.4);
+    background: #002218;
+}
+
+.cyber-input::placeholder, .cyber-textarea::placeholder {
+    color: #669999;
+}
+
+.cyber-select-wrapper {
+    position: relative;
+}
+
+.cyber-select-arrow {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffb3;
+    pointer-events: none;
+}
+
+.file-upload-wrapper {
+    position: relative;
+    margin-top: 0.5rem;
+}
+
+.cyber-file-input {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+.cyber-file-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #001a14;
+    border: 2px solid #00ffb3;
+    color: #00ffb3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cyber-file-label:hover {
+    background: rgba(0, 255, 179, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 179, 0.3);
+}
+
+.cyber-file-name {
+    display: block;
+    margin-top: 0.5rem;
+    color: #ff00ff;
+    font-size: 0.9rem;
+}
+
+.cyber-preview {
+    margin-top: 1rem;
+    border: 2px solid #00ffb3;
+    min-height: 150px;
+    display: none;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.cyber-button {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cyber-button.cyan {
+    background: linear-gradient(45deg, #00ffb3, #00997a);
+    color: #001a14;
+}
+
+.cyber-button.pink {
+    background: linear-gradient(45deg, #ff00ff, #990099);
+    color: #ffffff;
+}
+
+.cyber-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 179, 0.4);
+}
+
+.pulse-text {
+    animation: text-pulse 1.5s infinite;
+}
+
+@keyframes text-pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+@media (max-width: 768px) {
+    .cyber-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+document.getElementById('thumbnail').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('thumbnail-preview');
+    const fileName = document.getElementById('file-name');
+    
+    fileName.textContent = `FILE_SELECTED: ${file.name}`;
+    preview.style.display = 'block';
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        preview.innerHTML = `
+            <img src="${e.target.result}" 
+                style="width: 100%; 
+                        height: 100%;
+                        object-fit: cover;
+                        border: 2px solid #ff00ff;
+                        box-shadow: 0 0 20px rgba(255, 0, 255, 0.3)">
+        `;
+        preview.style.animation = 'scanline 0.5s linear';
+    }
+    reader.readAsDataURL(file);
+});
+</script>
 {% endblock %}

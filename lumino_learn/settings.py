@@ -132,13 +132,13 @@ DATABASES = {
     }
 }
 
-# # Override with DATABASE_URL if present (for production on Render)
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default'] = dj_database_url.config(
-        default=os.environ['DATABASE_URL'],
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+# Override with DATABASE_URL if present (for production on Render)
+# if 'DATABASE_URL' in os.environ:
+#     DATABASES['default'] = dj_database_url.config(
+#         default=os.environ['DATABASE_URL'],
+#         conn_max_age=600,
+#         conn_health_checks=True,
+#     )
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -206,3 +206,47 @@ load_dotenv()
 HF_API_TOKEN = os.getenv("HF_API_TOKEN")
 
 COHERE_API_KEY = os.getenv('COHERE_API_KEYS')
+
+
+# AI_ENGINE
+# settings.py
+from celery.schedules import crontab
+from datetime import timedelta
+
+CELERY_BEAT_SCHEDULE = {
+    'retrain-weekly': {
+        'task': 'ai_engine.tasks.retrain_model',
+        'schedule': crontab(day_of_week='mon', hour=3),
+        'kwargs': {'manual_trigger': False},
+        'options': {'priority': 9}
+    },
+    'refresh-cache-daily': {
+        'task': 'ai_engine.tasks.refresh_recommendations',
+        'schedule': crontab(hour=4),
+        'kwargs': {'precompute_active': True},
+        'options': {'priority': 7}
+    },
+    'health-check-hourly': {
+        'task': 'ai_engine.tasks.system_health_check',
+        'schedule': timedelta(hours=1),
+        'options': {'priority': 5}
+    },
+    'emergency-cache-fallback': {
+        'task': 'ai_engine.tasks.emergency_cache_refresh',
+        'schedule': timedelta(minutes=15),
+        'options': {'priority': 3}
+    }
+}
+
+
+MODEL_VERSION_KEY = 'lpr_current_model_version'
+CACHE_BATCH_SIZE = 1500  # Optimal for Redis
+CACHE_TTL = 86400 * 3  # 3 days
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379',
+    }
+}

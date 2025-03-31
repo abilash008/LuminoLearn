@@ -2,82 +2,212 @@
 {% load humanize static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/leaderboard.css' %}">
-
-<div class="leaderboard-container">
-    <h2 class="leaderboard-title">Class Leaderboard</h2>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">SYSTEM LEADERBOARD</h1>
     
-    <div class="leaderboard-card">
-        <div class="leaderboard-header">
-            <div class="leaderboard-row header-row">
-                <div class="rank-col">Rank</div>
-                <div class="student-col">Student</div>
-                <div class="badges-col">Achievements</div>
-                <div class="points-col">Points</div>
+    <div class="cyber-board">
+        <div class="cyber-header neon-cyan">
+            <div class="cyber-row header-row">
+                <div class="rank-col">RANK</div>
+                <div class="student-col">OPERATIVE</div>
+                <div class="badges-col">ACHIEVEMENT PROTOCOLS</div>
+                <div class="points-col">POWER UNITS</div>
             </div>
         </div>
         
-        <div class="leaderboard-list">
+        <div class="cyber-list">
             {% for student in leaderboard %}
-            <div class="leaderboard-item">
-                <div class="leaderboard-row">
+            <div class="cyber-item">
+                <div class="cyber-row">
                     <div class="rank-col">
-                        <span class="rank-badge">{{ forloop.counter }}</span>
+                        <span class="neon-badge">{{ forloop.counter }}</span>
                     </div>
                     <div class="student-col">
-                        {% if student.profile.profile_picture %}
-                        <img src="{{ student.profile.profile_picture.url }}" 
-                            alt="{{ student.username }}" 
-                            class="student-avatar">
-                        {% else %}
-                        <div class="avatar-placeholder">
-                            {{ student.username|first|upper }}
+                        <div class="cyber-avatar">
+                            {% if student.profile.profile_picture %}
+                            <img src="{{ student.profile.profile_picture.url }}" 
+                                alt="{{ student.username }}" 
+                                class="avatar-image">
+                            {% else %}
+                            <div class="avatar-hologram">
+                                {{ student.username|first|upper }}
+                            </div>
+                            {% endif %}
+                            <div class="avatar-glow"></div>
                         </div>
-                        {% endif %}
-                        <span class="student-name">{{ student.get_full_name|default:student.username }}</span>
+                        <span class="neon-white operative-name">{{ student.get_full_name|default:student.username }}</span>
                     </div>
                     <div class="badges-col">
                         {% for badge in student.badges_earned.all|slice:":5" %}
-                        <span class="achievement-badge" title="{{ badge.badge.description }}">
-                            {{ badge.badge.name }}
+                        <span class="cyber-tag" title="{{ badge.badge.description }}">
+                            [ {{ badge.badge.name|upper }} ]
                         </span>
                         {% endfor %}
                     </div>
                     <div class="points-col">
-                        <span class="points-value">{{ student.total_points|default:0|intcomma }} pts</span>
+                        <span class="neon-cyan">{{ student.total_points|default:0|intcomma }} PU</span>
                     </div>
                 </div>
+                <div class="row-glow"></div>
             </div>
             {% empty %}
-            <div class="empty-state">
-                No leaderboard data available yet
+            <div class="cyber-empty neon-pink">
+                [ NO OPERATIVES DETECTED ]
             </div>
             {% endfor %}
         </div>
     </div>
-</div><br>
-<a href="{% url 'student_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+</div>
 
-{% endblock %}
+<a href="{% url 'student_dashboard' %}" class="cyber-button back-btn">
+    <i class="fas fa-arrow-left"></i> [ RETURN TO HQ ]
+</a>
 
-{% block extra_js %}
-<script>
-// Simple tooltip implementation
-document.querySelectorAll('.achievement-badge').forEach(item => {
-    item.addEventListener('mouseover', function(e) {
-        const tooltip = document.createElement('div');
-        tooltip.className = 'custom-tooltip';
-        tooltip.textContent = this.title;
-        document.body.appendChild(tooltip);
-        
-        const rect = this.getBoundingClientRect();
-        tooltip.style.top = (rect.top - 30) + 'px';
-        tooltip.style.left = (rect.left + rect.width/2 - tooltip.offsetWidth/2) + 'px';
-        
-        this.addEventListener('mouseout', () => {
-            tooltip.remove();
-        });
-    });
-});
-</script>
+<style>
+.cyber-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.cyber-board {
+    background: #0a0a0f;
+    border: 2px solid #00ffb3;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 255, 179, 0.2);
+}
+
+.cyber-header {
+    padding: 1.5rem;
+    background: linear-gradient(90deg, rgba(0,255,179,0.1) 0%, rgba(10,10,15,0) 100%);
+    border-bottom: 2px solid #00ffb3;
+}
+
+.cyber-row {
+    display: grid;
+    grid-template-columns: 80px 2fr 3fr 1fr;
+    align-items: center;
+    padding: 1rem;
+    position: relative;
+}
+
+.cyber-item {
+    border-bottom: 1px solid rgba(0, 255, 179, 0.1);
+    transition: all 0.3s ease;
+}
+
+.cyber-item:hover {
+    background: rgba(0, 255, 179, 0.05);
+    transform: translateX(10px);
+}
+
+.neon-badge {
+    background: #ff006e;
+    padding: 0.5rem 0.8rem;
+    border-radius: 3px;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 5px rgba(255,0,110,0.5);
+}
+
+.cyber-avatar {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+}
+
+.avatar-hologram {
+    width: 100%;
+    height: 100%;
+    background: #0a0a0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00ffb3;
+    font-size: 1.5rem;
+    border: 2px solid #00ffb3;
+    position: relative;
+    z-index: 1;
+}
+
+.avatar-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0,255,179,0.4) 0%, transparent 70%);
+    animation: avatar-pulse 2s infinite;
+}
+
+.cyber-tag {
+    background: #0a0a0f;
+    border: 1px solid #00ffb3;
+    color: #00ffb3;
+    padding: 0.3rem 0.8rem;
+    border-radius: 3px;
+    margin: 0 0.3rem;
+    font-size: 0.9rem;
+    font-family: 'Courier New', monospace;
+}
+
+.cyber-empty {
+    padding: 2rem;
+    text-align: center;
+    border: 2px dashed #ff006e;
+    margin: 2rem;
+}
+
+.row-glow {
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 3px;
+    height: 100%;
+    background: #00ffb3;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cyber-item:hover .row-glow {
+    opacity: 1;
+}
+
+@keyframes avatar-pulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.4; }
+}
+
+.back-btn {
+    margin-top: 2rem;
+    background: rgba(255, 0, 110, 0.1);
+    border: 1px solid #ff006e;
+}
+
+.back-btn:hover {
+    background: rgba(255, 0, 110, 0.2);
+}
+
+@media (max-width: 768px) {
+    .cyber-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .rank-col, .student-col, .badges-col, .points-col {
+        justify-content: flex-start !important;
+    }
+}
+</style>
 {% endblock %}

@@ -2,38 +2,57 @@
 {% load static %}
 
 {% block content %}
-
-    <h1 class="neon-heading">Edit: <span class="glowing-text">{{ course.title }}</span></h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">EDIT_PROTOCOL: <span class="neon-pink">{{ course.title|upper }}</span></h1>
     
     <form class="cyber-form" method="post" enctype="multipart/form-data" action="{% url 'edit_course' course.id %}">
         {% csrf_token %}
         
         <div class="form-group">
-            <label class="neon-label">Course Title</label>
-            <input type="text" class="cyber-input" name="title" value="{{ course.title }}" required>
+            <label class="neon-label">> COURSE_TITLE</label>
+            <input type="text" class="cyber-input" name="title" value="{{ course.title }}" required
+                data-cyber-required>
         </div>
 
         <div class="form-group">
-            <label class="neon-label">Description</label>
-            <textarea class="cyber-textarea" name="description" rows="6" required>{{ course.description }}</textarea>
+            <label class="neon-label">> DESCRIPTION_CODE</label>
+            <textarea class="cyber-textarea" name="description" rows="6" required
+                data-cyber-required>{{ course.description }}</textarea>
         </div>
 
         <div class="form-group">
-            <label class="neon-label">Course Thumbnail</label>
+            <label class="neon-label">> CATEGORY_SELECTOR</label>
+            <div class="cyber-select-wrapper">
+                <select class="cyber-select" name="category" required>
+                    {% for value, label in categories %}
+                        <option value="{{ value }}" {% if value == course.category %}selected{% endif %}>
+                            {{ label|upper }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <i class="fas fa-chevron-down cyber-select-arrow"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="neon-label">> THUMBNAIL_UPDATE</label>
             <div class="file-upload-wrapper">
                 <input type="file" class="cyber-file-input" id="thumbnail" name="thumbnail">
-                <label for="thumbnail" class="file-upload-label">
-                    <i class="fas fa-cloud-upload-alt"></i> Choose File
+                <label for="thumbnail" class="cyber-file-label">
+                    <i class="fas fa-cloud-upload-alt neon-cyan"></i> 
+                    <span class="pulse-text">SELECT_FILE</span>
                 </label>
             </div>
             {% if course.thumbnail %}
-            <div class="current-thumbnail">
-                <img src="{{ course.thumbnail.url }}" alt="Current thumbnail" class="thumbnail-preview">
-                <div class="thumbnail-controls">
-                    <label class="cyber-checkbox">
-                        <input type="checkbox" name="thumbnail-clear">
-                        <span class="checkmark"></span>
-                        Remove Thumbnail
+            <div class="cyber-preview current-thumbnail">
+                <img src="{{ course.thumbnail.url }}" 
+                    class="cyber-thumbnail"
+                    alt="Current thumbnail">
+                <div class="cyber-checkbox">
+                    <input type="checkbox" name="thumbnail-clear" id="thumbnail-clear">
+                    <label for="thumbnail-clear" class="neon-pink">
+                        <span class="cyber-check"></span>
+                        ERASE_IMAGE
                     </label>
                 </div>
             </div>
@@ -41,51 +60,153 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="gradient-btn-cyan">
-                <i class="fas fa-save"></i> Save Changes
+            <button type="submit" class="cyber-button cyan">
+                <i class="fas fa-save"></i> SAVE_PROTOCOL
             </button>
-            <a href="{% url 'manage_courses' %}" class="gradient-btn-secondary">
-                <i class="fas fa-times"></i> Cancel
+            <a href="{% url 'manage_courses' %}" class="cyber-button pink">
+                <i class="fas fa-times"></i> ABORT_CHANGES
             </a>
         </div>
     </form>
 
-    <!-- Topic Editing Section -->
-    <div class="card-grid">
-        <a><h2>Course Topics</h2></a><br>
-        {% for topic in topics %}
-        <div class="cyber-card topic-card">
-            <div class="card-content">
-                <div class="topic-header">
-                    <h3 class="card-title">{{ topic.name }}</h3>
-                    <span class="course-tag">{{ topic.course.title }}</span>
+    <!-- Topic Matrix -->
+    <div class="cyber-section">
+        <h2 class="neon-subheading cyber-border">TOPIC_MATRIX</h2>
+        <div class="cyber-grid">
+            {% for topic in topics %}
+            <div class="cyber-node topic-node">
+                <div class="node-header neon-cyan">
+                    <h3 class="glitch-text">{{ topic.name|upper }}</h3>
+                    <span class="cyber-tag">{{ topic.course.title|upper }}</span>
                 </div>
-                <p class="card-description">{{ topic.content|truncatechars:150 }}</p>
-                
-                <div class="card-actions">
-                    <a href="{% url 'edit_topic' topic.id %}" class="action-btn edit-btn">
-                        <i class="fas fa-edit"></i> Edit
+                <div class="node-body">
+                    <p class="neon-white">{{ topic.content|truncatechars:150 }}</p>
+                </div>
+                <div class="node-actions">
+                    <a href="{% url 'edit_topic' topic.id %}" class="cyber-button small cyan">
+                        <i class="fas fa-code"></i> EDIT_CODE
                     </a>
-                    <a href="{% url 'delete_topic' topic.id %}" class="action-btn delete-btn">
-                        <i class="fas fa-trash"></i> Delete
+                    <a href="{% url 'delete_topic' topic.id %}" class="cyber-button small pink">
+                        <i class="fas fa-skull"></i> DELETE_NODE
                     </a>
                 </div>
+            </div><br>
+            {% empty %}
+            <div class="cyber-empty">
+                <i class="fas fa-brain-circuit"></i>
+                <p class="neon-pink">NO_TOPICS_DETECTED :: INITIATE_TOPIC_CREATION</p>
             </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <div class="empty-state">
-            <i class="fas fa-comment-slash"></i>
-            <p>No topics found. Add your first topic!</p>
-        </div>
-        {% endfor %}
-    </div><br>
-    <div class="form-actions">
-        <a href="{% url 'add_topic' course.id %}" class="gradient-btn-cyan">
-            <i class="fas fa-plus"></i> Add Topic
-        </a>
-        <a href="{% url 'manage_courses' %}"  class="back-button">
-            <i class="fas fa-arrow-left mr-2"></i> Back to Courses
-        </a>
-    </div>
 
+        <div class="cyber-nav">
+            <a href="{% url 'add_topic' course.id %}" class="cyber-button cyan">
+                <i class="fas fa-plus"></i> INJECT_TOPIC
+            </a>
+            <a href="{% url 'manage_courses' %}" class="cyber-button back">
+                <i class="fas fa-arrow-left"></i> RETURN_TO_COURSES
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.cyber-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.cyber-section {
+    margin-top: 4rem;
+    border-top: 2px solid #00ffb3;
+    padding-top: 3rem;
+}
+
+.cyber-preview {
+    margin-top: 1rem;
+    border: 2px solid #00ffb3;
+    padding: 1rem;
+}
+
+.cyber-thumbnail {
+    max-width: 200px;
+    border: 2px solid #ff00ff;
+    margin-bottom: 1rem;
+}
+
+.cyber-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.cyber-check {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ff00ff;
+    position: relative;
+}
+
+.cyber-check::after {
+    content: "✓";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff00ff;
+    opacity: 0;
+}
+
+input[type="checkbox"]:checked + .cyber-check::after {
+    opacity: 1;
+}
+
+.topic-node {
+    border-color: #ff00ff;
+}
+
+.topic-node .node-header {
+    border-color: #ff00ff;
+}
+
+@media (max-width: 768px) {
+    .cyber-nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .cyber-thumbnail {
+        max-width: 100%;
+    }
+}
+</style>
+
+<script>
+document.querySelectorAll('[data-cyber-required]').forEach(element => {
+    element.addEventListener('input', function() {
+        if (this.value) {
+            this.style.borderColor = '#00ffb3';
+            this.style.boxShadow = '0 0 15px rgba(0, 255, 179, 0.3)';
+        } else {
+            this.style.borderColor = '#ff0066';
+            this.style.boxShadow = '0 0 15px rgba(255, 0, 102, 0.3)';
+        }
+    });
+});
+
+document.querySelectorAll('.topic-node').forEach(node => {
+    node.addEventListener('mouseover', () => {
+        node.style.transform = 'translateY(-5px)';
+        node.style.boxShadow = '0 0 25px rgba(255, 0, 255, 0.3)';
+    });
+    
+    node.addEventListener('mouseout', () => {
+        node.style.transform = 'translateY(0)';
+        node.style.boxShadow = 'none';
+    });
+});
+</script>
 {% endblock %}

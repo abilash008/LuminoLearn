@@ -2,44 +2,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="csrf-token" content="{{ csrf_token }}">
-<link rel="icon" type="image/svg+xml" href="{% static 'assets/images/lumino_favicon.svg' %}">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LuminoLearn</title>
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'assets/images/lumino_favicon.svg' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM CORE - LUMINO LEARN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-cyan: #00ffb3;
+            --neon-pink: #ff006e;
+            --cyber-bg: #0a0a0f;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            background: var(--cyber-bg);
+            color: var(--neon-cyan);
+            overflow-x: hidden;
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            background: linear-gradient(45deg, #0a0a0f 0%, #1a1a2f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 179, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 179, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: scan 20s linear infinite;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            margin: 0;
+            text-shadow: 0 0 20px var(--neon-cyan);
+            animation: glitch 2s infinite;
+        }
+
+        h3 {
+            color: var(--neon-pink);
+            margin: 1rem 0 2rem;
+            font-size: 1.5rem;
+        }
+
+        .hero a {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero a:hover {
+            background: rgba(0, 255, 179, 0.1);
+            box-shadow: 0 0 20px var(--neon-cyan);
+            transform: translateY(-2px);
+        }
+
+        .features {
+            padding: 4rem 2rem;
+            background: #0a0a0f;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--neon-cyan);
+            padding: 2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 255, 179, 0.3);
+        }
+
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 179, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        .icon {
+            color: var(--neon-pink);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature h3 {
+            color: var(--neon-cyan);
+            margin: 1rem 0;
+        }
+
+        .feature p {
+            color: #8b8b9b;
+            line-height: 1.6;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+
+        @keyframes glitch {
+            0%, 100% { text-shadow: 2px 2px var(--neon-pink), -2px -2px var(--neon-cyan); }
+            50% { text-shadow: -2px -2px var(--neon-pink), 2px 2px var(--neon-cyan); }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<!-- Hero Section -->
-<section class="hero">
-<div class="hero-content">
-    <h1>LuminoLearn</h1>
-    <h3>Illuminating the Path to Learning and Success</h3>
-    <a href="{% url 'explore' %}"><b><i>Explore</i></b></a>
-    </div>
-</section>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 data-text="LUMINO_LEARN">LUMINO_LEARN</h1>
+            <h3>NEURAL PATHWAY OPTIMIZATION SYSTEM</h3>
+            <a href="{% url 'explore' %}">INITIATE LEARNING PROTOCOL</a>
+        </div>
+    </section>
 
-<!-- Features Section -->
-<section class="features">
-<h2>Key Features</h2>
-<div class="feature-list">
-    <div class="feature">
-        <i class="icon">🧠</i>
-        <h3>AI-Powered Learning</h3>
-        <p>Personalized learning paths tailored to your needs.</p>
-    </div>
-    <div class="feature">
-        <i class="icon">🎮</i>
-        <h3>Gamification</h3>
-        <p>Engage with points, badges, and leaderboards.</p>
-    </div>
-    <div class="feature">
-        <i class="icon">💻</i>
-        <h3>Real-Time Coding</h3>
-        <p>Practice and learn programming with live code execution.</p>
-    </div>
-    </div>
-</section>
-
+    <!-- Features Section -->
+    <section class="features">
+        <h2>SYSTEM CORE COMPONENTS</h2>
+        <div class="feature-list">
+            <div class="feature">
+                <i class="icon fas fa-brain"></i>
+                <h3>COGNITIVE ENHANCEMENT MODULE</h3>
+                <p>Adaptive learning matrices optimized for neural pattern assimilation</p>
+            </div>
+            <div class="feature">
+                <i class="icon fas fa-gamepad"></i>
+                <h3>ACHIEVEMENT NETWORK</h3>
+                <p>Engagement protocols powered by reward algorithms and leaderboard systems</p>
+            </div>
+            <div class="feature">
+                <i class="icon fas fa-terminal"></i>
+                <h3>LIVE CODE INTERFACE</h3>
+                <p>Real-time code execution matrix with instant feedback protocols</p>
+            </div>
+        </div>
+    </section>
 </body>
 </html>

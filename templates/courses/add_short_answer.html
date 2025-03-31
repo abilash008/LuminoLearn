@@ -2,33 +2,103 @@
 {% load static %}
 
 {% block content %}
-
-    <h1 class="neon-heading">Add Correct Answer</h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">SET CORRECT ANSWER</h1>
     
     <form class="cyber-form" method="post">
         {% csrf_token %}
         
-        <div class="form-group">
-            <label class="neon-label">Question:</label>
-            <p class="cyber-text">{{ question.question_text }}</p>
+        <div class="cyber-card">
+            <div class="node-header neon-cyan">
+                <h3>> ACTIVE_QUESTION</h3>
+            </div>
+            <div class="node-body">
+                <p class="neon-pink code-font">{{ question.question_text|upper }}</p>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label class="neon-label">Correct Answer</label>
-            <textarea class="cyber-textarea" 
-                    name="correct_answer" 
-                    rows="4"
-                    required>{% if short_answer %}{{ short_answer.correct_answer }}{% endif %}</textarea>
+        <div class="cyber-card">
+            <div class="node-header neon-cyan">
+                <h3>> ANSWER_MATRIX</h3>
+            </div>
+            <div class="node-body">
+                <textarea class="cyber-textarea code-font"
+                        name="correct_answer" 
+                        rows="6"
+                        required
+                        placeholder="INITIATE_CORRECT_SEQUENCE..."
+                        data-cyber-required>{% if short_answer %}{{ short_answer.correct_answer }}{% endif %}</textarea>
+            </div>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="gradient-btn-cyan">
-                <i class="fas fa-save"></i> Save Answer
+            <button type="submit" class="cyber-button cyan pulse">
+                <i class="fas fa-save"></i> SAVE ANSWER
             </button>
-            <a href="{% url 'add_questions' question.assignment.id %}" class="gradient-btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Questions
+            <a href="{% url 'add_questions' question.assignment.id %}" class="cyber-button pink">
+                <i class="fas fa-arrow-left"></i> RETURN_TO_QUESTIONS
             </a>
         </div>
     </form>
+</div>
 
+<style>
+.cyber-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.cyber-card {
+    background: #0a0a0f;
+    border: 2px solid #00ffb3;
+    border-radius: 5px;
+    margin: 2rem 0;
+}
+
+.node-header {
+    padding: 1.5rem;
+    background: #001a14;
+    border-bottom: 2px solid #00ffb3;
+}
+
+.node-body {
+    padding: 2rem;
+}
+
+.code-font {
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    color: #00ffb3;
+}
+
+.cyber-textarea {
+    min-height: 200px;
+    resize: vertical;
+}
+
+@media (max-width: 768px) {
+    .cyber-container {
+        padding: 1rem;
+    }
+    
+    .node-body {
+        padding: 1rem;
+    }
+}
+</style>
+
+<script>
+document.querySelectorAll('[data-cyber-required]').forEach(element => {
+    element.addEventListener('input', function() {
+        if(this.value) {
+            this.style.borderColor = '#00ffb3';
+            this.style.boxShadow = '0 0 15px rgba(0, 255, 179, 0.3)';
+        } else {
+            this.style.borderColor = '#ff0066';
+            this.style.boxShadow = '0 0 15px rgba(255, 0, 102, 0.3)';
+        }
+    });
+});
+</script>
 {% endblock %}

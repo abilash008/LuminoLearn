@@ -2,35 +2,113 @@
 {% block title %}Your Enrolled Courses{% endblock %}
 {% block content %}
 
-
-
 <h1 class="neon-subheading">Your Enrolled Courses</h1>
-    <div class="assignment-grid">
+<div class="assignment-grid">
+    <div class="grid-container">
     {% if enrolled_courses %}
     {% for course in enrolled_courses %}
         <div class="cyber-card">
             <div class="card-header">
                 <h3 class="glowing-text">{{ course.title }}</h3>
             </div>
+            <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="cyber-thumbnail">
             <div class="card-body">
-                <p class="assignment-description">{{ course.description|truncatewords:30 }}</p>
-                <div class="assignment-meta">
+                <p class="course-description">{{ course.description|truncatewords:30 }}</p>
+                <div class="course-meta">
                     <div class="meta-item">
-                        <i class="fas fa-code"></i>
-                        <span>Created By : {{ course.educator.username }} </span>
+                        <i class="fas fa-chalkboard-teacher neon-icon"></i>
+                        <span class="meta-text">Level: {{ course.category }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-code neon-icon"></i>
+                        <span class="meta-text">By: {{ course.educator.username }}</span>
                     </div>
                 </div>
             </div>
             <div class="card-actions">
                 <a href="{% url 'course_learn' course.id %}" class="action-btn edit-btn">
-                    <i class="fas fa-book"></i> Learn Now
+                    <i class="fas fa-rocket"></i> Learn Now
                 </a>
             </div>
         </div>
         {% endfor %}
         {% else %}
-        <p>You are not enrolled in any courses yet.</p>
+        <p class="no-courses">You are not enrolled in any courses yet.</p>
     {% endif %}
-    </div><br>
-    <a href="{% url 'student_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+    </div>
+</div><br>
+<a href="{% url 'student_dashboard' %}" class="back-button">  
+    <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+</a>
+
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        width: 100%;
+    }
+
+    .cyber-card {
+        background: #0a0a0f;
+        border: 2px solid #00ffb3;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .cyber-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 20px rgba(0, 255, 179, 0.4);
+    }
+
+    .cyber-thumbnail {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 2px solid #00ffb3;
+    }
+
+    .card-header {
+        padding: 1rem;
+        background: rgba(0, 255, 179, 0.1);
+    }
+
+    .course-description {
+        color: #8b8b9b;
+        padding: 0 1rem;
+        min-height: 80px;
+    }
+
+    .course-meta {
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.3);
+        margin: 1rem;
+        border-radius: 4px;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0.5rem 0;
+    }
+
+    .neon-icon {
+        color: #00ffb3;
+        width: 20px;
+    }
+
+    .meta-text {
+        color: #8b8b9b;
+    }
+
+    .no-courses {
+        color: #ff006e;
+        text-align: center;
+        padding: 2rem;
+        font-size: 1.2rem;
+        grid-column: 1 / -1;
+    }
+</style>
 {% endblock %}

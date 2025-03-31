@@ -1,38 +1,195 @@
-{% extends 'base.html' %}
-{% block title %}Recommended Courses{% endblock %}
+{% extends "base.html" %}
+{% load static %}
+
 {% block content %}
+<div class="recommendation-container">
+    {{ progress_data|json_script:"progress-data" }}
+    <h1 class="neon-subheading">Your Personalized Learning Path</h1>
+    
+    <!-- Visualization Section -->
+    <div class="cyber-visuals">
+        <div class="cyber-chart">
+            <canvas id="performanceRadar"></canvas>
+        </div>
+        <div class="cyber-chart">
+            <canvas id="progressChart"></canvas>
+        </div>
+    </div>
 
-
-
-<h1 class="neon-subheading">Recommended Courses</h1>
+    <!-- Courses Grid -->
     <div class="assignment-grid">
-        {% if recommended_courses %}
-        {% for course in recommended_courses %}
-        <div class="cyber-card">
-            <div class="card-header">
-                <h3 class="glowing-text">{{ course.title }}</h3>
-            </div>
-            <div class="card-body">
-                <p class="assignment-description">{{ course.description|truncatewords:30 }}</p>
-                <div class="assignment-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-code"></i>
-                        <span>Created By : {{ course.educator.username }} </span>
+        <section class="recommended-courses">
+            <h2 class="glowing-text">Recommended Courses</h2>
+            <div class="grid-container">
+                {% for course in recommendations %}
+                <div class="cyber-card">
+                    <div class="card-header">
+                        <h3 class="glowing-text">{{ course.title }}</h3>
+                    </div>
+                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="cyber-thumbnail">
+                    <div class="card-body">
+                        <p class="course-description">{{ course.description|truncatechars:100 }}</p>
+                        <div class="course-meta">
+                            <span class="meta-badge">{{ course.category|title }}</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="{% url 'enroll_in_course' course.id %}" class="action-btn edit-btn">
+                            <i class="fas fa-rocket"></i> Enroll Now
+                        </a>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            <div class="card-actions">
-                <a href="{% url 'enroll_in_course' course.id %}" class="action-btn edit-btn">
-                    <i class="fas fa-file-signature"></i> Enroll Now
-                </a>
-            </div>
-        </div>
-        {% endfor %}
-        {% else %}
-        <p>No recommendations available.</p>
-    {% endif %}
-    </div><br>
+        </section>
 
-    <a href="{% url 'student_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
-    
+        <section class="similar-courses">
+            <h2 class="glowing-text">Similar to Your Interests</h2>
+            <div class="grid-container">
+                {% for course in similar_courses %}
+                <div class="cyber-card">
+                    <div class="card-header">
+                        <h3 class="glowing-text">{{ course.title }}</h3>
+                    </div>
+                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="cyber-thumbnail">
+                    <div class="card-body">
+                        <p class="course-description">{{ course.description|truncatechars:80 }}</p>
+                        <div class="course-meta">
+                            <span class="meta-badge">{{ course.category|title }}</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="{% url 'enroll_in_course' course.id %}" class="action-btn edit-btn">
+                            <i class="fas fa-rocket"></i> Enroll Now
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    <a href="{% url 'student_dashboard' %}" class="back-button">  
+        <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressData = JSON.parse(document.getElementById('progress-data').textContent);
+
+            // Radar Chart with Cyberpunk styling
+            new Chart(document.getElementById('performanceRadar'), {
+                type: 'radar',
+                data: {
+                    labels: progressData.labels,
+                    datasets: [{
+                        label: 'Your Performance',
+                        data: progressData.data,
+                        backgroundColor: 'rgba(0, 255, 179, 0.2)',
+                        borderColor: '#00ffb3',
+                        pointBackgroundColor: '#00ffb3',
+                        pointBorderColor: '#000',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(0, 255, 179, 0.2)' },
+                            angleLines: { color: 'rgba(0, 255, 179, 0.2)' },
+                            pointLabels: { color: '#00ffb3' }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#00ffb3' } }
+                    }
+                }
+            });
+
+            // Animated Line Chart
+            new Chart(document.getElementById('progressChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Learning Progress',
+                        data: [30, 45, 60, 75],
+                        borderColor: '#ff006e',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: false,
+                        pointBackgroundColor: '#ff006e',
+                        pointBorderColor: '#000'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255, 0, 110, 0.2)' },
+                            ticks: { color: '#ff006e' }
+                        },
+                        x: { ticks: { color: '#ff006e' } }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#ff006e' } }
+                    }
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .cyber-visuals {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .cyber-chart {
+            background: #0a0a0f;
+            border: 2px solid #00ffb3;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 255, 179, 0.2);
+            height: 400px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .cyber-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 2px solid #00ffb3;
+        }
+
+        .meta-badge {
+            background: #ff006e;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .course-description {
+            color: #8b8b9b;
+            min-height: 60px;
+        }
+    </style>
+</div>
 {% endblock %}

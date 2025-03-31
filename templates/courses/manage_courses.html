@@ -2,47 +2,194 @@
 {% load static %}
 
 {% block content %}
-
-    <h1 class="neon-heading">Manage Your Courses</h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">COURSE_MANAGEMENT_CONSOLE</h1>
     
-    <a href="{% url 'create_course' %}" class="gradient-btn-cyan">
-        <i class="fas fa-plus"></i> Create New Course
-    </a>
+    <div class="cyber-controls">
+        <a href="{% url 'create_course' %}" class="cyber-button cyan pulse">
+            <i class="fas fa-plus"></i> INITIATE_NEW_COURSE_PROTOCOL
+        </a>
+    </div>
 
-    <div class="course-grid">
+    <div class="cyber-grid">
         {% for course in courses %}
-        <div class="course-card">
-            {% if course.thumbnail %}
-            <img src="{{ course.thumbnail.url }}" 
-                class="course-thumbnail" 
-                alt="{{ course.title }}">
-            {% else %}
-            <div class="thumbnail-placeholder">
-                <i class="fas fa-image"></i>
+        <div class="cyber-card course-node">
+            <div class="thumbnail-frame">
+                {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" 
+                    class="cyber-thumbnail" 
+                    alt="{{ course.title }}">
+                {% else %}
+                <div class="cyber-thumbnail placeholder">
+                    <i class="fas fa-brain-circuit"></i>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
             
-            <div class="course-info">
-                <h3 class="course-title">{{ course.title }}</h3>
-                <p class="course-description">{{ course.description|truncatechars:100 }}</p>
+            <div class="cyber-content">
+                <h3 class="neon-cyan course-title">{{ course.title|upper }}</h3>
+                <p class="neon-white course-description">{{ course.description|truncatechars:100 }}</p>
                 
-                <div class="course-actions">
-                    <a href="{% url 'edit_course' course.id %}" class="action-btn edit-btn">
-                        <i class="fas fa-edit"></i> Edit
+                <div class="cyber-actions">
+                    <a href="{% url 'edit_course' course.id %}" class="cyber-button small cyan">
+                        <i class="fas fa-code"></i> EDIT_CODE
                     </a>
-                    <a href="{% url 'delete_course' course.id %}" class="action-btn delete-btn">
-                        <i class="fas fa-trash"></i> Delete
+                    <a href="{% url 'delete_course' course.id %}" class="cyber-button small pink">
+                        <i class="fas fa-skull"></i> DELETE_NODE
                     </a>
                 </div>
             </div>
         </div>
         {% empty %}
-        <div class="empty-state">
-            <i class="fas fa-graduation-cap"></i>
-            <p>No courses found. Start by creating a new course!</p>
+        <div class="cyber-empty">
+            <i class="fas fa-terminal"></i>
+            <p class="neon-pink">NO_COURSES_DETECTED :: INITIATE_CREATION_SEQUENCE</p>
         </div>
         {% endfor %}
-    </div><br>
-    <a href="{% url 'educator_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+    </div>
 
+    <div class="cyber-nav">
+        <a href="{% url 'educator_dashboard' %}" class="cyber-button back">
+            <i class="fas fa-arrow-left"></i> RETURN_TO_HUB
+        </a>
+    </div>
+</div>
+
+<style>
+.cyber-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.cyber-controls {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.cyber-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.course-node {
+    background: #0a0a0f;
+    border: 2px solid #00ffb3;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.course-node:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(0, 255, 179, 0.3);
+}
+
+.thumbnail-frame {
+    height: 200px;
+    background: #001a14;
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: hue-rotate(20deg) contrast(1.1);
+    transition: all 0.3s ease;
+}
+
+.cyber-thumbnail:hover {
+    transform: scale(1.05);
+}
+
+.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #00ffb3;
+}
+
+.cyber-content {
+    padding: 1.5rem;
+}
+
+.course-title {
+    margin: 0 0 1rem;
+    font-size: 1.4rem;
+    text-shadow: 0 0 10px #00ffb3;
+}
+
+.course-description {
+    color: #88ffff;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.cyber-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.cyber-button.small {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+.cyber-empty {
+    text-align: center;
+    padding: 4rem;
+    border: 2px dashed #00ffb3;
+    grid-column: 1 / -1;
+}
+
+.cyber-empty i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #00ffb3;
+}
+
+.cyber-nav {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.back {
+    background: #2a0a3a;
+    border-color: #ff00ff;
+    color: #ff00ff;
+}
+
+.back:hover {
+    background: rgba(255, 0, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+    .cyber-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cyber-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+document.querySelectorAll('.course-node').forEach(card => {
+    card.addEventListener('mouseover', () => {
+        card.style.transform = 'translateY(-5px)';
+    });
+    
+    card.addEventListener('mouseout', () => {
+        card.style.transform = 'translateY(0)';
+    });
+});
+</script>
 {% endblock %}

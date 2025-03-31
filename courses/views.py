@@ -23,7 +23,6 @@ def educator_dashboard_view(request):
 
 @login_required
 def create_course(request):
-    # Ensure the user is an educator
     if not hasattr(request.user, 'role') or request.user.role != 'educator':
         messages.error(request, "You do not have permission to create courses.")
         return redirect('home')
@@ -32,19 +31,23 @@ def create_course(request):
         title = request.POST.get('title')
         description = request.POST.get('description')
         thumbnail = request.FILES.get('thumbnail')
+        category = request.POST.get('category')
 
-        # Create a new course
         course = Course.objects.create(
             title=title,
             description=description,
             thumbnail=thumbnail,
-            educator=request.user
+            educator=request.user,
+            category=category
         )
 
         messages.success(request, "Course created successfully!")
         return redirect('add_topic', course_id=course.id)
 
-    return render(request, 'courses/create_course.html')
+    return render(request, 'courses/create_course.html', {
+        'categories': Course.CATEGORY_CHOICES
+    })
+
 
 @login_required
 def add_topic(request, course_id):
@@ -291,7 +294,6 @@ def add_code_question(request, question_id):
 
 @login_required
 def edit_course(request, course_id):
-    # Verify educator role and course ownership
     course = get_object_or_404(
         Course, 
         id=course_id,
@@ -300,11 +302,10 @@ def edit_course(request, course_id):
     topics = course.topics.all()
 
     if request.method == 'POST':
-        # Update course details
         course.title = request.POST.get('title', course.title)
         course.description = request.POST.get('description', course.description)
+        course.category = request.POST.get('category', course.category)
         
-        # Handle thumbnail update
         if 'thumbnail' in request.FILES:
             course.thumbnail = request.FILES['thumbnail']
         elif 'thumbnail-clear' in request.POST:
@@ -314,7 +315,11 @@ def edit_course(request, course_id):
         messages.success(request, "Course updated successfully!")
         return redirect('manage_courses')
 
-    return render(request, 'courses/edit_course.html', {'course': course, 'topics':topics })
+    return render(request, 'courses/edit_course.html', {
+        'course': course,
+        'topics': topics,
+        'categories': Course.CATEGORY_CHOICES
+    })
 
 @login_required
 def delete_course(request, course_id):
@@ -560,26 +565,70 @@ def student_assignments(request):
 
 
 # View for Personalized Recommendations
+
+# courses/views.py
+
+from django.core.serializers.json import DjangoJSONEncoder
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_page
+from ai_engine.ml_engine import LearningPathRecommender
+from courses.models import Course, StudentAnswer
+from django.db.models import Avg, Count, Case, When, F, IntegerField, FloatField
+from django.db.models.functions import Cast
+import json
+
+
 @login_required
+@cache_page(60 * 15)
 def student_recommendations(request):
-    if not hasattr(request.user, 'role') or request.user.role != 'student':
-        messages.error(request, "You do not have permission to view the Student Dashboard.")
-        return redirect('home')
+    recommender = LearningPathRecommender()
+    recommendations = recommender.recommend_for_student(request.user)
     
-    enrollments = StudentCourse.objects.filter(student=request.user)
-    enrolled_courses = [enrollment.course for enrollment in enrollments]
-    all_courses = list(Course.objects.all())
-    recommended_courses = [course for course in all_courses if course not in enrolled_courses]
-    if recommended_courses:
-        recommended_courses = random.sample(recommended_courses, min(3, len(recommended_courses)))
-    else:
-        recommended_courses = []
-    
-    return render(request, 'student/student_recommendations.html', {'recommended_courses': recommended_courses})
+    enrolled_courses = request.user.course_enrollments.values_list('course_id', flat=True)
+    similar_courses = Course.objects.exclude(id__in=enrolled_courses).annotate(
+        similar_score=Count('topics', distinct=True)
+    ).order_by('-similar_score')[:5]
 
+    # Calculate progress data
+    # Topic Completion (Average of percentages)
+    avg_completion = request.user.course_enrollments.aggregate(
+        avg=Avg('progress__percentage')
+    ).get('avg', 0.0) or 0.0
+    avg_completion = float(avg_completion)
 
+    # Assignment Score (Average of correct answers)
+    score_avg_result = request.user.submissions.aggregate(
+        score_avg=Avg(Cast(F('answers__is_correct'), output_field=IntegerField()))
+    )
+    score_avg = score_avg_result.get('score_avg', 0.0) or 0.0
+    score_avg = float(score_avg) * 100.0  # Convert to percentage
 
+    # Correct Ratio (Average of correct answers)
+    correct_ratio_result = StudentAnswer.objects.filter(
+        submission__student=request.user
+    ).aggregate(
+        ratio=Avg(Cast(
+            Case(
+                When(is_correct=True, then=1),
+                default=0
+            ),
+            output_field=IntegerField()
+        ))
+    )
+    correct_ratio = correct_ratio_result.get('ratio', 0.0) or 0.0
+    correct_ratio = float(correct_ratio) * 100.0  # Convert to percentage
 
+    progress_data = {
+        'labels': ['Topic Completion', 'Assignment Score', 'Correct Ratio'],
+        'data': [avg_completion, score_avg, correct_ratio]
+    }
+
+    return render(request, 'student/student_recommendations.html', {
+        'recommendations': recommendations,
+        'similar_courses': similar_courses,
+        'progress_data': progress_data  # Pass the dict to template
+    })
 
 @login_required
 def search_courses(request):

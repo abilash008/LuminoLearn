@@ -1,48 +1,154 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Edit Topic: {{ topic.name }}{% endblock %}
+{% block title %}EDIT_PROTOCOL: {{ topic.name|upper }}{% endblock %}
 
 {% block content %}
-
-    <h1 class="neon-heading">Edit Topic: <span class="glowing-text">{{ topic.name }}</span></h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">TOPIC_EDITOR: <span class="neon-pink">{{ topic.name|upper }}</span></h1>
     
     <form class="cyber-form" method="post" enctype="multipart/form-data" action="{% url 'edit_topic' topic.id %}">
         {% csrf_token %}
         
-        <!-- Topic Name -->
         <div class="form-group">
-            <label class="neon-label" for="topic_name">Topic Name</label>
-            <input type="text" class="cyber-input" id="topic_name" name="topic_name" value="{{ topic.name }}" required>
+            <label class="neon-label">> TOPIC_IDENTIFIER</label>
+            <input type="text" 
+                   class="cyber-input" 
+                   id="topic_name" 
+                   name="topic_name" 
+                   value="{{ topic.name }}" 
+                   required
+                   data-cyber-required>
         </div>
 
-        <!-- Topic Content -->
         <div class="form-group">
-            <label class="neon-label" for="topic_content">Topic Content</label>
-            <textarea class="cyber-textarea" id="topic_content" name="topic_content" rows="5" required>{{ topic.content }}</textarea>
+            <label class="neon-label">> CONTENT_MATRIX</label>
+            <textarea class="cyber-textarea" 
+                      id="topic_content" 
+                      name="topic_content" 
+                      rows="8" 
+                      required
+                      data-cyber-required>{{ topic.content }}</textarea>
         </div>
 
-        <!-- Option to add new diagrams -->
         <div class="form-group">
-            <label class="neon-label" for="topic_diagrams">Add New Diagrams</label>
+            <label class="neon-label">> DIAGRAM_UPLOAD_SEQUENCE</label>
             <div class="file-upload-wrapper">
-                <input type="file" class="cyber-file-input" id="topic_diagrams" name="topic_diagrams" accept="image/*" multiple>
-                <label for="topic_diagrams" class="file-upload-label">
-                    <i class="fas fa-cloud-upload-alt"></i> Choose Diagrams
+                <input type="file" 
+                       class="cyber-file-input" 
+                       id="topic_diagrams" 
+                       name="topic_diagrams" 
+                       accept="image/*" 
+                       multiple>
+                <label for="topic_diagrams" class="cyber-file-label pulse">
+                    <i class="fas fa-cloud-upload-alt neon-cyan"></i> 
+                    <span>SELECT_DIAGRAM_FILES</span>
                 </label>
-                <span class="file-name" id="diagram-file-name">No file selected</span>
+                <span class="cyber-file-name" id="diagram-file-name">NO_FILES_SELECTED</span>
             </div>
-            <div class="thumbnail-preview" id="thumbnail-preview"></div>
+            <div class="cyber-preview-grid" id="thumbnail-preview"></div>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="gradient-btn-cyan">
-                <i class="fas fa-save"></i> Save Changes
+            <button type="submit" class="cyber-button cyan pulse">
+                <i class="fas fa-save"></i> SAVE_PROTOCOL
             </button>
-            <a href="{% url 'edit_course' topic.course.id %}" class="gradient-btn-secondary">
-                <i class="fas fa-times"></i> Cancel
+            <a href="{% url 'edit_course' topic.course.id %}" class="cyber-button pink">
+                <i class="fas fa-power-off"></i> ABORT_CHANGES
             </a>
         </div>
     </form>
+</div>
 
+<style>
+.cyber-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 2px solid #00ffb3;
+    border-radius: 5px;
+    background: rgba(10, 10, 15, 0.9);
+    box-shadow: 0 0 30px rgba(0, 255, 179, 0.2);
+}
+
+.cyber-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.cyber-textarea {
+    min-height: 200px;
+    resize: vertical;
+}
+
+.cyber-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.cyber-preview-grid img {
+    border: 2px solid #ff00ff;
+    border-radius: 3px;
+    padding: 5px;
+    background: #001a14;
+    transition: all 0.3s ease;
+}
+
+.cyber-preview-grid img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+}
+
+@keyframes pulse-upload {
+    0% { box-shadow: 0 0 10px rgba(0, 255, 179, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 179, 0.6); }
+    100% { box-shadow: 0 0 10px rgba(0, 255, 179, 0.3); }
+}
+
+.pulse {
+    animation: pulse-upload 1.5s infinite;
+}
+
+@media (max-width: 768px) {
+    .cyber-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .cyber-preview-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+</style>
+
+<script>
+document.getElementById('topic_diagrams').addEventListener('change', function(e) {
+    const files = e.target.files;
+    const preview = document.getElementById('thumbnail-preview');
+    const fileName = document.getElementById('diagram-file-name');
+    
+    fileName.textContent = files.length > 0 
+        ? `FILES_SELECTED: ${files.length}` 
+        : 'NO_FILES_SELECTED';
+
+    preview.innerHTML = '';
+    
+    for(const file of files) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = '100%';
+            img.style.height = '150px';
+            img.style.objectFit = 'cover';
+            preview.appendChild(img);
+        }
+        reader.readAsDataURL(file);
+    }
+});
+</script>
 {% endblock %}

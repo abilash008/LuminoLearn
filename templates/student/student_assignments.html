@@ -6,106 +6,187 @@
 <div id="deadline-alerts">
     {% for message in messages %}
         {% if 'deadline' in message.tags %}
-            <div class="deadline-alert">
-                {{ message }}
-                <button class="deadline-alert-close" onclick="this.parentElement.remove()">&times;</button>
+            <div class="cyber-alert neon-red">
+                <div class="glow-bar"></div>
+                <div class="alert-content">
+                    <span class="alert-icon">⚠</span>
+                    {{ message }}
+                    <button class="cyber-button small red" onclick="this.parentElement.parentElement.remove()">
+                        [ ACKNOWLEDGE ]
+                    </button>
+                </div>
             </div>
         {% endif %}
     {% endfor %}
 </div>
 
 <!-- Assignment List -->
-<h1 class="neon-subheading">Your Assignments</h1>
-<div class="assignment-grid">
-    {% if upcoming_assignments %}
-    {% for assignment in upcoming_assignments %}
-    <div class="cyber-card">
-        <div class="card-header">
-            <h3 class="glowing-text">{{ assignment.title }}</h3>
-            <span class="course-tag">{{ assignment.course.title }}</span>
-        </div>
-        <div class="card-body">
-            <p class="assignment-description">{{ assignment.description|truncatechars:150 }}</p>
-            <div class="assignment-meta">
-                <div class="meta-item">
-                    <i class="fas fa-code"></i>
-                <span>Created By: {{ assignment.course.educator.username }}</span> 
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">ACTIVE MISSIONS</h1>
+    
+    <div class="assignment-grid">
+        {% if upcoming_assignments %}
+        <div class="grid-container">
+            {% for assignment in upcoming_assignments %}
+            <div class="cyber-card mission-card">
+                <div class="card-header">
+                    <h3 class="neon-cyan">{{ assignment.title }}</h3>
+                    <span class="neon-badge">{{ assignment.course.title }}</span>
                 </div>
-                <div class="meta-item">
-                    <i class="fas fa-clock"></i>
-                    <span>Deadline: {{ assignment.deadline|date:"M d, Y H:i" }}</span>
+                <div class="card-body">
+                    <p class="mission-description">{{ assignment.description|truncatechars:150 }}</p>
+                    <div class="mission-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-code neon-icon"></i>
+                            <span class="meta-text">CREATOR: {{ assignment.course.educator.username }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock neon-icon"></i>
+                            <span class="meta-text">TERMINATION: {{ assignment.deadline|date:"M d, Y H:i" }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'take_assignment' assignment.id %}" class="cyber-button cyan">
+                        <i class="fas fa-rocket"></i> [ INITIATE MISSION ]
+                    </a>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        <div class="card-actions">
-            <a href="{% url 'take_assignment' assignment.id %}" class="action-btn edit-btn">
-                <i class="fas fa-pencil-alt"></i> Take Now
-            </a>
-        </div>
+        {% else %}
+        <p class="neon-pink no-missions">NO ACTIVE MISSIONS DETECTED</p>
+        {% endif %}
     </div>
-    {% endfor %}
-    {% else %}
-    <p>No upcoming assignments.</p>
-{% endif %}
-</div><br>
-<a href="{% url 'student_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
-
-<script>
-    // Auto-remove messages after 5 seconds
-    document.querySelectorAll('.deadline-alert').forEach(alert => {
-        setTimeout(() => {
-            alert.style.transform = 'translateX(150%)';
-            setTimeout(() => alert.remove(), 500);
-        }, 5000);
-    });
-</script>
+    
+    <a href="{% url 'student_dashboard' %}" class="cyber-button back-btn">
+        <i class="fas fa-arrow-left"></i> [ RETURN TO DASHBOARD ]
+    </a>
+</div>
 
 <style>
-    /* Deadline Alert Animation */
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-    }
-    to {
-        transform: translateX(0);
-    }
+.cyber-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
-.deadline-alert {
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.mission-card {
+    background: #0a0a0f;
+    border: 2px solid #00ffb3;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.mission-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(0, 255, 179, 0.4);
+}
+
+.card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #00ffb3;
+    background: rgba(0, 255, 179, 0.05);
+}
+
+.neon-badge {
+    background: #ff006e;
+    padding: 0.3rem 0.8rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.mission-description {
+    color: #8b8b9b;
+    padding: 1rem;
+    min-height: 80px;
+}
+
+.mission-meta {
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    margin: 1rem;
+    border-radius: 4px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 1rem 0;
+}
+
+.neon-icon {
+    color: #00ffb3;
+    width: 20px;
+}
+
+.meta-text {
+    color: #8b8b9b;
+}
+
+.cyber-alert {
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 15px 25px;
-    background: #2a0a0a;
-    border: 1px solid #ff5555;
+    background: #1a0a0a;
+    border: 2px solid #ff006e;
     border-radius: 4px;
+    padding: 1rem;
     color: #ff8888;
     font-family: 'Courier New', monospace;
-    box-shadow: 0 0 15px rgba(255, 85, 85, 0.4);
-    animation: slideInRight 0.5s ease-out;
+    box-shadow: 0 0 20px rgba(255, 0, 110, 0.3);
+    animation: alert-pulse 1.5s infinite;
     z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    max-width: 400px;
 }
 
-.deadline-alert::before {
-    content: '⚠';
-    font-size: 1.5em;
-    filter: drop-shadow(0 0 5px #ff5555);
+.glow-bar {
+    height: 2px;
+    background: #ff006e;
+    box-shadow: 0 0 10px #ff006e;
+    margin-bottom: 0.5rem;
 }
 
-.deadline-alert-close {
-    margin-left: 15px;
-    cursor: pointer;
-    color: #ff8888;
-    background: none;
-    border: none;
+@keyframes alert-pulse {
+    0% { opacity: 0.9; }
+    50% { opacity: 0.6; }
+    100% { opacity: 0.9; }
+}
+
+.no-missions {
+    text-align: center;
+    padding: 3rem;
     font-size: 1.2em;
+    grid-column: 1 / -1;
 }
 
-.deadline-alert-close:hover {
-    color: #ff5555;
+.back-btn {
+    margin-top: 2rem;
+    background: rgba(255, 0, 110, 0.1);
+    border: 1px solid #ff006e;
+}
+
+.back-btn:hover {
+    background: rgba(255, 0, 110, 0.2);
 }
 </style>
+
+<script>
+    // Auto-remove alerts with style
+    document.querySelectorAll('.cyber-alert').forEach(alert => {
+        setTimeout(() => {
+            alert.style.transform = 'translateX(150%)';
+            setTimeout(() => alert.remove(), 500);
+        }, 8000);
+    });
+</script>
 {% endblock %}

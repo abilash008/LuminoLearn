@@ -4,44 +4,45 @@
 {% block content %}
 {% csrf_token %}
 
-<div class="ide-container">
-    <!-- Header Controls -->
-    <div class="ide-header">
+<div class="cyber-container">
+    <!-- Cyberpunk Header -->
+    <div class="cyber-header neon-glow">
         <div class="header-left">
             <select id="language-select" class="cyber-select">
                 {% for lang in languages %}
-                <option value="{{ lang.value }}">{{ lang.name }}</option>
+                <option value="{{ lang.value }}">{{ lang.name|upper }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="header-right">
-            <button id="run-code" class="cyber-button">
+            <button id="run-code" class="cyber-button cyan pulse">
                 <span class="button-content">
-                    <i class="fas fa-play"></i>
-                    <span class="button-text">Run (Ctrl+Enter)</span>
+                    <i class="fas fa-terminal"></i>
+                    <span class="button-text">EXECUTE (CTRL+ENTER)</span>
                     <div class="button-loader"></div>
                 </span>
             </button>
         </div>
     </div>
 
-    <!-- Main Editor Area -->
-    <div class="editor-wrapper">
-        <div id="editor-container" class="monaco-editor"></div>
+    <!-- Main Cyber Editor -->
+    <div class="cyber-editor-grid">
+        <div id="editor-container" class="cyber-editor"></div>
         
-        <!-- IO Panels -->
-        <div class="io-panels">
-            <div class="io-panel input-panel">
-                <div class="panel-header">
+        <!-- Cyber IO Panels -->
+        <div class="cyber-io-panels">
+            <div class="cyber-panel input-panel">
+                <div class="panel-header neon-cyan">
                     <i class="fas fa-terminal"></i>
-                    <span>Input</span>
+                    <span>INPUT STREAM</span>
                 </div>
-                <textarea id="user-input" class="cyber-input" placeholder="Enter all program inputs here, each on a new line..."></textarea>
+                <textarea id="user-input" class="cyber-console" 
+                    placeholder=">> ENTER INPUT PROTOCOLS HERE <<"></textarea>
             </div>
-            <div class="io-panel output-panel">
-                <div class="panel-header">
+            <div class="cyber-panel output-panel">
+                <div class="panel-header neon-cyan">
                     <i class="fas fa-code"></i>
-                    <span>Output</span>
+                    <span>OUTPUT FEED</span>
                 </div>
                 <pre id="output" class="cyber-output"></pre>
             </div>
@@ -49,8 +50,8 @@
     </div>
 </div>
 
-<a href="{% url 'student_dashboard' %}" class="back-button"> 
-    <i class="fas fa-arrow-left"></i> Back to Dashboard
+<a href="{% url 'student_dashboard' %}" class="cyber-button back-btn">
+    <i class="fas fa-arrow-left"></i> [ RETURN TO MAINFRAME ]
 </a>
 
 <!-- Monaco Editor Setup -->
@@ -59,7 +60,6 @@
     const csrfToken = "{{ csrf_token }}";
     let isRunning = false;
 
-    // Initialize after DOM loads
     document.addEventListener('DOMContentLoaded', function() {
         const languageMap = {
             'python3': 'python',
@@ -67,14 +67,27 @@
             'java': 'java',
             'cpp': 'cpp'
         };
-    
-        // Initialize Editor
+
         require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
         require(['vs/editor/editor.main'], function() {
+            monaco.editor.defineTheme('cyberpunk', {
+                base: 'vs-dark',
+                inherit: true,
+                rules: [
+                    { token: '', foreground: '00ffb3', background: '0a0a0f' },
+                    { token: 'keyword', foreground: 'ff006e' },
+                    { token: 'number', foreground: '00f7ff' }
+                ],
+                colors: {
+                    'editor.background': '#0a0a0f',
+                    'editor.lineHighlightBackground': '#00000040',
+                }
+            });
+
             window.editor = monaco.editor.create(document.getElementById('editor-container'), {
-                value: "print('Welcome to LuminoLearn!')\n# Start coding here...",
+                value: "print('INITIALIZING CYBER SYSTEM...')\n# BEGIN CODING SEQUENCE",
                 language: languageMap['python3'],
-                theme: 'vs-dark',
+                theme: 'cyberpunk',
                 automaticLayout: true,
                 minimap: { enabled: true },
                 fontSize: 14,
@@ -84,22 +97,15 @@
             });
         });
 
-        // Language Switch
+        // Preserve original event listeners
         document.getElementById('language-select').addEventListener('change', function() {
             const model = window.editor.getModel();
-            const selectedLang = this.value;
-            const monacoLang = languageMap[selectedLang];
-            monaco.editor.setModelLanguage(model, monacoLang);
+            monaco.editor.setModelLanguage(model, languageMap[this.value]);
         });
 
-        // Code Execution
         document.getElementById('run-code').addEventListener('click', executeCode);
-        
-        // Ctrl+Enter shortcut
         document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                executeCode();
-            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') executeCode();
         });
     });
 
@@ -117,63 +123,39 @@
             isRunning = true;
             runButton.classList.add('running');
             outputElement.innerHTML = '';
+            outputElement.classList.remove('error');
 
-            // Send code and input to backend
+            // Add cyber loading effect
+            const loading = document.createElement('div');
+            loading.className = 'cyber-loading';
+            loading.innerHTML = '<div class="scanline"></div>';
+            outputElement.appendChild(loading);
+
             const response = await fetch("{% url 'execute_code' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
-                body: JSON.stringify({ 
-                    code, 
-                    language,
-                    input: userInput 
-                })
+                body: JSON.stringify({ code, language, input: userInput })
             });
+
             const result = await response.json();
+            outputElement.removeChild(loading);
 
             if (result.error) {
                 outputElement.classList.add('error');
-                outputElement.textContent = result.error;
+                outputElement.innerHTML = `<span class="glitch">${result.error}</span>`;
             } else {
-                // Filter output to separate prompts from actual output
+                // Process output with cyber effect
                 const outputLines = result.output.split('\n');
-                let prompts = [];
-                let finalOutput = [];
-                
-                // For Python, extract prompts from input() calls in the code
-                if (language === 'python3') {
-                    const codeLines = code.split('\n');
-                    codeLines.forEach(line => {
-                        const match = line.match(/input\s*\(['"](.*?)['"]\)/);
-                        if (match) prompts.push(match[1]);
-                    });
-                }
-                // For other languages, assume prompts are explicitly printed (simplified)
-                // This could be enhanced with language-specific parsing if needed
-
-                // Filter output: exclude lines matching prompts
-                outputLines.forEach(line => {
-                    if (prompts.includes(line.trim())) {
-                        // Prompt line, skip it in output
-                    } else {
-                        finalOutput.push(line);
-                    }
-                });
-
-                // Display prompts in input field if user hasn't provided input yet
-                if (!userInput && prompts.length > 0) {
-                    inputElement.value = prompts.join('\n');
-                    outputElement.textContent = 'Please enter the required inputs above and run again.';
-                } else {
-                    outputElement.textContent = finalOutput.join('\n').trim();
-                }
+                outputElement.innerHTML = outputLines.map(line => 
+                    `<div class="cyber-line">${line}</div>`
+                ).join('');
             }
 
         } catch (error) {
-            outputElement.classList.add('error');
-            outputElement.textContent = `Execution error: ${error.message}`;
+            outputElement.innerHTML = `<span class="error-glitch">SYSTEM ERROR: ${error.message}</span>`;
         } finally {
             isRunning = false;
             runButton.classList.remove('running');
@@ -182,153 +164,151 @@
 </script>
 
 <style>
-    /* Existing styles remain unchanged, removing only unnecessary parts */
-    :root {
-        --neon-cyan: #00ffff;
-        --neon-purple: #bc13fe;
-        --dark-bg: #0a0a0f;
-        --panel-bg: #151520;
-        --text-primary: #e0e0ff;
-    }
+:root {
+    --neon-cyan: #00ffb3;
+    --neon-pink: #ff006e;
+    --cyber-bg: #0a0a0f;
+    --cyber-border: #00ffb3;
+}
 
-    .ide-container {
-        background: var(--dark-bg);
-        border: 1px solid rgba(0, 255, 255, 0.1);
-        border-radius: 8px;
-        margin: 20px;
-        height: calc(100vh - 150px);
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
-        text-align: left;
-    }
+.cyber-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    border: 2px solid var(--neon-cyan);
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 255, 179, 0.2);
+    background: var(--cyber-bg);
+}
 
-    .ide-header {
-        display: flex;
-        justify-content: space-between;
-        padding: 15px;
-        background: var(--panel-bg);
-        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    }
+.cyber-header {
+    padding: 1rem;
+    border-bottom: 2px solid var(--neon-cyan);
+    background: linear-gradient(90deg, 
+        rgba(0,255,179,0.1) 0%, 
+        rgba(255,0,110,0.1) 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    .editor-wrapper {
-        display: grid;
-        grid-template-columns: 3fr 2fr;
-        gap: 20px;
-        flex: 1;
-        padding: 20px;
-        overflow: hidden;
-    }
+.cyber-select {
+    background: #000;
+    color: var(--neon-cyan);
+    border: 2px solid var(--neon-cyan);
+    padding: 0.5rem 1rem;
+    font-family: 'Orbitron', sans-serif;
+    appearance: none;
+}
 
-    .monaco-editor {
-        height: 100%;
-        border: 1px solid rgba(0, 255, 255, 0.2);
-        border-radius: 6px;
-        overflow: hidden;
-    }
+.cyber-editor-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 2rem;
+    height: 70vh;
+    padding: 2rem;
+    text-align: left;
+}
 
-    .io-panels {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        height: 100%;
-    }
+.cyber-editor {
+    border: 2px solid var(--neon-cyan);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #000;
+}
 
-    .io-panel {
-        background: var(--panel-bg);
-        border: 1px solid rgba(0, 255, 255, 0.1);
-        border-radius: 6px;
-        height: 50%;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-    }
+.cyber-io-panels {
+    display: grid;
+    gap: 2rem;
+    height: 100%;
+}
 
-    .panel-header {
-        padding: 12px;
-        background: rgba(0, 0, 0, 0.3);
-        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-        color: var(--neon-cyan);
-        font-family: 'Courier New', monospace;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+.cyber-panel {
+    background: var(--cyber-bg);
+    border: 2px solid var(--neon-cyan);
+    border-radius: 6px;
+    overflow: hidden;
+}
 
-    .cyber-input, .cyber-output {
-        flex: 1;
-        background: transparent;
-        border: none;
-        padding: 15px;
-        color: var(--text-primary);
-        font-family: 'Courier New', monospace;
-        font-size: 14px;
-        resize: none;
-        outline: none;
-    }
+.panel-header {
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    font-family: 'Orbitron', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 
-    .cyber-output {
-        white-space: pre-wrap;
-        overflow-y: auto;
-    }
+.cyber-console, .cyber-output {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    background: #000;
+    color: var(--neon-cyan);
+    font-family: 'Courier New', monospace;
+    padding: 1rem;
+    border: none;
+    resize: none;
+    outline: none;
+}
 
-    .cyber-output.error {
-        color: #ff5555;
-    }
+.cyber-output {
+    white-space: pre-wrap;
+    overflow-y: auto;
+    text-align: left;
+}
 
-    .cyber-button {
-        background: linear-gradient(145deg, #0066cc, #0044aa);
-        border: 1px solid var(--neon-cyan);
-        border-radius: 4px;
-        padding: 10px 20px;
-        color: white;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s;
-    }
+.cyber-output.error {
+    color: var(--neon-pink);
+    border: 1px solid var(--neon-pink);
+}
 
-    .cyber-button:hover {
-        background: linear-gradient(145deg, #0077dd, #0055bb);
-        box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
-    }
+.cyber-button.cyan {
+    background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
+    border: none;
+    padding: 1rem 2rem;
+    font-family: 'Orbitron', sans-serif;
+}
 
-    .button-loader {
-        display: none;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 20px;
-        height: 20px;
-        border: 3px solid #fff;
-        border-radius: 50%;
-        border-top-color: transparent;
-        animation: spin 1s linear infinite;
-    }
+.scanline {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--neon-cyan) 50%, transparent 100%);
+    animation: scan 3s linear infinite;
+}
 
-    .cyber-button.running .button-text {
-        visibility: hidden;
-    }
+@keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+}
 
-    .cyber-button.running .button-loader {
-        display: block;
-    }
+.glitch {
+    animation: glitch 1s infinite;
+    text-shadow: 2px 2px var(--neon-pink), -2px -2px var(--neon-cyan);
+}
 
-    @keyframes spin {
-        to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
 
-    .back-button {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        background: var(--panel-bg);
-        padding: 10px 20px;
-        border-radius: 4px;
-        color: var(--neon-cyan);
-        text-decoration: none;
-        border: 1px solid rgba(0, 255, 255, 0.2);
+.back-btn {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    background: rgba(255, 0, 110, 0.1);
+    border: 2px solid var(--neon-pink);
+}
+
+@media (max-width: 768px) {
+    .cyber-editor-grid {
+        grid-template-columns: 1fr;
+        height: auto;
     }
+}
 </style>
 {% endblock %}

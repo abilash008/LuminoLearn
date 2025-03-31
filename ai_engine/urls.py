@@ -1,11 +1,8 @@
-'''
 
+# ai_engine/urls.py
 from django.urls import path
-from .views import CourseRecommendationView
+from . import views
 
 urlpatterns = [
-    path('recommendations/<int:user_id>/', CourseRecommendationView.as_view(), name='course_recommendations'),
+    path('recommendations/', views.student_recommendations, name='student_recommendations'),
 ]
-
-
-'''

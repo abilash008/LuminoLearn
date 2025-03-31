@@ -2,52 +2,209 @@
 {% load static %}
 
 {% block content %}
-
-    <h1 class="neon-heading">Create Assignment for <span class="glowing-text">{{ course.title }}</span></h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">CREATE_ASSIGNMENT: <span class="neon-pink">{{ course.title|upper }}</span></h1>
     
     <form class="cyber-form" method="POST" enctype="multipart/form-data" action="{% url 'create_assignment' course.id %}">
         {% csrf_token %}
         
         <div class="form-group">
-            <label class="neon-label">Assignment Title</label>
+            <label class="neon-label">> TITLE_SEQUENCE</label>
             <input type="text" 
                 class="cyber-input" 
                 id="title" 
                 name="title" 
                 required
-                placeholder="Enter assignment title..."
-                autofocus>
+                placeholder="ENTER_ASSIGNMENT_ID..."
+                autofocus
+                data-cyber-required>
         </div>
 
         <div class="form-group">
-            <label class="neon-label">Description</label>
+            <label class="neon-label">> DESCRIPTION_PROTOCOL</label>
             <textarea class="cyber-textarea" 
                     id="description" 
                     name="description" 
                     rows="5"
                     required
-                    placeholder="Describe the assignment..."></textarea>
+                    placeholder="INITIATE_DESCRIPTION_INPUT..."
+                    data-cyber-required></textarea>
         </div>
 
         <div class="form-group">
-            <label class="neon-label">Deadline</label>
-            <div class="datetime-picker">
+            <label class="neon-label">> DEADLINE_PARAMETERS</label>
+            <div class="cyber-datetime-wrapper">
                 <input type="datetime-local" 
                     class="cyber-datetime" 
                     id="deadline" 
                     name="deadline" 
-                    required>
-                <i class="fas fa-calendar-alt"></i>
+                    required
+                    data-cyber-required>
+                <i class="fas fa-calendar-alt cyber-datetime-icon"></i>
             </div>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="gradient-btn-cyan">
-                <i class="fas fa-rocket"></i> Launch Assignment
+            <button type="submit" class="cyber-button cyan pulse">
+                <i class="fas fa-rocket"></i> LAUNCH_ASSIGNMENT
             </button>
-            <a href="{% url 'educator_dashboard' %}" class="gradient-btn-secondary">
-                <i class="fas fa-times"></i> Cancel
+            <a href="{% url 'educator_dashboard' %}" class="cyber-button pink">
+                <i class="fas fa-power-off"></i> ABORT_TRANSMISSION
             </a>
         </div>
     </form>
+</div>
+
+<style>
+.cyber-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 2px solid #00ffb3;
+    border-radius: 5px;
+    background: rgba(10, 10, 15, 0.9);
+    box-shadow: 0 0 30px rgba(0, 255, 179, 0.2);
+}
+
+.neon-heading {
+    color: #00ffb3;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px #00ffb3;
+}
+
+.cyber-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+.neon-label {
+    color: #00ffb3;
+    display: block;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cyber-input, .cyber-textarea, .cyber-datetime {
+    width: 100%;
+    padding: 15px;
+    background: #001a14;
+    border: 2px solid #00ffb3;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+    transition: all 0.3s ease;
+}
+
+.cyber-input:focus, .cyber-textarea:focus, .cyber-datetime:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(0, 255, 179, 0.4);
+    background: #002218;
+}
+
+.cyber-input::placeholder, .cyber-textarea::placeholder {
+    color: #669999;
+    opacity: 0.7;
+}
+
+.cyber-datetime-wrapper {
+    position: relative;
+}
+
+.cyber-datetime-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffb3;
+    pointer-events: none;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.8);
+    cursor: pointer;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+.cyber-button {
+    flex: 1;
+    padding: 15px 25px;
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cyber-button.cyan {
+    background: linear-gradient(45deg, #00ffb3, #00997a);
+    color: #001a14;
+}
+
+.cyber-button.pink {
+    background: linear-gradient(45deg, #ff00ff, #990099);
+    color: #ffffff;
+}
+
+.cyber-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 255, 179, 0.4);
+}
+
+@keyframes cyber-glitch {
+    0% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffb3; }
+    25% { text-shadow: -2px 2px #ff00ff, 2px -2px #00ffb3; }
+    50% { text-shadow: 2px -2px #ff00ff, -2px 2px #00ffb3; }
+    75% { text-shadow: -2px -2px #ff00ff, 2px 2px #00ffb3; }
+    100% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffb3; }
+}
+
+.cyber-glitch {
+    animation: cyber-glitch 1s infinite;
+}
+
+@media (max-width: 768px) {
+    .cyber-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .cyber-button {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+document.querySelectorAll('[data-cyber-required]').forEach(element => {
+    element.addEventListener('input', function() {
+        if (this.value) {
+            this.style.borderColor = '#00ffb3';
+            this.style.boxShadow = '0 0 15px rgba(0, 255, 179, 0.3)';
+        } else {
+            this.style.borderColor = '#ff0066';
+            this.style.boxShadow = '0 0 15px rgba(255, 0, 102, 0.3)';
+        }
+    });
+});
+</script>
 {% endblock %}

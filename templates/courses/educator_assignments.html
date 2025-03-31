@@ -2,72 +2,203 @@
 {% load static %}
 
 {% block content %}
-
-    <h1 class="neon-heading">Your Courses & Assignments</h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">COURSE_MANAGEMENT_HUB</h1>
     
-    <!-- Course List -->
-    <div class="course-grid">
+    <!-- Course Matrix -->
+    <div class="cyber-grid">
         {% for course in courses %}
-        <div class="cyber-card">
-            <div class="card-header">
-                <h3 class="glowing-text">{{ course.title }}</h3>
+        <div class="cyber-node">
+            <div class="node-header neon-cyan">
+                <h3 class="glitch-text">{{ course.title|upper }}</h3>
                 <a href="{% url 'create_assignment' course_id=course.id %}" 
-                class="gradient-btn-cyan">
-                    <i class="fas fa-plus"></i> New Assignment
+                class="cyber-button small cyan pulse">
+                    <i class="fas fa-plus"></i> NEW_ASSIGNMENT
                 </a>
             </div>
-            <div class="card-body">
-                <p class="course-description">{{ course.description|truncatechars:100 }}</p>
+            <div class="node-body">
+                <p class="neon-white">{{ course.description|truncatechars:100 }}</p>
             </div>
         </div>
         {% empty %}
-        <div class="empty-state">
-            <i class="fas fa-graduation-cap"></i>
-            <p>No courses found. Create your first course!</p>
+        <div class="cyber-empty">
+            <i class="fas fa-brain-circuit"></i>
+            <p class="neon-pink">NO_COURSES_DETECTED :: INITIATE_CREATION_PROTOCOL</p>
         </div>
         {% endfor %}
     </div>
 
-    <!-- Assignment List -->
-    <h2 class="neon-subheading">All Assignments</h2>
-    <div class="assignment-grid">
+    <!-- Assignment Grid -->
+    <h2 class="neon-subheading cyber-border">ACTIVE_ASSIGNMENTS</h2>
+    <div class="cyber-grid">
         {% for assignment in assignments %}
-        <div class="cyber-card">
-            <div class="card-header">
-                <h3 class="glowing-text">{{ assignment.title }}</h3>
-                <span class="course-tag">{{ assignment.course.title }}</span>
+        <div class="cyber-node">
+            <div class="node-header neon-pink">
+                <h3 class="glitch-text">{{ assignment.title|upper }}</h3>
+                <span class="cyber-tag">{{ assignment.course.title|upper }}</span>
             </div>
-            <div class="card-body">
-                <p class="assignment-description">{{ assignment.description|truncatechars:150 }}</p>
-                <div class="assignment-meta">
+            <div class="node-body">
+                <p class="neon-white">{{ assignment.description|truncatechars:150 }}</p>
+                <div class="cyber-meta">
                     <div class="meta-item">
-                        <i class="fas fa-clock"></i>
-                        <span>Deadline: {{ assignment.deadline|date:"M d, Y H:i" }}</span>
+                        <i class="fas fa-clock neon-cyan"></i>
+                        <span class="neon-cyan">DEADLINE: {{ assignment.deadline|date:"d/m/Y H:i" }}</span>
                     </div>
-                    <!--
-                    <div class="meta-item">
-                        <i class="fas fa-calendar-plus"></i>
-                    <span>Created: {{ assignment.created_at|date:"M d, Y" }}</span> 
-                    </div>
-                    -->
                 </div>
             </div>
-            <div class="card-actions">
-                <a href="{% url 'edit_assignment' assignment.id %}" class="action-btn edit-btn">
-                    <i class="fas fa-edit"></i> Edit
+            <div class="node-actions">
+                <a href="{% url 'edit_assignment' assignment.id %}" class="cyber-button small cyan">
+                    <i class="fas fa-code"></i> EDIT
                 </a>
-                <a href="{% url 'delete_assignment' assignment.id %}" class="action-btn delete-btn">
-                    <i class="fas fa-trash"></i> Delete
+                <a href="{% url 'delete_assignment' assignment.id %}" class="cyber-button small pink">
+                    <i class="fas fa-skull"></i> DELETE
                 </a>
             </div>
         </div>
         {% empty %}
-        <div class="empty-state">
-            <i class="fas fa-tasks"></i>
-            <p>No assignments found. Create your first assignment!</p>
+        <div class="cyber-empty">
+            <i class="fas fa-terminal"></i>
+            <p class="neon-pink">NO_ASSIGNMENTS_FOUND :: DEPLOY_NEW_OBJECTIVES</p>
         </div>
         {% endfor %}
-    </div><br>
-    <a href="{% url 'educator_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+    </div>
 
+    <div class="cyber-nav">
+        <a href="{% url 'educator_dashboard' %}" class="cyber-button back">
+            <i class="fas fa-arrow-left"></i> RETURN_TO_CORE
+        </a>
+    </div>
+</div>
+
+<style>
+.cyber-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.cyber-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+}
+
+.cyber-node {
+    background: #0a0a0f;
+    border: 2px solid #00ffb3;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.cyber-node:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(0, 255, 179, 0.3);
+}
+
+.node-header {
+    padding: 1.5rem;
+    background: #001a14;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #00ffb3;
+}
+
+.node-body {
+    padding: 1.5rem;
+}
+
+.cyber-tag {
+    background: #ff00ff;
+    color: #000;
+    padding: 0.3rem 0.8rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.cyber-meta {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed #00ffb3;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0.5rem 0;
+}
+
+.node-actions {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-top: 2px solid #00ffb3;
+}
+
+.cyber-empty {
+    text-align: center;
+    padding: 4rem;
+    border: 2px dashed #00ffb3;
+    grid-column: 1 / -1;
+}
+
+.cyber-empty i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #00ffb3;
+}
+
+.cyber-nav {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.back {
+    background: #2a0a3a;
+    border-color: #ff00ff;
+    color: #ff00ff;
+}
+
+.glitch-text {
+    animation: text-glitch 1s infinite;
+}
+
+@keyframes text-glitch {
+    0% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffb3; }
+    25% { text-shadow: -2px 2px #ff00ff, 2px -2px #00ffb3; }
+    50% { text-shadow: 2px -2px #ff00ff, -2px 2px #00ffb3; }
+    75% { text-shadow: -2px -2px #ff00ff, 2px 2px #00ffb3; }
+    100% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffb3; }
+}
+
+@media (max-width: 768px) {
+    .cyber-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .node-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+</style>
+
+<script>
+document.querySelectorAll('.cyber-node').forEach(node => {
+    node.addEventListener('mouseover', () => {
+        node.style.transform = 'translateY(-5px)';
+        node.style.boxShadow = '0 0 25px rgba(0, 255, 179, 0.3)';
+    });
+    
+    node.addEventListener('mouseout', () => {
+        node.style.transform = 'translateY(0)';
+        node.style.boxShadow = 'none';
+    });
+});
+</script>
 {% endblock %}

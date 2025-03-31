@@ -2,38 +2,144 @@
 {% load static %}
 
 {% block content %}
-
-    <h1 class="neon-heading">Add Choices for: <span class="glowing-text">{{ question.question_text }}</span></h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">ADD CHOICES: <span class="neon-pink">{{ question.question_text|upper }}</span></h1>
     
     <form class="cyber-form" method="post" action="{% url 'add_choices' question.id %}">
         {% csrf_token %}
         
-        <div class="form-group">
-            <label class="neon-label">Choice Text</label>
-            <input type="text" 
-                class="cyber-input" 
-                name="choice_text" 
-                required
-                placeholder="Enter choice text...">
-        </div>
+        <div class="cyber-card">
+            <div class="node-header neon-cyan">
+                <h3>> CHOICE_CREATION_PROTOCOL</h3>
+            </div>
+            <div class="node-body">
+                <div class="form-group">
+                    <label class="neon-label">CHOICE_CODE</label>
+                    <input type="text" 
+                        class="cyber-input pulse" 
+                        name="choice_text" 
+                        required
+                        placeholder="ENTER_CHOICE_CODE..."
+                        data-cyber-required>
+                </div>
 
-        <div class="form-group">
-            <label class="cyber-checkbox">
-                <input type="checkbox" name="is_correct">
-                <span class="checkmark"></span>
-                Correct Answer
-            </label>
+                <div class="form-group">
+                    <label class="cyber-checkbox">
+                        <input type="checkbox" name="is_correct">
+                        <span class="cyber-check"></span>
+                        <span class="neon-pink">MARK_AS_CORRECT</span>
+                    </label>
+                </div>
+            </div>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="gradient-btn-cyan">
-                <i class="fas fa-plus-circle"></i> Add Choice
+            <button type="submit" class="cyber-button cyan pulse">
+                <i class="fas fa-plus-circle"></i> INJECT_CHOICE
             </button>
             <a href="{% url 'add_questions' assignment_id=question.assignment.id %}" 
-            class="gradient-btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Questions
+               class="cyber-button pink">
+                <i class="fas fa-power-off"></i> ABORT_OPERATION
             </a>
         </div>
     </form>
+</div>
 
+<style>
+.cyber-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.cyber-card {
+    background: #0a0a0f;
+    border: 2px solid #00ffb3;
+    border-radius: 5px;
+    margin: 2rem 0;
+}
+
+.node-header {
+    padding: 1.5rem;
+    background: #001a14;
+    border-bottom: 2px solid #00ffb3;
+}
+
+.node-body {
+    padding: 2rem;
+}
+
+.cyber-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+}
+
+.cyber-check {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ff00ff;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.cyber-check::after {
+    content: "✓";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff00ff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+input[type="checkbox"]:checked ~ .cyber-check::after {
+    opacity: 1;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+@keyframes input-pulse {
+    0% { box-shadow: 0 0 10px rgba(0, 255, 179, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 179, 0.6); }
+    100% { box-shadow: 0 0 10px rgba(0, 255, 179, 0.3); }
+}
+
+.pulse {
+    animation: input-pulse 1.5s infinite;
+}
+
+@media (max-width: 768px) {
+    .cyber-container {
+        padding: 1rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+</style>
+
+<script>
+document.querySelector('.cyber-input').addEventListener('input', function() {
+    if(this.value) {
+        this.style.borderColor = '#00ffb3';
+        this.style.animation = 'none';
+    } else {
+        this.style.borderColor = '#ff0066';
+        this.style.animation = 'input-pulse 1.5s infinite';
+    }
+});
+
+document.querySelector('.cyber-checkbox').addEventListener('click', function() {
+    const check = this.querySelector('.cyber-check');
+    check.style.borderColor = check.style.borderColor === 'rgb(0, 255, 179)' ? '#ff00ff' : '#00ffb3';
+});
+</script>
 {% endblock %}

@@ -2,54 +2,189 @@
 {% load static %}
 
 {% block content %}
-
-    <h1 class="neon-heading">Review Submissions</h1>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">SUBMISSION_ANALYSIS_CONSOLE</h1>
     
     <div class="cyber-table">
-        <div class="table-header">
-            <div class="th">Student</div>
-            <div class="th">Assignment</div>
-            <div class="th">Submitted At</div>
-            <div class="th">Grade</div>
-            <div class="th">Actions</div>
+        <div class="table-header neon-cyan">
+            <div class="th">USER_ID</div>
+            <div class="th">ASSIGNMENT_CODE</div>
+            <div class="th">TIMESTAMP</div>
+            <div class="th">GRADE_INPUT</div>
+            <div class="th">CONTROLS</div>
         </div>
 
         {% for submission in submissions %}
         <div class="table-row">
             <div class="td">
-                <i class="fas fa-user"></i>
-                <b>{{ submission.student.username }}</b>
+                <i class="fas fa-user-secret neon-pink"></i>
+                <span class="neon-white">{{ submission.student.username|upper }}</span>
             </div>
             <div class="td">
-                {{ submission.assignment.title }}
+                <i class="fas fa-file-code neon-cyan"></i>
+                {{ submission.assignment.title|truncatechars:20 }}
             </div>
             <div class="td">
-                <i class="fas fa-clock"></i>
-                {{ submission.submitted_at|date:"M d, Y H:i" }}
+                <i class="fas fa-clock neon-cyan"></i>
+                <span class="neon-white">{{ submission.submitted_at|date:"d/m/y H:i" }}</span>
             </div>
             <div class="td">
                 <form class="grade-form" method="POST">
                     {% csrf_token %}
-                    <input type="number"
-                        class="cyber-input grade-input"
-                        name="grade"
-                        value="{{ submission.grade|default:0 }}"
-                        min="0"
-                        max="100">
+                    <div class="cyber-input-wrapper">
+                        <input type="number"
+                            class="cyber-grade-input"
+                            name="grade"
+                            value="{{ submission.grade|default:0 }}"
+                            min="0"
+                            max="100"
+                            data-submission-id="{{ submission.id }}">
+                        <span class="percent-symbol">%</span>
+                    </div>
             </div>
             <div class="td">
-                    <button type="submit" class="gradient-btn-green">
-                        <i class="fas fa-sync-alt"></i> Update
+                    <button type="submit" class="cyber-button green pulse">
+                        <i class="fas fa-sync-alt"></i> UPDATE
                     </button>
                 </form>
             </div>
         </div>
         {% empty %}
-        <div class="empty-state">
-            <i class="fas fa-inbox"></i>
-            <p>No submissions at this time!</p>
+        <div class="cyber-empty">
+            <i class="fas fa-brain-circuit"></i>
+            <p class="neon-pink">NO_SUBMISSIONS_DETECTED :: AWAITING_INPUT</p>
         </div>
         {% endfor %}
-    </div><br>
-    <a href="{% url 'educator_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+    </div>
+
+    <div class="cyber-nav">
+        <a href="{% url 'educator_dashboard' %}" class="cyber-button back">
+            <i class="fas fa-arrow-left"></i> RETURN_TO_CORE
+        </a>
+    </div>
+</div>
+
+<style>
+.cyber-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.cyber-table {
+    border: 2px solid #00ffb3;
+    margin: 2rem 0;
+    background: #0a0a0f;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1.5fr 1fr 1.5fr;
+    padding: 1rem;
+    border-bottom: 2px solid #00ffb3;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1.5fr 1fr 1.5fr;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 255, 179, 0.1);
+    transition: all 0.3s ease;
+}
+
+.table-row:hover {
+    background: rgba(0, 255, 179, 0.05);
+}
+
+.td {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.5rem;
+}
+
+.cyber-input-wrapper {
+    position: relative;
+    width: 100px;
+}
+
+.cyber-grade-input {
+    width: 100%;
+    padding: 8px 25px 8px 10px;
+    background: #001a14;
+    border: 2px solid #00ffb3;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+    -moz-appearance: textfield;
+}
+
+.cyber-grade-input::-webkit-outer-spin-button,
+.cyber-grade-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.percent-symbol {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffb3;
+    pointer-events: none;
+}
+
+.cyber-button.green {
+    background: linear-gradient(45deg, #00ff88, #00994d);
+    color: #001a14;
+}
+
+.cyber-empty {
+    padding: 3rem;
+    text-align: center;
+    border: 2px dashed #00ffb3;
+    margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    .table-header,
+    .table-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .th {
+        display: none;
+    }
+    
+    .td {
+        justify-content: space-between;
+        border-bottom: 1px dashed rgba(0, 255, 179, 0.2);
+    }
+    
+    .td:last-child {
+        border-bottom: none;
+    }
+}
+</style>
+
+<script>
+document.querySelectorAll('.cyber-grade-input').forEach(input => {
+    input.addEventListener('input', function() {
+        const value = parseInt(this.value);
+        if (value > 100) this.value = 100;
+        if (value < 0) this.value = 0;
+        
+        if (value >= 70) {
+            this.style.borderColor = '#00ff88';
+        } else if (value >= 50) {
+            this.style.borderColor = '#00ffb3';
+        } else {
+            this.style.borderColor = '#ff0066';
+        }
+    });
+});
+</script>
 {% endblock %}

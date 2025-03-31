@@ -4,49 +4,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - LuminoLearn</title>
-    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+    <title>CLEARANCE REQUEST - LUMINO LEARN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="{% static 'assets/images/lumino_favicon.svg' %}">
     <meta name="csrf-token" content="{{ csrf_token }}">
+    <style>
+        :root {
+            --neon-cyan: #00ffb3;
+            --neon-pink: #ff006e;
+            --cyber-bg: #0a0a0f;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--cyber-bg);
+            font-family: 'Courier New', monospace;
+            position: relative;
+            overflow: absolute;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 179, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 179, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: scan 20s linear infinite;
+        }
+
+        .register-container {
+            position: relative;
+            background: rgba(10, 10, 15, 0.9);
+            padding: 3rem;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 255, 179, 0.2);
+            width: 400px;
+            z-index: 1;
+        }
+
+        h1 {
+            color: var(--neon-cyan);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-family: 'Orbitron', sans-serif;
+            animation: glitch 2s infinite;
+            position: relative;
+        }
+
+        h1::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            text-shadow: -2px 0 var(--neon-pink);
+            top: 0;
+            color: var(--neon-cyan);
+            background: var(--cyber-bg);
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            animation: glitch-anim 3s infinite;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-family: 'Courier New', monospace;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300ffb3'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 12px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 110, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
+            border: none;
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 179, 0.4);
+            transform: translateY(-2px);
+        }
+
+        p {
+            color: var(--neon-cyan);
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        a {
+            color: var(--neon-pink);
+            text-decoration: none;
+            position: relative;
+        }
+
+        a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--neon-pink);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        a:hover::after {
+            transform: scaleX(1);
+        }
+
+        h4 {
+            color: var(--neon-pink);
+            text-align: center;
+            text-transform: uppercase;
+            margin: 1rem 0;
+            animation: error-glitch 1s infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+
+        @keyframes glitch {
+            0%, 100% { text-shadow: 2px 2px var(--neon-pink), -2px -2px var(--neon-cyan); }
+            50% { text-shadow: -2px -2px var(--neon-pink), 2px 2px var(--neon-cyan); }
+        }
+
+        @keyframes error-glitch {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-2px); }
+            40% { transform: translateX(2px); }
+            60% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                width: 90%;
+                padding: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="register-container">
-        <h1>Join LuminoLearn</h1>
-        <form action="{% url 'register' %}" method="POST" >
+        <h1 data-text="CLEARANCE REQUEST">CLEARANCE REQUEST</h1>
+        <form action="{% url 'register' %}" method="POST">
             {% csrf_token %}
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" name="username" placeholder="Enter your username" required>
+                <label for="username">USERNAME</label>
+                <input type="text" name="username" placeholder="ENTER OPERATOR HANDLE" required>
             </div>
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" name="email" placeholder="Enter your email" required>
+                <label for="email">EMAIL</label>
+                <input type="email" name="email" placeholder="TRANSMISSION FREQUENCY" required>
             </div>
             <div class="form-group">
-                <label for="role">Select Role:</label>
-                    <select name="role" required>
-                        <option value="" disabled selected>Select your Role</option>
-                        <option value="student">Student</option>
-                        <option value="educator">Educator</option>
-                    <!--<option value="admin">Admin</option> -->    
-                    </select>
+                <label for="role">SELECT ROLE</label>
+                <select name="role" required>
+                    <option value="" disabled selected>SELECT OPERATOR PROFILE</option>
+                    <option value="student">STUDENT</option>
+                    <option value="educator">EDUCATOR</option>
+                <!--<option value="admin">ADMIN</option>-->    
+                </select>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" name="password" placeholder="Enter your password" required>
+                <label for="password">PASSWORD</label>
+                <input type="password" name="password" placeholder="ENTER ENCRYPTION KEY" required>
             </div>
             <div class="form-group">
-                <label for="confirm_password">Confirm Password</label>
-                <input type="password" name="confirm_password" placeholder="Re-enter your password" required>
+                <label for="confirm_password">CONFIRM PASSWORD</label>
+                <input type="password" name="confirm_password" placeholder="CONFIRM ENCRYPTION KEY" required>
             </div>
             <div>
                 {% for message in messages %}
-            <h4>  {{ message }}  </h4>
+                <h4>{{ message }}</h4>
                 {% endfor %}
             </div>
-            <button type="submit">Register</button>
+            <button type="submit">INITIATE REGISTRATION</button>
         </form>
-        <p>Already have an account? <a href="/login/">Login here</a>.</p>
+        <p>EXISTING OPERATOR? <a href="/login/">REQUEST LOGIN ACCESS</a></p>
     </div>
 </body>
 </html>

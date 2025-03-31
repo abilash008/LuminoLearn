@@ -1,36 +1,156 @@
 {% extends 'base.html' %}
-
 {% block title %}Educator Dashboard{% endblock %}
 
 {% block content %}
-<h1>Educator Dashboard</h1>
-<p>Welcome, <h3>{{ user.username }}!</h3><b> Manage your courses and assignments here:</b></p>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">KNOWLEDGE ARCHITECT TERMINAL</h1>
+    <div class="cyber-welcome">
+        <p class="neon-cyan">EDUCATOR: <span class="neon-pink">{{ user.username }}</span></p>
+        <p class="neon-text">[ DESIGN | DEPLOY | MONITOR ]</p>
+    </div>
 
-<div class="dashboard-cards">
-    <div class="dashboard-card">
-        <h3>Create Course</h3>
-        <p>Create a new Course for your students.</p><br>
-        <a href="{% url 'create_course' %}">Create Now</a>
-    </div>
-    <div class="dashboard-card">
-        <h3>Manage Courses</h3>
-        <p>Modify and Delete your Courses.</p><br>
-        <a href="{% url 'manage_courses' %}">Manage Now</a>
-    </div>
-    <div class="dashboard-card">
-        <h3>Create Assignments</h3>
-        <p>Design quizzes and assignments for your students.</p>
-        <a href="{% url 'select_assignment_course' %}">Create Now</a>
-    </div>
-    <div class="dashboard-card">
-        <h3>Manage Assignments</h3>
-        <p>Modify and Delete your Assignments.</p><br>
-        <a href="{% url 'educator_assignments' %}">Manage Now</a>
-    </div>
-    <div class="dashboard-card">
-        <h3>Student Submissions</h3>
-        <p>Review and grade student assignments.</p><br>
-        <a href="{% url 'review_submissions' %}">Review Submissions</a>
+    <div class="cyber-grid">
+        <div class="cyber-card">
+            <div class="card-header neon-cyan">
+                <i class="fas fa-rocket"></i>
+                <h3>INITIATE COURSE PROTOCOL</h3>
+            </div>
+            <div class="card-content">
+                <p class="neon-white">Deploy new learning matrix</p>
+                <a href="{% url 'create_course' %}" class="cyber-button cyan pulse">
+                    <i class="fas fa-plus-square"></i> CREATE COURSE
+                </a>
+            </div>
+        </div>
+
+        <div class="cyber-card">
+            <div class="card-header neon-cyan">
+                <i class="fas fa-tools"></i>
+                <h3>COURSE MAINTENANCE</h3>
+            </div>
+            <div class="card-content">
+                <p class="neon-white">Modify existing knowledge structures</p>
+                <a href="{% url 'manage_courses' %}" class="cyber-button">
+                    <i class="fas fa-code-branch"></i> MANAGE COURSES
+                </a>
+            </div>
+        </div>
+
+        <div class="cyber-card">
+            <div class="card-header neon-cyan">
+                <i class="fas fa-file-code"></i>
+                <h3>ASSESSMENT ENGINEERING</h3>
+            </div>
+            <div class="card-content">
+                <p class="neon-white">Construct new evaluation modules</p>
+                <a href="{% url 'select_assignment_course' %}" class="cyber-button cyan">
+                    <i class="fas fa-cogs"></i> CREATE ASSIGNMENT
+                </a>
+            </div>
+        </div>
+
+        <div class="cyber-card">
+            <div class="card-header neon-cyan">
+                <i class="fas fa-project-diagram"></i>
+                <h3>MANAGE ASSESSMENTS</h3>
+            </div>
+            <div class="card-content">
+                <p class="neon-white">Optimize existing evaluation systems</p>
+                <a href="{% url 'educator_assignments' %}" class="cyber-button">
+                    <i class="fas fa-network-wired"></i> SYSTEM OVERRIDE
+                </a>
+            </div>
+        </div>
+
+        <div class="cyber-card">
+            <div class="card-header neon-cyan">
+                <i class="fas fa-file-signature"></i>
+                <h3>REVIEW SUBMISSIONS</h3>
+            </div>
+            <div class="card-content">
+                <p class="neon-white">Decrypt learner submissions</p>
+                <a href="{% url 'review_submissions' %}" class="cyber-button cyan">
+                    <i class="fas fa-chart-bar"></i> INITIATE SCAN
+                </a>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    .cyber-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 2rem;
+    }
+    
+    .cyber-welcome {
+        text-align: center;
+        margin-bottom: 3rem;
+        border-bottom: 2px solid #00ffb3;
+        padding-bottom: 2rem;
+    }
+    
+    .cyber-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+    
+    .cyber-card {
+        background: #0a0a0f;
+        border: 2px solid #00ffb3;
+        border-radius: 8px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cyber-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 25px rgba(0, 255, 179, 0.3);
+    }
+    
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #00ffb3;
+    }
+    
+    .cyber-button {
+        padding: 0 2rem;
+        border: none;
+        background: linear-gradient(45deg, #00ffb3, #00997a);
+        color: #001a14;
+        text-transform: uppercase;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+    }
+    
+    .cyber-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 255, 179, 0.4);
+        background: linear-gradient(45deg, #00ffb3, #00cc96);
+    }
+    
+    /* Animations */
+    @keyframes pulse {
+        0% { box-shadow: 0 0 10px rgba(0, 255, 179, 0.3); }
+        50% { box-shadow: 0 0 20px rgba(0, 255, 179, 0.6); }
+        100% { box-shadow: 0 0 10px rgba(0, 255, 179, 0.3); }
+    }
+    
+    @keyframes border-animation {
+        0% { background-position: 0 0; }
+        50% { background-position: 400% 0; }
+        100% { background-position: 0 0; }
+    }
+    </style>
 {% endblock %}

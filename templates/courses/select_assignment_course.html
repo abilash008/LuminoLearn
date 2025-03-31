@@ -1,54 +1,154 @@
 {% extends 'base.html' %}
-
-{% block title %}Select Course for Assignment{% endblock %}
+{% block title %}SELECT_COURSE_PROTOCOL{% endblock %}
 
 {% block content %}
-<!--
-<div class="dashboard-card">
-    <h3>Create Assignments</h3>
-    <p>Design quizzes and assignments for your students.</p>
-    {% if courses %}
-        <ul>
-            {% for course in courses %}
-                <li>
-                    <a href="{% url 'create_assignment' course.id %}">
-                        Create Assignment for {{ course.title }}
-                    </a>
-                </li>
-                <br>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>You haven't created any courses yet. <a href="{% url 'create_course' %}">Create one now!</a></p>
-    {% endif %}
-</div> -->
-
-
-
-    <h1>Create Assignments</h1><br>
+<div class="cyber-container">
+    <h1 class="neon-heading cyber-glitch">ASSIGNMENT_DEPLOYMENT_INTERFACE</h1>
     
-    <!-- Course List -->
-    <div class="course-grid">
+    <div class="cyber-grid">
         {% for course in courses %}
-        <div class="cyber-card">
-            <div class="card-header">
-                <h3 class="glowing-text">{{ course.title }}</h3>
+        <div class="cyber-node">
+            <div class="node-header neon-cyan">
+                <h3 class="glitch-text">{{ course.title|upper }}</h3>
                 <a href="{% url 'create_assignment' course_id=course.id %}" 
-                class="gradient-btn-cyan">
-                    <i class="fas fa-plus"></i> New Assignment
+                   class="cyber-button small cyan pulse">
+                    <i class="fas fa-plus"></i> NEW_OBJECTIVE
                 </a>
             </div>
-            <div class="card-body">
-                <p class="course-description">{{ course.description|truncatechars:100 }}</p>
+            <div class="node-body">
+                <p class="neon-white">{{ course.description|truncatechars:100 }}</p>
             </div>
         </div>
         {% empty %}
-        <div class="empty-state">
-            <i class="fas fa-graduation-cap"></i>
-            <p>You haven't created any courses yet. <a href="{% url 'create_course' %}">Create one now!</a></p>
+        <div class="cyber-empty">
+            <i class="fas fa-brain-circuit"></i>
+            <p class="neon-pink">NO_COURSES_DETECTED :: 
+                <a href="{% url 'create_course' %}" class="neon-link">
+                    INITIATE_COURSE_CREATION
+                </a>
+            </p>
         </div>
         {% endfor %}
-    </div><br>
-    <a href="{% url 'educator_dashboard' %}" class="back-button">  <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard</a>
+    </div>
 
+    <div class="cyber-nav">
+        <a href="{% url 'educator_dashboard' %}" class="cyber-button back">
+            <i class="fas fa-arrow-left"></i> RETURN_TO_CORE
+        </a>
+    </div>
+</div>
+
+<style>
+.cyber-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.cyber-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+}
+
+.cyber-node {
+    background: #0a0a0f;
+    border: 2px solid #00ffb3;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.cyber-node:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(0, 255, 179, 0.3);
+}
+
+.node-header {
+    padding: 1.5rem;
+    background: #001a14;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #00ffb3;
+}
+
+.node-body {
+    padding: 1.5rem;
+}
+
+.cyber-empty {
+    text-align: center;
+    padding: 4rem;
+    border: 2px dashed #00ffb3;
+    grid-column: 1 / -1;
+}
+
+.cyber-empty i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #00ffb3;
+}
+
+.neon-link {
+    color: #ff00ff;
+    text-decoration: none;
+    border-bottom: 1px solid #ff00ff;
+    transition: all 0.3s ease;
+}
+
+.neon-link:hover {
+    text-shadow: 0 0 10px #ff00ff;
+}
+
+.cyber-nav {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.back {
+    background: #2a0a3a;
+    border-color: #ff00ff;
+    color: #ff00ff;
+}
+
+.glitch-text {
+    animation: text-glitch 1s infinite;
+}
+
+@keyframes text-glitch {
+    0% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffb3; }
+    25% { text-shadow: -2px 2px #ff00ff, 2px -2px #00ffb3; }
+    50% { text-shadow: 2px -2px #ff00ff, -2px 2px #00ffb3; }
+    75% { text-shadow: -2px -2px #ff00ff, 2px 2px #00ffb3; }
+    100% { text-shadow: 2px 2px #ff00ff, -2px -2px #00ffb3; }
+}
+
+@media (max-width: 768px) {
+    .cyber-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .node-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+</style>
+
+<script>
+document.querySelectorAll('.cyber-node').forEach(node => {
+    node.addEventListener('mouseover', () => {
+        node.style.transform = 'translateY(-5px)';
+        node.style.boxShadow = '0 0 25px rgba(0, 255, 179, 0.3)';
+    });
+    
+    node.addEventListener('mouseout', () => {
+        node.style.transform = 'translateY(0)';
+        node.style.boxShadow = 'none';
+    });
+});
+</script>
 {% endblock %}
