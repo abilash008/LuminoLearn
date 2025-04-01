@@ -1,2 +1,2 @@
-# web: gunicorn lumino_learn.wsgi:application
+web: gunicorn --workers 2 --timeout 120 --bind 0.0.0.0:$PORT lumino_learn.wsgi:application
 waitress-serve --port=$PORT lumino_learn.wsgi:application

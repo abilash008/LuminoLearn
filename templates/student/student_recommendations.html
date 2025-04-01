@@ -28,7 +28,7 @@
                     </div>
                     <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="cyber-thumbnail">
                     <div class="card-body">
-                        <p class="course-description">{{ course.description|truncatechars:100 }}</p>
+                        <p class="course-description">{{ course.description|truncatechars:50 }}</p>
                         <div class="course-meta">
                             <span class="meta-badge">{{ course.category|title }}</span>
                         </div>
@@ -53,7 +53,7 @@
                     </div>
                     <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="cyber-thumbnail">
                     <div class="card-body">
-                        <p class="course-description">{{ course.description|truncatechars:80 }}</p>
+                        <p class="course-description">{{ course.description|truncatechars:50 }}</p>
                         <div class="course-meta">
                             <span class="meta-badge">{{ course.category|title }}</span>
                         </div>
