@@ -1,2 +1,2 @@
 waitress-serve --port=$PORT lumino_learn.wsgi:application
-web: gunicorn --workers 1 --timeout 300 --preload --bind 0.0.0.0:$PORT lumino_learn.wsgi
+# web: gunicorn --workers 1 --timeout 300 --preload --bind 0.0.0.0:$PORT lumino_learn.wsgi
