@@ -17,7 +17,7 @@
                 <div class="course-meta">
                     <div class="meta-item">
                         <i class="fas fa-chalkboard-teacher neon-icon"></i>
-                        <span class="meta-text">Level: {{ course.category }}</span>
+                        <span class="meta-text">Level: {{ course.category|upper }}</span>
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-code neon-icon"></i>
@@ -38,7 +38,7 @@
     </div>
 </div><br>
 <a href="{% url 'student_dashboard' %}" class="back-button">  
-    <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+    <i class="fas fa-arrow-left mr-2"></i> [ RETURN TO MAINFRAME ]
 </a>
 
 <style>

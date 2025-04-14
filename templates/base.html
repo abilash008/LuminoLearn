@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
     <style>
+
         :root {
             --neon-cyan: #00ffb3;
             --neon-pink: #ff00ff;
@@ -112,8 +113,8 @@
         .neon-cyan { color: var(--neon-cyan); }
         .neon-pink { color: var(--neon-pink); }
         .cyber-glitch {
-            text-shadow: 2px 2px var(--neon-pink),
-                        -2px -2px var(--neon-cyan);
+            text-shadow: 2px 2px var(--neon-pink) ;
+        /*              -2px -2px var(--neon-cyan); */
         }
     </style>
 </head>
@@ -179,3 +180,8 @@
             codeBlock.style.background = '#001a14';
             codeBlock.style.padding = '1rem';
             codeBlock.style.margin = '1rem 0
+            codeBlock.style.smoothing = 'smooth';
+        });
+    </script>
+</body>
+</html>

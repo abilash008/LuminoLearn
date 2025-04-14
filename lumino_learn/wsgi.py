@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/wsgi/
 
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Force CPU-only mode
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Force CPU-only mode
 
 
 from django.core.wsgi import get_wsgi_application
